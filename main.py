@@ -31,6 +31,7 @@ from core.controllers import profile
 from core.controllers import reader
 from core.controllers import recent_commits
 from core.controllers import resources
+from core.controllers import uc
 from core.domain import user_services
 from core.platform import models
 import feconf
@@ -417,6 +418,8 @@ URLS = MAPREDUCE_HANDLERS + [
     get_redirect_route(
         r'/logout', base.LogoutPage, 'logout_page_handler'),
 
+    get_redirect_route(
+        r'/api/uc',uc.UcApiHandler,'uc_api_handler'),
     # 404 error handler.
     get_redirect_route(r'/<:.*>', base.Error404Handler, 'error_404_handler'),
 ]
