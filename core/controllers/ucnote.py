@@ -37,7 +37,7 @@ def uc_user_synlogout():
     return uc_api_post('user','synlogout',[])
 
 def uc_user_edit(username,oldpw,newpw,email,ignoreoldpw=0,quetionid='',answer=''):
-   return uc_api_post('user','edit',{'username':username,'oldpw':oldpw,'questionid':questionid,'answer':answer})
+    return uc_api_post('user','edit',{'username':username,'oldpw':oldpw,'questionid':questionid,'answer':answer})
 
 def uc_user_delete(uid):
     return uc_api_post('user','delete',{'uid':uid})
@@ -123,9 +123,9 @@ def uc_api_input(data):
 
 def microtime(get_as_float=False):
     if get_as_float:
-	return time.time()
+    return time.time()
     else:
-	return '%f %d' % math.modf(time.time())
+    return '%f %d' % math.modf(time.time())
 def substr (s, start, length = None):
     """Returns the portion of string specified by the start and length 
     parameters.
@@ -145,51 +145,51 @@ def base64_decode(data):
         missing_padding =4 -len(data)%4
         if missing_padding :
             data+=b'='*missing_padding
-	return data.decode('base64')
+    return data.decode('base64')
 def base64_encode(data):
-	return data.encode('base64')
+    return data.encode('base64')
 
 def uc_authcode(string,operation='DECODE',key='',expiry=0):
-        ckey_length=4
-        key = md5(UC_KEY if key=='' else key)
-        keya = md5(substr(key,0,16))
-        keyb = md5(substr(key,16,16))
-	keyc = substr(string,0,ckey_length) if operation =='DECODE' else substr(md5(microtime()),-ckey_length)
-	cryptkey=keya+md5(keya+keyc)
-	key_length=len(cryptkey)
-	string = base64_decode(substr(string,ckey_length)) if operation == 'DECODE' else  ('%010d' % ( expiry+int(time.time()) if expiry  else 0))+substr(md5(string+keyb),0,16)+string 
-	string_length = len(string)
+    ckey_length=4
+    key = md5(UC_KEY if key=='' else key)
+    keya = md5(substr(key,0,16))
+    keyb = md5(substr(key,16,16))
+    keyc = substr(string,0,ckey_length) if operation =='DECODE' else substr(md5(microtime()),-ckey_length)
+    cryptkey=keya+md5(keya+keyc)
+    key_length=len(cryptkey)
+    string = base64_decode(substr(string,ckey_length)) if operation == 'DECODE' else  ('%010d' % ( expiry+int(time.time()) if expiry  else 0))+substr(md5(string+keyb),0,16)+string 
+    string_length = len(string)
 
-	result=''
-	box = range(0,256)
+    result=''
+    box = range(0,256)
 
-	rndkey = []
-	for i in range(0,256):
-		rndkey.append(ord(cryptkey[i%key_length]))
-	
-	j=0
+    rndkey = []
+    for i in range(0,256):
+        rndkey.append(ord(cryptkey[i%key_length]))
+    
+    j=0
 
-	for i in range(0,256):
-		j= (j+box[i] + rndkey[i]) %256
-		tmp= box[i]
-		box[i] = box[j]
-		box[j] = tmp 
-	
-	a=j=0
-	for i in range(0,string_length):
-		a=(a+1) % 256
-		j=(j+box[a]) % 256
-		tmp = box[a]
-		box[a] = box[j]
-		box[j] = tmp
-		result = result +chr(ord(string[i]) ^ (box[(box[a]+box[j])%256]))
-	if operation == 'DECODE':
-		if (int(substr(result,0,10)) == 0 or int(substr(result,0,10)) - int(time.time())>0) and substr(result,10,16)==substr(md5(substr(result,26)+keyb),0,16):
-			return substr(result,26)
-		else:
-			return ''
-	else:
-		return keyc + base64_encode(result).replace('=','')
+    for i in range(0,256):
+        j= (j+box[i] + rndkey[i]) %256
+        tmp= box[i]
+        box[i] = box[j]
+        box[j] = tmp 
+    
+    a=j=0
+    for i in range(0,string_length):
+        a=(a+1) % 256
+        j=(j+box[a]) % 256
+        tmp = box[a]
+        box[a] = box[j]
+        box[j] = tmp
+        result = result +chr(ord(string[i]) ^ (box[(box[a]+box[j])%256]))
+    if operation == 'DECODE':
+        if (int(substr(result,0,10)) == 0 or int(substr(result,0,10)) - int(time.time())>0) and substr(result,10,16)==substr(md5(substr(result,26)+keyb),0,16):
+            return substr(result,26)
+        else:
+            return ''
+    else:
+        return keyc + base64_encode(result).replace('=','')
 
        
  
