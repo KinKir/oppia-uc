@@ -419,7 +419,7 @@ URLS = MAPREDUCE_HANDLERS + [
         r'/logout', base.LogoutPage, 'logout_page_handler'),
 
     get_redirect_route(
-        r'/api/uc',uc.UcApiHandler,'uc_api_handler'),
+        r'/api/uc', uc.UcApiHandler, 'uc_api_handler'),
     # 404 error handler.
     get_redirect_route(r'/<:.*>', base.Error404Handler, 'error_404_handler'),
 ]
