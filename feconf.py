@@ -40,7 +40,6 @@ if PLATFORM == 'gae':
 else:
     raise Exception('Invalid platform: expected one of [\'gae\']')
 
-
 TESTS_DATA_DIR = os.path.join('core', 'tests', 'data')
 SAMPLE_EXPLORATIONS_DIR = os.path.join('data', 'explorations')
 SAMPLE_COLLECTIONS_DIR = os.path.join('data', 'collections')
@@ -72,6 +71,11 @@ NUMBER_OF_TOP_RATED_EXPLORATIONS = 8
 # The maximum number of results to retrieve in a datastore query
 # for recently published explorations.
 RECENTLY_PUBLISHED_QUERY_LIMIT = 8
+
+# The current version of the dashboard stats blob schema. If any backward-
+# incompatible changes are made to the stats blob schema in the data store,
+# this version number must be changed.
+CURRENT_DASHBOARD_STATS_SCHEMA_VERSION = 1
 
 # The current version of the exploration states blob schema. If any backward-
 # incompatible changes are made to the states blob schema in the data store,
@@ -263,6 +267,11 @@ PANELS_PROPERTIES = {
 # When the site terms were last updated, in UTC.
 REGISTRATION_PAGE_LAST_UPDATED_UTC = datetime.datetime(2015, 10, 14, 2, 40, 0)
 
+# Format of string for dashboard statistics logs.
+# NOTE TO DEVELOPERS: This format should not be changed, since it is used in
+# the existing storage models for UserStatsModel.
+DASHBOARD_STATS_DATETIME_STRING_FORMAT = '%Y-%m-%d'
+
 # The maximum size of an uploaded file, in bytes.
 MAX_FILE_SIZE_BYTES = 1048576
 
@@ -396,6 +405,7 @@ EMBEDDED_GOOGLE_GROUP_URL = (
 ALLOW_YAML_FILE_UPLOAD = False
 
 # TODO(sll): Add all other URLs here.
+ADMIN_URL = '/admin'
 COLLECTION_DATA_URL_PREFIX = '/collection_handler/data'
 COLLECTION_WRITABLE_DATA_URL_PREFIX = '/collection_editor_handler/data'
 COLLECTION_RIGHTS_PREFIX = '/collection_editor_handler/rights'
@@ -424,6 +434,7 @@ NEW_COLLECTION_URL = '/collection_editor_handler/create_new'
 NEW_EXPLORATION_URL = '/contributehandler/create_new'
 RECENT_COMMITS_DATA_URL = '/recentcommitshandler/recent_commits'
 RECENT_FEEDBACK_MESSAGES_DATA_URL = '/recent_feedback_messages'
+ROBOTS_TXT_URL = '/robots.txt'
 SITE_LANGUAGE_DATA_URL = '/save_site_language'
 SIGNUP_DATA_URL = '/signuphandler/data'
 SIGNUP_URL = '/signup'

@@ -27,13 +27,14 @@ def uc_app_ls():
 def uc_feed_add(icon, uid, username, title_template='', \
                 title_data='', body_template='',
                 body_data='', body_general='', target_ids='', images=None):
-    if images is None :
+    if images is None:
         images = []
-        
+
     return uc_api_post('feed', 'add', {'icon':icon, \
                 'appid':UC_APPID, 'uid':uid, \
                 'username':username, 'title_template':title_template, \
                 'title_data':title_data, 'body_template':body_template, \
+                'body_data':body_data, \
                 'body_general':body_general, 'target_ids':target_ids, \
                 'image_1':images[0]['url'], \
                 'image_1_link':images[0]['link'], \
@@ -67,6 +68,8 @@ def uc_user_edit(username, oldpw, newpw, email, \
                 ignoreoldpw=0, questionid='', answer=''):
     return uc_api_post('user', 'edit', {'username':username, \
                          'oldpw':oldpw, 'questionid':questionid, \
+                         'ignoreolepw':ignoreoldpw, \
+                         'newpw':newpw, 'email':email, \
                          'answer':answer})
 
 def uc_user_delete(uid):
@@ -133,20 +136,20 @@ def uc_api_post(module, action, arg=None):
     postdata = uc_api_requestdata(module, action, s)
     return uc_fopen2(URL, postdata)
 
-def uc_fopen2(url,post='',timeout=15):
+def uc_fopen2(url, post='', timeout=15):
     # todo add times parameter
     return uc_fopen(url, post, timeout)
-    
+
 def uc_fopen(url, post='', timeout=15):
     req = urllib2.Request(url)
     # data = urllib.quote(data)
     # enable cookie
     opener = urllib2.build_opener(urllib2.HTTPCookieProcessor())
-    response = opener.open(req, data = post, timeout = timeout)
+    response = opener.open(req, data=post, timeout=timeout)
     return response.read()
 
 def uc_api_requestdata(module, action, arg='', extra=''):
-         
+
     post = "m=" + module + "&a=" + action + "&inajax=2&release=" \
            + UC_CLIENT_RELEASE
     post += "&input=" + uc_api_input(arg) + "&appid=" + UC_APPID + extra
