@@ -15,12 +15,13 @@ class UcApiHandler(base.BaseHandler):
         code = ucnote.uc_authcode(code, 'DECODE')
         get = urlparse.parse_qs(code)
         action = get['action'][0]
-        if action in ('test', 'deleteuser', 'renameuser', 'gettag', 'synlogin', 'synlogout', 'updatepw',
-                 'updatebadwords', 'updatehosts', 
-                 'updateapps', 'updateclient', 
-                 'updatecredit', 'getcredit',
-                 'getcreditsettings', 'updatecreditsettings', 
-                 'addfeed'):
+        if action in ('test', 'deleteuser', 'renameuser', 'gettag',
+                      'synlogin', 'synlogout', 'updatepw',
+                      'updatebadwords', 'updatehosts',
+                      'updateapps', 'updateclient',
+                      'updatecredit', 'getcredit',
+                      'getcreditsettings', 'updatecreditsettings',
+                      'addfeed'):
             self.response.out.write(1)
         else:
             self.response.out.write(-1)

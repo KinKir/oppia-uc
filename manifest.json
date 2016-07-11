@@ -419,7 +419,7 @@
       "browsermob-proxy": {
         "version": "2.1.1",
         "downloadFormat": "zip",
-        "url": "https://github.com/lightbody/browsermob-proxy/releases/download/browsermob-proxy-2.1.1/browsermob-proxy-2.1.1-bin.zip",
+        "url": "https://github.com/lightbody/browsermob-proxy/archive/browsermob-proxy-2.1.1.zip",
         "rootDirPrefix": "browsermob-proxy-",
         "targetDirPrefix": "browsermob-proxy-"
       }
