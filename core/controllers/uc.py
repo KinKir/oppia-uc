@@ -57,91 +57,89 @@ class UcApiHandler(base.BaseHandler):
         return data
 
     def test(self, get, post):
-        get = get.update(post)
+        get.update(post)
         return API_RETURN_SUCCEED
 
     def deleteuser(self, get, post):
-        get = get + post
+        get.update(post)
         return API_RETURN_SUCCEED
 
     def renameuser(self, get, post):
-        get = get + post
+        get.update(post)
         return API_RETURN_SUCCEED
 
     def gettag(self, get, post):
-        get = get + post
+        get.update(post)
         return API_RETURN_SUCCEED
 
     def synlogin(self, get, post):
         """uid = get['uid']"""
-        username = get['username'] + post
+        get.update(post)
+        username = get['username']
         self.response.headers['Set-Cookie'] = \
             _set_user_info_cookie(username, False)
         return API_RETURN_SUCCEED
 
     def synlogout(self, get, post):
-        get = get.update(post)
-        if not API_SYNLOGIN:
-            return API_RETURN_FORBIDDEN
+        get.update(post)
+        _clear_user_info_cookie(_COOKIE_NAME)
         return API_RETURN_SUCCEED
 
     def updatepw(self, get, post):
-        get = get + post
+        get.update(post)
         if not API_SYNLOGIN:
             return API_RETURN_FORBIDDEN
         return API_RETURN_SUCCEED
 
     def updatebadwords(self, get, post):
-        get = get + post
+        get.update(post)
         if not API_SYNLOGIN:
             return API_RETURN_FORBIDDEN
         return API_RETURN_SUCCEED
 
     def updatehosts(self, get, post):
-        get = get + post
+        get.update(post)
         if not API_SYNLOGIN:
             return API_RETURN_FORBIDDEN
         return API_RETURN_SUCCEED
 
     def updateapps(self, get, post):
-        # get = get + post
-        logging.info("%s%s", get, post)
-        if not API_SYNLOGIN:
-            return API_RETURN_FORBIDDEN
+        # get.update(post)
+        get.update(post)
         return API_RETURN_SUCCEED
 
     def updateclient(self, get, post):
-        get = get + post
+        get.update(post)
         if not API_SYNLOGIN:
             return API_RETURN_FORBIDDEN
         return API_RETURN_SUCCEED
 
     def updatecredit(self, get, post):
-        get = get + post
+        get.update(post)
         if not API_SYNLOGIN:
             return API_RETURN_FORBIDDEN
         return API_RETURN_SUCCEED
 
     def getcredit(self, get, post):
-        get = get + post
+        get.update(post)
         if not API_SYNLOGIN:
             return API_RETURN_FORBIDDEN
         return API_RETURN_SUCCEED
 
     def getcreditsettings(self, get, post):
-        get = get + post
+        get.update(post)
         if not API_SYNLOGIN:
             return API_RETURN_FORBIDDEN
         return API_RETURN_SUCCEED
 
     def updatecreditsettings(self, get, post):
-        get = get + post
+        get.update(post)
         if not API_SYNLOGIN:
             return API_RETURN_FORBIDDEN
         return API_RETURN_SUCCEED
 
     def addfeed(self, get, post):
-        get = get + post
+        get.update(post)
         if not API_SYNLOGIN:
             return API_RETURN_FORBIDDEN
         return API_RETURN_SUCCEED
@@ -190,6 +188,20 @@ def _get_user_info_from_dict(cookie_dict, cookie_name=_COOKIE_NAME):
             logging.warning('Ignoring invalid login cookie: %s', cookie_value)
         return '', False, ''
     return email, (admin == 'True'), user_id
+
+
+def _clear_user_info_cookie(cookie_name=_COOKIE_NAME):
+    """Clears the user info cookie from the requestor, logging them out.
+    Args:
+      cookie_name: The name of the cookie that stores the user info.
+    Returns:
+      A Set-Cookie value for clearing the user info of the requestor.
+    """
+    cookie = Cookie.SimpleCookie()
+    cookie[cookie_name] = ''
+    cookie[cookie_name]['path'] = '/'
+    cookie[cookie_name]['max-age'] = '0'
+    return cookie[cookie_name].OutputString()
 
 
 def _create_cookie_data(email, admin):
