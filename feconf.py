@@ -20,7 +20,6 @@ import copy
 import datetime
 import os
 
-
 # Whether to unconditionally log info messages.
 DEBUG = False
 
@@ -168,8 +167,11 @@ INVALID_PARAMETER_NAMES = AUTOMATICALLY_SET_PARAMETER_NAMES + [
 # circularities with exp_services.
 # TODO (Jacob) Refactor exp_services to remove this problem.
 _EMPTY_RATINGS = {'1': 0, '2': 0, '3': 0, '4': 0, '5': 0}
+
+
 def get_empty_ratings():
     return copy.deepcopy(_EMPTY_RATINGS)
+
 
 # Empty scaled average rating as a float.
 EMPTY_SCALED_AVERAGE_RATING = 0.0
@@ -685,6 +687,7 @@ SUPPORTED_SITE_LANGUAGES = {
     'es': 'Español',
     'id': 'Bahasa Indonesia',
     'pt': 'Português',
+    'zh': '中文'
 }
 SYSTEM_USERNAMES = [SYSTEM_COMMITTER_ID, MIGRATION_BOT_USERNAME]
 SYSTEM_USER_IDS = [SYSTEM_COMMITTER_ID, MIGRATION_BOT_USERNAME]

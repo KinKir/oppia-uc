@@ -6,8 +6,10 @@ import xml.etree.cElementTree as ET
 from core.controllers import base
 from core.platform import models
 from core.controllers import ucnote
-
-# from core.domain import user_services
+from core.domain import user_services
+from core.domain import email_manager
+import utils
+import feconf
 
 API_RETURN_SUCCEED = '1'
 API_RETURN_FAILED = '-1'
@@ -17,6 +19,8 @@ API_SYNLOGIN = 1
 # Name of the cookie that stores the user info.
 _COOKIE_NAME = 'dev_appserver_login'
 
+# (email_models,) = models.Registry.import_models([models.NAMES.email])
+# email_services = models.Registry.import_email_services()
 current_user_services = models.Registry.import_current_user_services()
 (user_models,) = models.Registry.import_models([models.NAMES.user])
 
@@ -75,14 +79,55 @@ class UcApiHandler(base.BaseHandler):
     def synlogin(self, get, post):
         """uid = get['uid']"""
         get.update(post)
+        email = get['email']
         username = get['username']
+        userid = _create_userid_from_email(email)
+        logging.warning(username)
+        self.user_id = userid
+
+        user_services.get_or_create_user(
+            self.user_id, email)
         self.response.headers['Set-Cookie'] = \
-            _set_user_info_cookie(username, False)
+            _set_user_info_cookie(email, False)
+        has_ever_registered = user_services.has_ever_registered(self.user_id)
+        has_fully_registered = user_services.has_fully_registered(self.user_id)
+
+        if has_fully_registered:
+            return API_RETURN_SUCCEED
+
+        agreed_to_terms = True
+        if not isinstance(agreed_to_terms, bool) or not agreed_to_terms:
+            raise self.InvalidInputException(
+                'In order to edit explorations on this site, you will '
+                'need to accept the license terms.')
+        else:
+            user_services.record_agreement_to_terms(self.user_id)
+
+        if not user_services.get_username(self.user_id):
+            try:
+                user_services.set_username(self.user_id, username)
+            except utils.ValidationError as e:
+                raise self.InvalidInputException(e)
+        can_receive_email_updates = True
+        if can_receive_email_updates is not None:
+            user_services.update_email_preferences(
+                self.user_id, can_receive_email_updates,
+                feconf.DEFAULT_EDITOR_ROLE_EMAIL_PREFERENCE,
+                feconf.DEFAULT_FEEDBACK_MESSAGE_EMAIL_PREFERENCE)
+
+        # Note that an email is only sent when the user registers for the first
+        # time.
+        if feconf.CAN_SEND_EMAILS_TO_USERS and not has_ever_registered:
+            email_manager.send_post_signup_email(self.user_id)
+
+        user_services.generate_initial_profile_picture(self.user_id)
+
         return API_RETURN_SUCCEED
 
     def synlogout(self, get, post):
         get.update(post)
-        _clear_user_info_cookie(_COOKIE_NAME)
+        self.response.headers['Set-Cookie'] = \
+            _clear_user_info_cookie()
         return API_RETURN_SUCCEED
 
     def updatepw(self, get, post):
@@ -197,11 +242,21 @@ def _clear_user_info_cookie(cookie_name=_COOKIE_NAME):
     Returns:
       A Set-Cookie value for clearing the user info of the requestor.
     """
+    logging.warning("logout..................")
     cookie = Cookie.SimpleCookie()
     cookie[cookie_name] = ''
     cookie[cookie_name]['path'] = '/'
     cookie[cookie_name]['max-age'] = '0'
     return cookie[cookie_name].OutputString()
+
+
+def _create_userid_from_email(email):
+    if email:
+        user_id_digest = hashlib.md5(email.lower()).digest()
+        user_id = '1' + ''.join(['%02d' % ord(x) for x in user_id_digest])[:20]
+    else:
+        user_id = ''
+    return user_id
 
 
 def _create_cookie_data(email, admin):
@@ -214,11 +269,7 @@ def _create_cookie_data(email, admin):
     Returns:
       A string containing the cookie payload.
     """
-    if email:
-        user_id_digest = hashlib.md5(email.lower()).digest()
-        user_id = '1' + ''.join(['%02d' % ord(x) for x in user_id_digest])[:20]
-    else:
-        user_id = ''
+    user_id = _create_userid_from_email(email)
     return '%s:%s:%s' % (email, admin, user_id)
 
 
