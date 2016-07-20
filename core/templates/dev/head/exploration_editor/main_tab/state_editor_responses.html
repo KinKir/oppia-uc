@@ -1,6 +1,6 @@
 <div ng-controller="StateResponses">
   <div class="oppia-editor-header">
-    <strong>Learner's Answers and Oppia's Responses</strong>
+    <strong>学生的答案和系统响应</strong>
   </div>
 
   <md-card class="oppia-editor-card-with-avatar">
@@ -128,7 +128,7 @@
           </form>
           <div ng-if="classification.answerGroupIndex === -1">
             <div>
-              <span><strong>If Oppia encounters the answer:</strong></span>
+              <span><strong>如果输入答案:</strong></span>
             </div>
 
             <div>
@@ -139,7 +139,7 @@
             <br>
 
             <div>
-              <span><strong>it will reply with:</strong></span>
+              <span><strong>就:</strong></span>
             </div>
 
             <div>
@@ -157,7 +157,7 @@
             <br>
 
             <div>
-              <span><strong>This is due to a specific rule and therefore cannot be trained. If you do not think this is right, you should change the rule directly referring to this answer.</strong></span>
+              <span><strong>这是由于特定的规则，因此不能被改变. 如果你不认为这是正确的，你应该改变规则直接引用这个答案.</strong></span>
             </div>
           </div>
         </div>
@@ -172,13 +172,13 @@
 
 <script type="text/ng-template" id="modals/addAnswerGroup">
   <div class="modal-header protractor-test-add-response-modal-header">
-    <h3>Add Response</h3>
+    <h3>添加响应</h3>
   </div>
 
   <div class="modal-body">
     <form name="addAnswerGroupForm.outcomeDetailsForm" class="form-inline protractor-test-add-response-details">
       <div class="oppia-rule-details-header">
-        <strong>If the learner's answer...</strong>
+        <strong>如果学生答案是...</strong>
       </div>
 
       <rule-editor rule="tmpRule" is-editable="editabilityService.isEditable()" is-editing-rule-inline="false">
@@ -194,10 +194,10 @@
             <div class="oppia-click-to-start-editing protractor-test-open-feedback-editor" ng-click="openFeedbackEditor()">
               <i class="material-icons oppia-editor-edit-icon pull-right" title="Edit Feedback">&#xE254;</i>
             </div>
-            <strong>Oppia tells the learner...</strong>
+            <strong>告诉学生...</strong>
             <div style="position: relative;">
               <span style="color: #888">
-                <em>Nothing</em>
+                <em>不响应</em>
               </span>
             </div>
           </div>

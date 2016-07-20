@@ -12,12 +12,12 @@
       </a>
     </li>
 
-    <li {% if nav_mode == 'about' %}class="active"{% endif %}>
+   {# <li {% if nav_mode == 'about' %}class="active"{% endif %}>
       <a href="/about">
         <i class="material-icons oppia-sidebar-menu-icon">&#xE887;</i>
         <span translate="I18N_SIDEBAR_ABOUT_LINK"></span>
       </a>
-    </li>
+    </li>#}
 
     <li {% if nav_mode == 'teach' %}class="active"{% endif %}>
       <a href="/teach">
@@ -25,7 +25,7 @@
         <span translate="I18N_SIDEBAR_TEACH_WITH_OPPIA"></span>
       </a>
     </li>
-
+{#
     <li {% if nav_mode == 'forum' %}class="active"{% endif %}>
       <a href="/forum">
         <i class="material-icons oppia-sidebar-menu-icon">&#xE7EF;</i>
@@ -65,4 +65,5 @@
       <img src="/images/social/twitter.png">
     </a>
   </div>
+#}
 </nav>

@@ -40,7 +40,7 @@
 
     <div class="modal-body">
       <p>
-        Your suggestion has been forwarded to the exploration author for review.
+        您的建议已提交给笔者的探索审查.
       </p>
     </div>
 
@@ -50,20 +50,20 @@
   </script>
   <script type="text/ng-template" id="modals/learnerViewSuggestion">
     <div class="modal-header">
-      <h3>Suggest a Change</h3>
+      <h3>建议修改</h3>
     </div>
 
     <div class="modal-body">
       <text-angular-rte ng-show="showEditor" html-content="suggestionContent"></text-angular-rte>
       <br>
-      Briefly describe your changes (required):
+     简要描述更改 (必填):
       <input type="text" ng-model="description" style="width: 100%">
     </div>
 
     <div class="modal-footer">
       <button class="btn btn-default" ng-click="cancelSuggestion()">Cancel</button>
       <button class="btn btn-success" ng-click="submitSuggestion()" ng-disabled="(initContent == suggestionContent) || !description">
-        Submit Suggestion
+        提交建议
       </button>
     </div>
   </script>

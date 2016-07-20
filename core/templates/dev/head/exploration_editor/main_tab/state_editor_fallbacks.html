@@ -72,10 +72,10 @@
     <form name="addFallbackForm.outcomeDetailsForm"
           class="form-inline protractor-test-add-fallback-details">
       <div class="oppia-rule-details-header">
-        Once the learner has made
+       一旦学习者输入
         <schema-based-editor schema="INT_FORM_SCHEMA" local-value="tmpFallback.trigger.customization_args.num_submits.value" class="protractor-test-fallback-num-submits">
         </schema-based-editor>
-        unsuccessful attempt<span ng-if="tmpFallback.trigger.customization_args.num_submits.value !== 1">s</span>:
+        未成功重试<span ng-if="tmpFallback.trigger.customization_args.num_submits.value !== 1">s</span>:
       </div>
 
       <br>
@@ -91,27 +91,27 @@
   </div>
 
   <div class="modal-footer">
-    <button class="btn btn-default protractor-test-close-add-fallback-modal" ng-click="cancel()">Cancel</button>
-    <button class="btn btn-success protractor-test-add-new-fallback" ng-click="saveFallback()" ng-disabled="addFallbackForm.outcomeDetailsForm.$invalid || isSelfLoopWithNoFeedback(tmpFallback.outcome)">Save Fallback</button>
+    <button class="btn btn-default protractor-test-close-add-fallback-modal" ng-click="cancel()">取消</button>
+    <button class="btn btn-success protractor-test-add-new-fallback" ng-click="saveFallback()" ng-disabled="addFallbackForm.outcomeDetailsForm.$invalid || isSelfLoopWithNoFeedback(tmpFallback.outcome)">保存</button>
   </div>
 </script>
 
 <script type="text/ng-template" id="modals/deleteFallback">
   <div class="modal-header">
-    <h3>Delete Fallback</h3>
+    <h3>删除</h3>
   </div>
 
   <div class="modal-body">
     <p>
-      Are you sure you want to delete this fallback?
+     确定要删除吗？
     </p>
   </div>
 
   <div class="modal-footer">
-    <button class="btn btn-default" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-default" ng-click="cancel()">取消</button>
     <button class="btn btn-danger protractor-test-confirm-delete-fallback"
             ng-click="reallyDelete()">
-      Delete Fallback
+      删除
     </button>
   </div>
 </script>

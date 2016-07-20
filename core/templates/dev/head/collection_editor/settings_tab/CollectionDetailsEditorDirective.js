@@ -73,7 +73,7 @@ oppia.directive('collectionDetailsEditor', [function() {
         $scope.updateCollectionTitle = function() {
           if (!$scope.displayedCollectionTitle) {
             alertsService.addWarning(
-              'Please specify a title for the collection.');
+              '请指定名称.');
             return;
           }
           CollectionUpdateService.setCollectionTitle(
@@ -83,7 +83,7 @@ oppia.directive('collectionDetailsEditor', [function() {
         $scope.updateCollectionObjective = function() {
           if (!$scope.displayedCollectionObjective) {
             alertsService.addWarning(
-              'Please specify a goal for the collection.');
+              '请指定目标.');
             return;
           }
           CollectionUpdateService.setCollectionObjective(
@@ -93,7 +93,7 @@ oppia.directive('collectionDetailsEditor', [function() {
         $scope.updateCollectionCategory = function() {
           if (!$scope.displayedCollectionCategory) {
             alertsService.addWarning(
-              'Please specify a category for the collection.');
+              '请指定分类.');
             return;
           }
           CollectionUpdateService.setCollectionCategory(

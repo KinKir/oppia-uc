@@ -117,12 +117,12 @@ class UserSettings(object):
         elif not re.match(feconf.ALPHANUMERIC_REGEX, username):
             raise utils.ValidationError(
                 'Usernames can only have alphanumeric characters.')
-        elif ('admin' in username.lower().strip() or
-              'oppia' in username.lower().strip() or
-              feconf.MIGRATION_BOT_USERNAME in username.lower().strip()):
+        # elif ('admin' in username.lower().strip() or
+        #       'oppia' in username.lower().strip() or
+        #       feconf.MIGRATION_BOT_USERNAME in username.lower().strip()):
             # Admin usernames are reserved for admins. Note that 'admin'
             # itself is already in use for the demo exploration.
-            raise utils.ValidationError('This username is not available.')
+        #   raise utils.ValidationError('This username is not available.')
 
 
 def is_username_taken(username):

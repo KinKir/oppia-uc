@@ -683,11 +683,11 @@ DEFAULT_TOPIC_SIMILARITY = 0.5
 SAME_TOPIC_SIMILARITY = 1.0
 
 SUPPORTED_SITE_LANGUAGES = {
+    'zh': '中文',
     'en': 'English',
     'es': 'Español',
     'id': 'Bahasa Indonesia',
-    'pt': 'Português',
-    'zh': '中文'
+    'pt': 'Português'
 }
 SYSTEM_USERNAMES = [SYSTEM_COMMITTER_ID, MIGRATION_BOT_USERNAME]
 SYSTEM_USER_IDS = [SYSTEM_COMMITTER_ID, MIGRATION_BOT_USERNAME]

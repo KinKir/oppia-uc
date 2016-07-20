@@ -31,11 +31,11 @@
     <div class="oppia-dashboard-aggregated-stats" ng-if="explorationsList.length > 0">
       <md-card layout="row">
         <div class="average-ratings stats-card">
-          <p class="stat-description">Average Rating</p>
+          <p class="stat-description">平均评分</p>
           <h1 class="stat-value"><[dashboardStats.average_ratings || 'N/A']></h1>
         </div>
         <div class="total-plays stats-card">
-          <p class="stat-description">Total Plays</p>
+          <p class="stat-description">总播放量</p>
           <h1 class="stat-value"><[dashboardStats.total_plays]></h1>
         </div>
       </md-card>
@@ -75,7 +75,7 @@
       <h2 style="margin-bottom: -20px;
                  margin-left: 52px;
                  font-family: 'Capriola', 'Roboto', Arial, sans-serif;">
-        Creator Dashboard
+        看板
       </h2>
     </div>
 
@@ -86,13 +86,12 @@
                  style="margin-top: 0;">
           <div>
             <p>
-              It looks like you haven't created any explorations yet.
-              Let's get started!
+              你好像还未创建课程！创建一个吧！
             </p>
             <button type="button"
                     class="btn oppia-dashboard-intro-button oppia-transition-200"
                     ng-click="createNewExploration()">
-              Create Exploration
+              创建课程
             </button>
           </div>
           <div class="oppia-dashboard-intro-picture">
@@ -114,27 +113,27 @@
                <col style="width: 14%;">
             </colgroup>
             <tr>
-              <th>Exploration</th>
-              <th>Rating</th>
-              <th>Plays</th>
-              <th>Feedback</th>
-              <th>Unresolved Answers</th>
-              <th>Last Updated</th>
+              <th>课程</th>
+              <th>评论</th>
+              <th>播放量</th>
+              <th>反馈</th>
+              <th>未解决答案</th>
+              <th>最后更新</th>
             </tr>
             <tr ng-repeat="exploration in explorationsList track by exploration.id"
                 ng-click="showExplorationEditor(exploration.id)"
                 class="exploration-list-item">
               <td>
-                <[exploration.title || 'Untitled']>
+                <[exploration.title || '未命名']>
                 <span ng-if="exploration.status === 'publicized'"
                       class="featured-badge">
-                  featured
+                  特点
                 </span>
               </td>
               <td colspan="4"
                   ng-if="exploration.status === 'private'"
                   class="exp-private-text">
-                This exploration is private. Publish it to receive statistics.
+                这个课程是未发布的。发布它接收统计数据。
               </td>
               <td ng-if="exploration.status !== 'private'">
                 <[(getAverageRating(exploration.ratings) | number:1) || 'N/A']>
@@ -171,7 +170,7 @@
 
             <div ng-attr-section="'<['right-section']>">
               <div ng-if="exploration.status === 'private'" class="exp-private-text">
-                This exploration is private. Publish it to receive statistics.
+               这个课程是未发布的。发布它接收统计数据。
               </div>
               <ul ng-if="exploration.status !== 'private'"
                   layout="row"
@@ -232,7 +231,7 @@
     {% if can_create_collections %}
       <div ng-if="activeTab === 'myCollections'">
         <div ng-if="collectionsList.length === 0" class="oppia-dashboard-empty-text">
-          <em>There are no collections to display.</em>
+          <em>有没有收藏显示.</em>
         </div>
 
         <ul class="oppia-dashboard-tiles" ng-if="activeTab === 'myCollections'">
@@ -249,15 +248,15 @@
                     <br>
                     <br>
 
-                    Status:
+                    状态:
                     <span ng-if="collection.status !== 'private'">
                       <span class="oppia-dashboard-status-green">
-                        Published
+                        发布
                       </span>
                     </span>
                     <span ng-if="collection.status === 'private'">
                       <span class="oppia-dashboard-status-grey">
-                        Private
+                        未发布
                       </span>
                     </span>
                   </div>
@@ -279,7 +278,7 @@
                           <[collection.objective | truncateAndCapitalize: 105]>
                         </span>
                         <span ng-if="!collection.objective">
-                          <em>No objective specified.</em>
+                          <em>没有内容.</em>
                         </span>
                       </span>
                     </div>
@@ -288,12 +287,12 @@
                       <span style="color: #888">
                         <strong><[collection.category]></strong>
                         <span style="font-weight: bold;" ng-if="collection.category">&middot;</span>
-                        Last updated <[getLocaleAbbreviatedDatetimeString(collection.last_updated)]>
+                        最后更新 <[getLocaleAbbreviatedDatetimeString(collection.last_updated)]>
                       </span>
 
                       <span ng-if="collection.status === 'publicized'">
                         <span style="font-weight: bold;">&middot;</span>
-                        <span style="color: #888">Featured</span>
+                        <span style="color: #888">特点</span>
                       </span>
                     </div>
                   </div>

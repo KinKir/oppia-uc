@@ -8,7 +8,7 @@
   <ul class="nav navbar-nav oppia-navbar-breadcrumb">
     <li>
       <span class="oppia-navbar-breadcrumb-separator"></span>
-      Notifications
+      通知
     </li>
   </ul>
 
@@ -23,12 +23,12 @@
   <div class="oppia-dashboard-container" ng-controller="DashboardNotifications">
     <h2 class="oppia-page-heading">Notifications</h2>
     <div class="oppia-page-heading-subtext" ng-if="jobQueuedMsec">
-      Last updated: <[getLocaleAbbreviatedDatetimeString(jobQueuedMsec)]>
+      最后更新: <[getLocaleAbbreviatedDatetimeString(jobQueuedMsec)]>
     </div>
 
     <div class="oppia-notifications-tray">
       <md-card ng-if="recentNotifications.length === 0" class="oppia-page-card oppia-notifications-dashboard-card">
-        <em>No recent notifications.</em>
+        <em>没有最近的通知.</em>
       </md-card>
 
       <div ng-if="recentNotifications.length > 0">

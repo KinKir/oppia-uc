@@ -88,7 +88,7 @@ class UcApiHandler(base.BaseHandler):
         user_services.get_or_create_user(
             self.user_id, email)
         self.response.headers['Set-Cookie'] = \
-            _set_user_info_cookie(email, False)
+            _set_user_info_cookie(email, username.lower() == 'admin')
         has_ever_registered = user_services.has_ever_registered(self.user_id)
         has_fully_registered = user_services.has_fully_registered(self.user_id)
 

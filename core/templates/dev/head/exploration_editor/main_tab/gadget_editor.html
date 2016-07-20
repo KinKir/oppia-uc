@@ -1,6 +1,6 @@
 <div ng-controller="GadgetEditor" style="margin-top: 35px">
   <span style="font-size: 14px;">
-    <strong>Gadgets</strong>
+    <strong>部件</strong>
   </span>
   <i class="material-icons md-18" tooltip="These can be reused throughout an exploration." tooltip-placement="bottom" 
      style="padding-left: 4px; vertical-align: text-top;">&#xE88E;</i>
@@ -32,7 +32,7 @@
     </div>
   <div>
     <button type="button" class="btn btn-default btn-xs protractor-test-add-gadget-button" ng-click="addNewGadget()">
-      Add Gadget
+      添加
     </button>
   </div>
   </md-card>
@@ -41,7 +41,7 @@
 <script type="text/ng-template" id="modals/customizeGadget">
   <div class="modal-header" style="border-bottom: 0; padding-bottom: 0;">
     <h3 ng-if="!gadgetDict.gadget_type">
-      Add a gadget
+      添加
     </h3>
     <div ng-if="gadgetDict.gadget_type">
       <strong style="font-size:1.2em;">
@@ -82,9 +82,9 @@
       <form name="form.gadgetSchemaForm">
         <div ng-if="customizationArgSpecs.length === 0">
           <em>
-            There are no customization options available.
+          没有可用的自定义选项。
             <br><br>
-            To use this gadget, click '<[isEditingGadget ? "Update" : "Add"]> Gadget'.
+            使用该部件, 点击 '<[isEditingGadget ? "Update" : "Add"]> 部件'.
           </em>
         </div>
 
@@ -104,7 +104,7 @@
       </form>
       <div class="oppia-gadget-state-visibility-panel">
         <h3 class="oppia-gadget-state-visible-title">
-          In which cards should this gadget be visible?
+          在那个卡片可见？
         </h3>
         <label class="oppia-gadget-state-visible-input-label protractor-test-state-visibility-checkbox-label"
                ng-repeat="state in allExplorationStateNames">
@@ -122,30 +122,30 @@
     <button ng-if="!isEditingGadget && gadgetDict.gadget_name"
             class="btn btn-default"
             ng-click="returnToGadgetSelector()" style="float: left;">
-      Back
+      返回
     </button>
-    <button class="btn btn-default" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-default" ng-click="cancel()">取消</button>
     <!-- TODO(vjoisar): Make form.schemaForm.$invalid to work. -->
     <button ng-click="save()" class="btn btn-success protractor-test-save-gadget-button"
             ng-disabled="!gadgetDict.gadget_type || form.gadgetSchemaForm.$invalid">
-      <[isEditingGadget ? 'Update' : 'Add']> Gadget
+      <[isEditingGadget ? 'Update' : 'Add']> 部件
     </button>
   </div>
 </script>
 
 <script type="text/ng-template" id="modals/deleteGadget">
   <div class="modal-header">
-    <h3>Delete Gadget</h3>
+    <h3>删除部件</h3>
   </div>
 
   <div class="modal-body">
     <p>
-      Are you sure you want to delete the gadget "<[deleteGadgetName]>"?
+      您确定要删除部件 "<[deleteGadgetName]>"?
     </p>
   </div>
 
   <div class="modal-footer">
-    <button class="btn btn-default" ng-click="cancel()">Cancel</button>
-    <button class="btn btn-danger protractor-test-delete-gadget-button" ng-click="reallyDelete()">Delete Gadget</button>
+    <button class="btn btn-default" ng-click="cancel()">取消</button>
+    <button class="btn btn-danger protractor-test-delete-gadget-button" ng-click="reallyDelete()">删除部件</button>
   </div>
 </script>

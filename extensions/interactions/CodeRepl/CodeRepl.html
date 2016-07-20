@@ -57,7 +57,7 @@
         <md-button type="button" class="md-raised" ng-click="runCode(code)" ng-disabled="!hasLoaded">Test Run</md-button>
         <md-button type="submit" class="md-raised" ng-disabled="!hasLoaded">Submit</md-button>
         <span class="code-repl-language">
-          <em>Language: <[language]></em>
+          <em>语言: <[language]></em>
         </span>
       </form>
     </div>
@@ -76,16 +76,16 @@
 
 <script type="text/ng-template" id="response/CodeRepl">
   <div>
-    <h5>Code</h5>
+    <h5>代码</h5>
     <pre><[answer.code]></pre>
 
     <span ng-if="answer.output">
-      <h5>Output</h5>
+      <h5>输出</h5>
       <pre><[answer.output]></pre>
     </span>
 
     <span ng-if="answer.error" focus-on="<[errorFocusLabel]>">
-      <font color=red>Error: <[answer.error]></font><br>
+      <font color=red>错误: <[answer.error]></font><br>
     </span>
 
     <span ng-if="answer.evaluation">
@@ -98,11 +98,11 @@
   <span><pre><[answer.code]></pre></span>
 
   <span ng-if="answer.output">
-    <h5>Output</h5>
+    <h5>输出</h5>
     <pre><[answer.output | truncateAtFirstLine]></pre>
   </span>
 
   <span ng-if="answer.error" focus-on="<[errorFocusLabel]>">
-    <font color=red>Error: <[answer.error]></font><br>
+    <font color=red>错误: <[answer.error]></font><br>
   </span>
 </script>

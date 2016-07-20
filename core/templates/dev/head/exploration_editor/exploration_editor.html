@@ -4,7 +4,7 @@
   {% if title %}
     {{ title }} - Oppia Editor
   {% else %}
-    Untitled Exploration - Oppia Editor
+    未命名课程 - Oppia Editor
   {% endif %}
 {% endblock maintitle %}
 
@@ -57,10 +57,10 @@
         </span>
       </span>
       <span ng-if="navbarTitle === ''" ng-click="editTitle()" style="opacity: 0.6;">
-        Untitled Exploration
+        未命名课程
       </span>
       <span ng-if="navbarTitle === null">
-        Loading...
+        加载中...
       </span>
     </li>
   </ul>
@@ -79,7 +79,7 @@
         </span>
       </div>
       <ul class="dropdown-menu oppia-editor-warnings-box">
-        <span class="oppia-editor-warnings-header">Warnings</span>
+        <span class="oppia-editor-warnings-header">警告</span>
         <li class="oppia-editor-warnings-text" ng-repeat="warning in getWarnings() track by $index">
           <hr class="oppia-editor-warnings-separator">
           <span ng-if="warning.type === 'critical'">
@@ -94,7 +94,7 @@
 
     {% if username %}
       <li id="tutorialPreviewTab" ng-class="{'active': getTabStatuses().active === 'preview'}">
-        <a href="#" tooltip="Preview" tooltip-placement="bottom" ng-click="selectPreviewTab()"
+        <a href="#" tooltip="预览" tooltip-placement="bottom" ng-click="selectPreviewTab()"
            class="oppia-editor-navbar-tab-anchor protractor-test-preview-tab">
           <i class="material-icons">&#xE037;</i>
         </a>
@@ -102,7 +102,7 @@
     {% endif %}
 
     <li ng-class="{'active': getTabStatuses().active === 'settings'}">
-      <a href="#" tooltip="Settings" tooltip-placement="bottom" ng-click="selectSettingsTab()"
+      <a href="#" tooltip="设置" tooltip-placement="bottom" ng-click="selectSettingsTab()"
          class="oppia-editor-navbar-tab-anchor protractor-test-settings-tab">
         <i class="material-icons">&#xE8B8;</i>
       </a>
@@ -110,7 +110,7 @@
 
     {% if username %}
       <li ng-class="{'active': getTabStatuses().active === 'stats'}">
-        <a href="#" tooltip="Statistics" tooltip-placement="bottom" ng-click="selectStatsTab()"
+        <a href="#" tooltip="统计" tooltip-placement="bottom" ng-click="selectStatsTab()"
            class="oppia-editor-navbar-tab-anchor">
           <i class="material-icons">&#xE24B;</i>
         </a>
@@ -118,7 +118,7 @@
     {% endif %}
 
     <li ng-class="{'active': getTabStatuses().active === 'history'}">
-      <a href="#" tooltip="History" tooltip-placement="bottom" ng-click="selectHistoryTab()"
+      <a href="#" tooltip="历史" tooltip-placement="bottom" ng-click="selectHistoryTab()"
          disabled="explorationRightsService.isCloned()"
          class="oppia-editor-navbar-tab-anchor protractor-test-history-tab">
         <i class="material-icons">&#xE192;</i>
@@ -126,7 +126,7 @@
     </li>
 
     <li ng-class="{'active': getTabStatuses().active === 'feedback'}" ng-click="selectFeedbackTab()">
-      <a href="#" tooltip="Feedback" tooltip-placement="bottom"
+      <a href="#" tooltip="反馈" tooltip-placement="bottom"
          class="oppia-editor-navbar-tab-anchor">
         <i class="material-icons">&#xE87F;</i>
       </a>
@@ -140,8 +140,8 @@
     {% if username %}
       <li class="dropdown" popover-is-open="postTutorialHelpPopoverIsShown"
           popover-placement="bottom" popover-trigger="none"
-          popover="To get help in the future, click here!">
-        <a href="#" tooltip="Help" tooltip-placement="bottom"
+          popover="点击这里获取帮助!">
+        <a href="#" tooltip="帮助" tooltip-placement="bottom"
            class="oppia-editor-navbar-tab-anchor" ng-click="showUserHelpModal()">
           <i class="material-icons">&#xE887;</i>
         </a>
@@ -159,16 +159,16 @@
                 ng-disabled="isExplorationLockedForEditing() || countWarnings()">
           <span ng-if="!publishModalIsOpening">
             <i class="material-icons md-18 md-dark oppia-save-publish-button-icon"
-               alt="Publish to Oppia Library">&#xE2C3;</i>
-            <span class="oppia-save-publish-button-label">Publish</span>
+               alt="发布到课程列表">&#xE2C3;</i>
+            <span class="oppia-save-publish-button-label">发布</span>
           </span>
           <span ng-if="publishModalIsOpening">
             <i class="oppia-save-publish-loading oppia-save-publish-button-icon"
-               alt="Publish to Oppia Library">
+               alt="发布到课程列表">
                  <loading-dots></loading-dots>
             </i>
             <span class="oppia-save-publish-button-label">
-              Saving
+              正在保存
               <loading-dots></loading-dots>
             </span>
           </span>
@@ -184,29 +184,29 @@
             <span ng-if="isPrivate()">
               <span ng-if="!saveModalIsOpening">
                 <i class="material-icons md-18 md-dark oppia-save-publish-button-icon"
-                   alt="Save Draft">&#xE161;</i>
-                <span class="oppia-save-publish-button-label">Save Draft</span>
+                   alt="保存草稿">&#xE161;</i>
+                <span class="oppia-save-publish-button-label">保存草稿</span>
                 <span class="hidden-sm hidden-xs" ng-if="getChangeListLength()" style="opacity: 0.5">(<[getChangeListLength()]>)</span>
               </span>
 
               <span ng-if="saveModalIsOpening">
                 <span class="oppia-save-publish-button-label">
-                  Saving
+                  正在保存
                 </span>
                 <loading-dots></loading-dots>
               </span>
             </span>
-            <span ng-if="!isPrivate()" title="Publish Changes">
+            <span ng-if="!isPrivate()" title="发布修改">
               <span ng-if="!saveModalIsOpening">
                 <i class="material-icons md-18 md-dark oppia-save-publish-button-icon"
-                   alt="Publish Changes">&#xE2C3;</i>
-                <span class="oppia-save-publish-button-label">Publish Changes</span>
+                   alt="发布修改">&#xE2C3;</i>
+                <span class="oppia-save-publish-button-label">发布修改</span>
                 <span class="hidden-sm hidden-xs" ng-if="getChangeListLength()" style="opacity: 0.5">(<[getChangeListLength()]>)</span>
               </span>
 
               <span ng-if="saveModalIsOpening">
                 <span class="oppia-save-publish-button-label">
-                  Publishing
+                  正在发布
                 </span>
                 <loading-dots></loading-dots>
               </span>
@@ -214,10 +214,10 @@
           </span>
           <span ng-if="isSaveInProgress">
             <span ng-if="isPrivate()" class="oppia-save-publish-button-label">
-              Saving
+              正在保存
             </span>
             <span ng-if="!isPrivate()" class="oppia-save-publish-button-label">
-              Publishing
+              正在发布
             </span>
             <loading-dots></loading-dots>
           </span>
@@ -227,7 +227,7 @@
           <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" role="menu" style="min-width: 120px; right: inherit;" ng-style="{ width: getChangeListLength() && !isPrivate() ? '150px' : '120px' }">
-          <li><a ng-click="discardChanges()" ng-class="{'oppia-disabled-link': !getChangeListLength()}" class="protractor-test-discard-changes" title="Discard all pending changes.">Discard Draft</a></li>
+          <li><a ng-click="discardChanges()" ng-class="{'oppia-disabled-link': !getChangeListLength()}" class="protractor-test-discard-changes" title="忽略所有挂起的修改.">忽略草稿</a></li>
         </ul>
       </div>
     </li>
@@ -239,85 +239,86 @@
 
     <script type="text/ng-template" id="modals/addExplorationMetadata">
       <div class="modal-header">
-        <h3>Add Some Details</h3>
+        <h3>添加详细信息</h3>
       </div>
 
       <div class="modal-body oppia-long-text">
         <p>
-          Just a few more things before you publish:
+          发布前请输入以下内容:
         </p>
         <p ng-if="requireTitleToBeSpecified">
-          Add a title: what should your exploration be called?
+          标题: 课程的名称?
           <input type="text" class="form-control" ng-model="explorationTitleService.displayed"
-                 placeholder="Music in the 19th Century">
+                 placeholder="19世界的音乐">
         </p>
         <p ng-if="requireObjectiveToBeSpecified">
-          Add a goal: what does the exploration help people to do?
+          目标: 课程能够帮助学生学习什么?
           <input type="text" class="form-control" ng-model="explorationObjectiveService.displayed"
-                 placeholder="Learn how to ...">
+                 placeholder="学习怎么 ...">
         </p>
         <p ng-if="requireCategoryToBeSpecified">
-          Add a category: how would you categorize your exploration?
+          分类: 课程应属于什么类别?
           <select2-dropdown item="explorationCategoryService.displayed"
                             choices="CATEGORY_LIST_FOR_SELECT2"
-                            placeholder="Choose or type new"
+                            placeholder="选择一个类型"
                             new-choice-regex="^[A-Z a-z]+$"
                             width="100%"
-                            invalid-search-term-message="Invalid category name">
+                            invalid-search-term-message="分类名称不正确">
           </select2-dropdown>
         </p>
 
         <p ng-if="askForLanguageCheck">
-          Verify the language: is your exploration written in this language?
+          语言: 您的课程是用什么语言写的?
           <select id="explorationLanguageCode" class="form-control protractor-test-exploration-language-select" ng-model="explorationLanguageCodeService.displayed" ng-change="saveExplorationLanguageCode()" ng-options="lc.code as lc.description for lc in explorationLanguageCodeService.getAllLanguageCodes()">
           </select>
         </p>
         <p ng-if="askForTags">
-          Add tags to help learners discover your exploration.
+          添加标签帮助学生找到课程.
           <select2-dropdown item="explorationTagsService.displayed"
                             tag-mode="true"
                             allow-multiple-choices="true"
-                            invalid-search-term-message="Add a new tag (using lowercase letters and spaces)..."
+                            invalid-search-term-message="添加一个新的标签 (using lowercase letters and spaces)..."
                             new-choice-regex="<[TAG_REGEX]>"
                             width="100%"
-                            placeholder="Skills, concepts, topics, ..."
+                            placeholder="技能, 定义, 话题, ..."
                             on-selection-change="saveExplorationTags()">
           </select2-dropdown>
         </p>
       </div>
 
       <div class="modal-footer">
-        <button class="btn btn-default" ng-click="cancel()">Cancel</button>
-        <button class="btn btn-success protractor-test-confirm-pre-publication" ng-click="save()" ng-disabled="!isSavingAllowed()">Save Changes</button>
+        <button class="btn btn-default" ng-click="cancel()">取消</button>
+        <button class="btn btn-success protractor-test-confirm-pre-publication" ng-click="save()" ng-disabled="!isSavingAllowed()">保存</button>
       </div>
     </script>
 
     <script type="text/ng-template" id="modals/publishExploration">
       <div class="modal-header">
-        <h3>Publish Exploration</h3>
+        <h3>发布课程</h3>
       </div>
 
       <div class="modal-body oppia-long-text">
         <p>
-          Congratulations, you're about to publish an exploration!
+          恭喜您, 你即将发布成功!
         </p>
         <p>
-          Before publishing, please ensure that your exploration fits the
-          <a href="/teach#playbook" target="_blank">site publication criteria</a>. In particular, it should:
+          在发布前请确认您的课程符合网站的相关规定。
+         {# <a href="/teach#playbook" target="_blank">site publication criteria</a>. In particular, it should:
           <ul>
             <li>help its intended audience learn something new</li>
             <li>provide useful feedback/guidance to help them if they get stuck.</li>
-          </ul>
+          </ul>#}
         </p>
         <p>
-          Once the exploration is published, it will be available in the Oppia library for anyone to learn from and provide feedback. You can also check out
-            its stats by clicking on the Stats tab in the top right of the editor.
+          您的课程一旦发布，将会显示在课程列表找中，任何学生都能看到，您也能继续编辑。
+          {# Once the exploration is published, it will be available in the Oppia library for anyone to learn from and provide feedback. You can also check out
+            its stats by clicking on the Stats tab in the top right of the editor.#}
         </p>
       </div>
 
       <div class="modal-footer">
-        <button class="btn btn-default" ng-click="cancel()">Cancel</button>
-        <button class="btn btn-success protractor-test-confirm-publish" ng-click="publish()">Publish Exploration</button>
+        <button class="btn btn-default" ng-click="cancel()">取消</button>
+        <button class="btn btn-success protractor-test-confirm-publish" ng-click="publish()">发布课程</button>
       </div>
     </script>
     {% include 'exploration_editor/share_publish_modal.html' %}
@@ -327,19 +328,19 @@
     <script type="text/ng-template" id="modals/saveExploration">
       <div class="modal-header">
         <h3>
-          <span ng-if="isExplorationPrivate">Save Draft</span>
-          <span ng-if="!isExplorationPrivate">Publish Changes</span>
+          <span ng-if="isExplorationPrivate">保存草稿</span>
+          <span ng-if="!isExplorationPrivate">发布</span>
         </h3>
       </div>
       <div class="modal-body oppia-long-text">
         <p>
-          <span ng-if="isExplorationPrivate">(Optional)</span>
-          Please enter a brief description of what you have changed:
+          <span ng-if="isExplorationPrivate">(可选)</span>
+          请对您所做的修改进行简单的描述:
           <textarea rows="3" cols="50" ng-model="commitMessage" focus-on="saveChangesModalOpened" class="protractor-test-commit-message-input" autofocus></textarea>
         </p>
         <button class="btn btn-default" ng-click="onClickToggleDiffButton()">
-          <span ng-if="!showDiff">Show Changes</span>
-          <span ng-if="showDiff">Hide Changes</span>
+          <span ng-if="!showDiff">显示修改内容</span>
+          <span ng-if="showDiff">隐藏修改内容</span>
         </button>
 
         <version-diff-visualization ng-if="showDiff" diff-data="diffData"
@@ -348,47 +349,44 @@
         </version-diff-visualization>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-default" ng-click="cancel()">Cancel</button>
+        <button class="btn btn-default" ng-click="cancel()">取消</button>
         <button class="btn btn-success protractor-test-close-save-modal" ng-disabled="!isExplorationPrivate && !commitMessage" ng-click="save(commitMessage)">
-          <span ng-if="isExplorationPrivate">Save Draft</span>
-          <span ng-if="!isExplorationPrivate">Publish Changes</span>
+          <span ng-if="isExplorationPrivate">保存草稿</span>
+          <span ng-if="!isExplorationPrivate">发布</span>
         </button>
       </div>
     </script>
 
     <script type="text/ng-template" id="modals/saveValidationFail">
       <div class="modal-header">
-        <h3>Error Saving Exploration</h3>
+        <h3>保存出错</h3>
       </div>
 
       <div class="modal-body">
         <p>
-          Sorry, an unexpected error occurred. Please refresh the page to
-          return to the most recent draft of your exploration.
+          抱歉，保存出错吗，请刷新页面回到最近的更改状态
         </p>
       </div>
 
       <div class="modal-footer">
         <button class="btn btn-default" ng-click="closeAndRefresh()">
-          Close and Refresh
+          关闭并刷新
         </button>
       </div>
     </script>
 
     <script type="text/ng-template" id="modals/saveVersionMismatch">
       <div class="modal-header">
-        <h3>Error Saving Exploration</h3>
+        <h3>保存课程出错</h3>
       </div>
 
       <div class="modal-body">
         <p>
-          Sorry! Someone else has saved a new version of this exploration, so
-          your pending changes cannot be saved.
+          抱歉，其他人已经修改了该课程，您所做的修改被挂起，不能保存！
         </p>
 
         <p ng-show="hasLostChanges">
-          The lost changes are displayed below. You may want to copy and
-          paste these changes before discarding them.
+          丢失的修改内容如下，在更改之前你可以复制粘帖这些更改。
         </p>
 
         <div class="oppia-lost-changes" ng-bind-html="lostChangesHtml">
@@ -396,7 +394,7 @@
       </div>
 
       <div class="modal-footer">
-        <button class="btn btn-default" ng-click="discardChanges()">Discard Changes</button>
+        <button class="btn btn-default" ng-click="discardChanges()">忽略修改</button>
       </div>
     </script>
 
@@ -404,8 +402,8 @@
       <div class="row" ng-if="explorationRightsService.isCloned()">
         <div class="col-lg-12 col-md-12 col-sm-12">
           <div class="oppia-align-center alert alert-warning" style="padding: 2px; width: 90%;">
-            <strong>Note:</strong> This is a private, unpublishable copy of a
-            <a ng-href="<[getExplorationUrl(explorationRightsService.clonedFrom())]>" target="_blank">public exploration</a>.
+            <strong>注意:</strong> 这是一个未发布的, 发布课程
+            <a ng-href="<[getExplorationUrl(explorationRightsService.clonedFrom())]>" target="_blank">未发布副本</a>.
           </div>
         </div>
       </div>

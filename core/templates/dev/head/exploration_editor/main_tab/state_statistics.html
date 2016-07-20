@@ -5,7 +5,7 @@
   <div ng-if="unresolvedAnswersList.length">
   {% endif %}
     <div class="oppia-editor-header">
-      <strong>Unhandled Answers</strong>
+      <strong>未处理的答案</strong>
     </div>
 
     <md-card style="background-color: white; margin: 20px 0px; padding: 0px;">
@@ -40,7 +40,7 @@
   {% if SHOW_TRAINABLE_UNRESOLVED_ANSWERS %}
   <div ng-if="isInteractionTrainable && trainingDataButtonContentsList.length > 0">
     <div class="oppia-editor-header">
-      <strong>Learner Answers to Teach Oppia</strong>
+      <strong>学生答案告诉系统</strong>
     </div>
 
     <button type="button" ng-repeat="trainingDataButtonContents in trainingDataButtonContentsList" class="btn btn-default protractor-test-train-unresolved-answer oppia-unresolved-answer-button" ng-click="openTrainUnresolvedAnswerModal($index)">

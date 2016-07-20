@@ -1,3 +1,4 @@
+#coding:utf-8
 # Copyright 2014 The Oppia Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +16,7 @@
 """Controllers for the creator dashboard, notifications, and creating new
 activities.
 """
+
 
 from core.controllers import base
 from core.domain import collection_domain
@@ -307,7 +309,7 @@ class UploadExploration(base.BaseHandler):
             })
         else:
             raise self.InvalidInputException(
-                'This server does not allow file uploads.')
+                '服务器不允许上传文件.')
 
 
 class DashboardRedirectPage(base.BaseHandler):

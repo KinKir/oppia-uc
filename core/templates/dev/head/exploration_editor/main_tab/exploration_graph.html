@@ -1,6 +1,6 @@
 <div ng-controller="ExplorationGraph" ng-show="isGraphShown()" class="oppia-state-graph-animate-show">
   <span style="font-size: 16px;">
-    <strong>Exploration Overview</strong>
+    <strong>预览课程</strong>
   </span>
 
   <md-card style="background-color: white; margin: 20px 0px; padding: 8px;">
@@ -12,7 +12,7 @@
 
   <script type="text/ng-template" id="modals/stateGraph">
     <div class="modal-header">
-      <h3>Exploration Overview</h3>
+      <h3>预览课程</h3>
     </div>
 
     <div class="modal-body" style="overflow-y: hidden; padding-bottom: 0;">
@@ -22,14 +22,14 @@
 
     <div class="modal-footer" style="margin-top: 0; text-align: inherit;">
       <span class="pull-right">
-        <button class="btn btn-default" ng-click="cancel()">Close</button>
+        <button class="btn btn-default" ng-click="cancel()">关闭</button>
       </span>
     </div>
   </script>
 
   <script type="text/ng-template" id="modals/deleteState">
     <div class="modal-header">
-      <h3>Delete Card</h3>
+      <h3>删除卡片</h3>
     </div>
 
     <div class="modal-body">
@@ -39,8 +39,8 @@
     </div>
 
     <div class="modal-footer">
-      <button class="btn btn-default" ng-click="cancel()">Cancel</button>
-      <button class="btn btn-danger protractor-test-confirm-delete-state" ng-click="reallyDelete()">Delete Card</button>
+      <button class="btn btn-default" ng-click="cancel()">取消</button>
+      <button class="btn btn-danger protractor-test-confirm-delete-state" ng-click="reallyDelete()">删除卡片</button>
     </div>
   </script>
 </div>

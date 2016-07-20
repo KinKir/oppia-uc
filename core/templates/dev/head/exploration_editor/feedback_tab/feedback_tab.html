@@ -16,17 +16,17 @@
     <div class="pull-right">
       {% if user_email %}
         <button class="btn btn-success pull-right" ng-click="showCreateThreadModal()">
-          Start new thread
+          发起反馈
         </button>
       {% endif %}
     </div>
 
-    <h2>Exploration Feedback</h2>
+    <h2>课程反馈</h2>
 
     <div style="clear: both;"></div>
 
     <div ng-if="threadData.feedbackThreads.length === 0">
-      <em>No feedback has been given for this exploration yet.</em>
+      <em>目前还没有反馈.</em>
     </div>
 
     <thread-table threads="threadData.feedbackThreads"
@@ -34,7 +34,7 @@
     </thread-table>
 
     {% if not user_email %}
-      <em>To create a new feedback thread, please log in.</em>
+      <em>反馈之前请先登录.</em>
     {% endif %}
   </div>
 
@@ -46,14 +46,14 @@
             <i class="material-icons oppia-vcenter" title="Return to list of feedback threads">&#xE5CB;</i>
           </button>
         </span>
-        <span style="font-size: larger" ng-show="!activeThread.suggestion">Feedback Thread: <[activeThread.subject]></span>
-        <span style="font-size: larger" ng-show="activeThread.suggestion">Suggestion Thread: <[activeThread.subject]></span>
+        <span style="font-size: larger" ng-show="!activeThread.suggestion">反馈: <[activeThread.subject]></span>
+        <span style="font-size: larger" ng-show="activeThread.suggestion">建议: <[activeThread.subject]></span>
       </div>
 
       <div style="float: right;" class="col-lg-5 col-md-5 col-sm-5">
         <div class="pull-right">
           <span ng-if="activeThread.state_name" class="label label-info">
-            state: <[activeThread.state_name]>
+            状态: <[activeThread.state_name]>
           </span>
           <span ng-class="getLabelClass(activeThread.status)">
             <[getHumanReadableStatus(activeThread.status)]>
@@ -77,10 +77,10 @@
                 <div class="col-lg-4 col-md-4 col-sm-4">
                   <span ng-if="m.message_id !== 0">
                     <span ng-if="m.updated_status">
-                      <em>Status changed to '<[getHumanReadableStatus(m.updated_status)]>'</em>
+                      <em>状态更改为 '<[getHumanReadableStatus(m.updated_status)]>'</em>
                     </span>
                     <span ng-if="m.updated_subject">
-                      <em>Subject changed to '<[m.updated_subject]>'</em>
+                      <em>主题更改为 '<[m.updated_subject]>'</em>
                     </span>
                   </span>
                 </div>
@@ -95,7 +95,7 @@
                   <div style="white-space: pre-wrap;"><[m.text]></div>
                   <div ng-if="activeThread.suggestion && $index == 0">
                       <button class="btn btn-<[getSuggestionButtonType()]>" style="margin-top: 6px; margin-bottom: 6px" ng-click="showSuggestionModal()">
-                        View Suggestion
+                        查看建议
                       </button>
                   </div>
                 </div>

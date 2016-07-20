@@ -28,7 +28,7 @@
     <li>
       <span class="oppia-navbar-breadcrumb-separator"></span>
       <span class="protractor-test-collection-header">
-        Collection
+        课程
         <span class="oppia-navbar-breadcrumb-separator"></span>
         <span>{{collection_title}}</span>
       </span>
@@ -56,20 +56,20 @@
         <span ng-if="collectionPlaythrough.hasStartedCollection()">Continue <[collection.getTitle()]>:</span>
       </h2>
       <h2 ng-if="collectionPlaythrough.hasFinishedCollection()" class="oppia-page-heading">
-        <span>You have finished the collection! Feel free to replay any explorations below.</span>
+        <span>您已经完成课程! 播放一下课程.</span>
       </h2>
 
       {% if is_logged_in %}
         <div ng-if="collectionPlaythrough.getNextRecommendedCollectionNodeCount() > 0" class="oppia-collection-player-tile-section">
           <div class="oppia-collection-player-small-text">
-            Next exploration<span ng-if="collectionPlaythrough.getNextRecommendedCollectionNodeCount() > 1">s</span> to play
+            下一个课程<span ng-if="collectionPlaythrough.getNextRecommendedCollectionNodeCount() > 1">s</span> to play
           </div>
           <collection-node-list collection-id="collectionId" collection-nodes="getNextRecommendedCollectionNodes()"></collection-node-list>
         </div>
 
         <div ng-if="collectionPlaythrough.getCompletedExplorationNodeCount() > 0" class="oppia-collection-player-tile-section">
           <div class="oppia-collection-player-small-text">
-            Completed exploration<span ng-if="collectionPlaythrough.getCompletedExplorationNodeCount() > 1">s</span>
+            完成<span ng-if="collectionPlaythrough.getCompletedExplorationNodeCount() > 1">s</span>
           </div>
           <collection-node-list collection-id="collectionId" collection-nodes="getCompletedExplorationNodes()"></collection-node-list>
         </div>

@@ -35,7 +35,7 @@
 <script type="text/ng-template" id="teaching/trainingPanel">
   <div class="form-inline" style="margin-bottom: 10px;">
     <div style="margin-top: 10px;">
-      <span><strong>If Oppia encounters the answer:</strong></span>
+      <span><strong>如果遇到答案:</strong></span>
     </div>
 
     <div>
@@ -46,7 +46,7 @@
     <br>
 
     <div>
-      <span><strong>it will reply with:</strong></span>
+      <span><strong>将显示:</strong></span>
     </div>
 
     <div>
@@ -57,14 +57,14 @@
     <br>
 
     <div>
-      <span><strong>and then direct the learner to: </strong></span>
+      <span><strong>然后跳转到: </strong></span>
       <span angular-html-bind="answerOutcomeDest"></span>
     </div>
 
     <br>
 
     <div>
-      <span><strong>Is this right?</strong></span>
+      <span><strong>这个答案对吗?</strong></span>
     </div>
 
     <div>
@@ -75,7 +75,7 @@
     <br>
 
     <div ng-if="changingAnswerGroupIndex">
-      <span><strong>Select correct feedback or type a new response:</strong></span>
+      <span><strong>选择正确的反馈或键入一个新的:</strong></span>
 
       <div class="trained-feedback-selection-form-container">
         <form>
@@ -84,7 +84,7 @@
               <span ng-if="outcome.feedback.length > 0" angular-html-bind="outcome.feedback[0]">
               </span>
               <span ng-if="outcome.feedback.length == 0">
-                <em>(No feedback)</em>
+                <em>(没有反馈)</em>
               </span>
 
               <br>
@@ -93,7 +93,7 @@
                 → <[outcome.dest]>
               </span>
               <span style="float: right;" ng-if="outcome.dest == getCurrentStateName()">
-                <em>→ (try again)</em>
+                <em>→ (重试)</em>
               </span>
             </button>
           </div>
@@ -110,7 +110,7 @@
 
 <script type="text/ng-template" id="modals/trainUnresolvedAnswer">
   <div class="modal-header">
-    <h3>Teach Oppia</h3>
+    <h3>教学</h3>
   </div>
 
   <div class="modal-body">
@@ -125,6 +125,6 @@
   </div>
 
   <div class="modal-footer">
-    <button class="btn btn-success" ng-click="finishTraining()">Exit</button>
+    <button class="btn btn-success" ng-click="finishTraining()">退出</button>
   </div>
 </script>

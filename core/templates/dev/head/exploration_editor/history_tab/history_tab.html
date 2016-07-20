@@ -1,6 +1,6 @@
 <div ng-controller="HistoryTab" class="container-fluid" style="word-wrap: break-word;">
   <md-card class="oppia-editor-card">
-    <h3>List of Changes</h3>
+    <h3>修改历史</h3>
     <div ng-repeat="versionCheckbox in versionCheckboxArray " class="row">
       <div class="col-sm-4 col-md-4 col-lg-4">
         <input type="checkbox" name="compareVer" ng-model="versionCheckbox.selected" ng-init="init()" ng-click="changeSelectedVersions($event, versionCheckbox.vnum)" ng-disabled="isCheckboxDisabled(versionCheckbox.vnum)" ng-hide="comparisonsAreDisabled" class='protractor-test-history-checkbox-selector'>
@@ -36,8 +36,8 @@
   <md-card class="oppia-editor-card" style="position: relative;"
            ng-if="diffData && !hideHistoryGraph && explorationVersionMetadata">
     <h3>
-      Changes from version <[compareVersionMetadata.earlierVersion.versionNumber]>
-      to version <[compareVersionMetadata.laterVersion.versionNumber]>
+      修改版本 <[compareVersionMetadata.earlierVersion.versionNumber]>
+      为 <[compareVersionMetadata.laterVersion.versionNumber]>
     </h3>
 
     <version-diff-visualization diff-data="diffData"
@@ -49,23 +49,23 @@
 
 <script type="text/ng-template" id="modals/revertExploration">
   <div class="modal-header">
-    <h3>Revert Exploration</h3>
+    <h3>恢复</h3>
   </div>
 
   <div class="modal-body oppia-long-text">
     <p>
-      You are about to revert this exploration to version <[version]>. All changes made since that older version will be retracted and you will lose any unsaved changes.
+     您即将恢复至版本 <[version]>. 旧版本所做的所有更改将被收回，你将丢失所有未保存的更改.
     </p>
     <p>
-      Before reverting, you can preview the exploration you are reverting to by following <a ng-href="<[getExplorationUrl(version)]>" target="_blank">this link</a>. (It opens in a new window.)
+      在恢复之前, 你可以点击 <a ng-href="<[getExplorationUrl(version)]>" target="_blank">预览</a>. (打开新窗口.)
     </p>
     <p>
-      Are you sure you want to revert this exploration to version <[version]>?
+      您确定想要恢复至 <[version]>?
     </p>
   </div>
 
   <div class="modal-footer">
-    <button class="btn btn-danger protractor-test-confirm-revert" ng-click="revert()">Revert</button>
-    <button class="btn btn-default" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-danger protractor-test-confirm-revert" ng-click="revert()">恢复</button>
+    <button class="btn btn-default" ng-click="cancel()">取消</button>
   </div>
 </script>

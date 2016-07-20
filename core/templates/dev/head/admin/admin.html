@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html ng-app="oppia">
   <head>
-    <title>Oppia Admin Panel</title>
+    <title>管理面板</title>
 
     {% include 'header_css_libs.html' %}
     {% include 'header_js_libs.html' %}
@@ -28,7 +28,7 @@
           <ul class="nav navbar-nav oppia-navbar-breadcrumb">
             <li>
               <span class="oppia-navbar-breadcrumb-separator"></span>
-              Admin
+              管理
             </li>
           </ul>
         </div>
@@ -66,12 +66,12 @@
                 <hr class="oppia-top-right-menu-item-separator">
                 <li>
                   <a ng-click="onMouseoutProfilePictureOrDropdown($event)" href="/dashboard" style="color: #00376d">
-                    Creator Dashboard
+                    我的课程
                   </a>
                 </li>
                 <li>
                   <a ng-click="onMouseoutProfilePictureOrDropdown($event)" href="/notifications_dashboard" style="color: #00376d">
-                    Notifications
+                    通知
                     <span ng-if="numUnseenNotifications > 0">
                       (<[numUnseenNotifications]>)
                     </span>
@@ -84,14 +84,14 @@
                 {% if is_moderator %}
                   <li>
                     <a ng-click="onMouseoutProfilePictureOrDropdown($event)" href="/moderator" target="_blank" style="color: #00376d">
-                      Moderator Page
+                      管理页面
                     </a>
                   </li>
                 {% endif %}
                 {% if is_super_admin %}
                   <li>
                     <a ng-click="onMouseoutProfilePictureOrDropdown($event)" href="/admin" target="_blank" style="color: #00376d">
-                      Admin Page
+                      管理页面
                     </a>
                   </li>
                 {% endif %}
@@ -105,22 +105,22 @@
             <ul class="nav oppia-navbar-tabs oppia-navbar-tabs-admin">
               <li class="oppia-clickable-navbar-element pull-right">
                 <a class="oppia-navbar-tab" ng-href="<[MISC_URL]>" tooltip="Miscellaneous" tooltip-placement="bottom" ng-click="showMiscTab()">
-                  Misc
+                  杂项
                 </a>
               </li>
               <li class="oppia-clickable-navbar-element pull-right">
                 <a class="oppia-navbar-tab protractor-test-admin-config-tab" ng-href="<[CONFIG_URL]>" tooltip="Config" tooltip-placement="bottom" ng-click="showConfigTab()">
-                  Config
+                  配置
                 </a>
               </li>
               <li class="oppia-clickable-navbar-element pull-right">
                 <a class="oppia-navbar-tab" ng-href="<[JOBS_URL]>" tooltip="Jobs" tooltip-placement="bottom" ng-click="showJobsTab()">
-                  Jobs
+                  任务
                 </a>
               </li>
               <li class="dropdown oppia-navbar-clickable-dropdown pull-right">
                 <a class="oppia-navbar-tab" ng-href="<[ACTIVITIES_URL]>" tooltip="Activities" tooltip-placement="bottom" ng-click="showActivitiesTab()">
-                  Activities
+                  活动
                 </a>
               </li>
             </ul>
@@ -138,7 +138,7 @@
       <div class="col-lg-12 col-md-12 col-sm-12" ng-if="currentTab === TAB_ACTIVITIES" style="margin-top: 16px;">
         <md-card class="oppia-page-card oppia-long-text" style="max-width:700px">
           <div class="container" style="margin-left: 0;">
-            <h3>Reload a single exploration</h3>
+            <h3>重新加载单个课程</h3>
             {% for exploration in demo_explorations %}
               <div class="row protractor-test-reload-exploration-row">
                 <span class="col-lg-4 col-md-4 col-sm-4 protractor-test-reload-exploration-title">
@@ -146,20 +146,20 @@
                 </span>
                 <span class="col-lg-2 col-md-2 col-sm-2">
                   <button type="button" class="btn btn-default protractor-test-reload-exploration-button pull-right" ng-click="reloadExploration({{exploration[0]}})">
-                  Reload
+                  重新加载
                   </button>
                 </span>
               </div>
             {% endfor %}
             <button type="button" class="btn btn-default protractor-test-reload-all-explorations-button" ng-click="reloadAllExplorations()">
-            Reload All Explorations
+            重新加载全部
             </button>
           </div>
         </md-card>
 
         <md-card class="oppia-page-card oppia-long-text" style="max-width: 700px">
           <div class="container" style="margin-left: 0;">
-            <h3>Reload a single collection</h3>
+            <h3>重新加载单个collection</h3>
             {% for collection in demo_collections %}
               <div class="row protractor-test-reload-collection-row">
                 <span class="col-lg-4 col-md-4 col-sm-4 protractor-test-reload-collection-title">
@@ -167,7 +167,7 @@
                 </span>
                 <span class="col-lg-2 col-md-2 col-sm-2">
                   <button type="button" class="btn btn-default protractor-test-reload-collection-button pull-right" ng-click="reloadCollection({{collection[0]}})">
-                  Reload
+                  重新加载
                   </button>
                 </span>
               </div>
