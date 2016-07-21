@@ -166,7 +166,7 @@ describe('State Interaction controller', function() {
 
       expect(state.content[0].value).toEqual('');
       expect(ess.getState('End State').content[0].value).toEqual(
-        'Congratulations, you have finished!');
+        '恭喜您，已经完成本课程的学习!');
       expect(ess.getState('End State').interaction.id).toEqual(
         'TerminalInteraction');
     });

@@ -1,18 +1,18 @@
 <div ng-controller="SettingsTab">
   <md-card class="oppia-editor-card">
-    <h3>Basic Settings</h3>
+    <h3>基础设置</h3>
     <div class="row">
       <div class="col-lg-12 col-md-12 col-sm-12">
         <div ng-if="editabilityService.isEditable()">
           <div role="form" class="form-horizontal">
             <div class="form-group" ng-class="{'has-error': !explorationTitleService.displayed}">
-              <label for="explorationTitle" class="col-lg-2 col-md-2 col-sm-2">Title</label>
+              <label for="explorationTitle" class="col-lg-2 col-md-2 col-sm-2">标题</label>
               <div class="col-lg-10 col-md-10 col-sm-10">
                 <input id="explorationTitle" type="text" class="form-control protractor-test-exploration-title-input" ng-model="explorationTitleService.displayed" ng-blur="saveExplorationTitle()" placeholder="Choose a title for your exploration." focus-on="<[EXPLORATION_TITLE_INPUT_FOCUS_LABEL]>">
               </div>
             </div>
             <div class="form-group" ng-class="{'has-error': !explorationObjectiveService.displayed}">
-              <label for="explorationObjective" class="col-lg-2 col-md-2 col-sm-2">Goal</label>
+              <label for="explorationObjective" class="col-lg-2 col-md-2 col-sm-2">目标</label>
               <div class="col-lg-10 col-md-10 col-sm-10">
                 <input id="explorationObjective" type="text" class="form-control protractor-test-exploration-objective-input" ng-model="explorationObjectiveService.displayed" ng-blur="saveExplorationObjective()" placeholder="Learn how to ...">
                 <span class="help-block" style="font-size: smaller">
@@ -22,7 +22,7 @@
             </div>
 
             <div class="form-group" ng-class="{'has-error': !explorationCategoryService.displayed}">
-              <label for="explorationCategory" class="col-lg-2 col-md-2 col-sm-2">Category</label>
+              <label for="explorationCategory" class="col-lg-2 col-md-2 col-sm-2">分类</label>
               <div class="col-lg-10 col-md-10 col-sm-10">
                 <div ng-if="hasPageLoaded">
                   <select2-dropdown id="explorationCategory"
@@ -33,7 +33,7 @@
                                     new-choice-regex="^[A-Z a-z]+$"
                                     on-selection-change="saveExplorationCategory()"
                                     width="100%"
-                                    invalid-search-term-message="Invalid category name">
+                                    invalid-search-term-message="分类无效">
                   </select2-dropdown>
                 </div>
               </div>
@@ -44,11 +44,11 @@
               <div class="col-lg-10 col-md-10 col-sm-10">
                 <select id="explorationLanguageCode" class="form-control protractor-test-exploration-language-select" ng-model="explorationLanguageCodeService.displayed" ng-change="saveExplorationLanguageCode()" ng-options="lc.code as lc.description for lc in explorationLanguageCodeService.getAllLanguageCodes()">
                 </select>
-                <span class="help-block" style="font-size: smaller">
+                <!--<span class="help-block" style="font-size: smaller">
                   <em>
                     没有看到相关语言 <a href="https://github.com/oppia/oppia/issues/new?title=Please%20add%20a%20new%20language%20choice%20to%20the%20exploration%20settings%20tab&body=Please%20add%20the%20language%20choice%20%7B%7BYOUR_LANGUAGE_HERE%7D%7D%20to%20the%20exploration%20settings%20tab.%0A%0AHere%20is%20a%20link%20to%20an%20exploration%20that%20uses%20it:%20%7B%7BINSERT_LINK_HERE%7D%7D" target="_blank">告诉我们.</a>
                   </em>
-                </span>
+                </span>-->
               </div>
             </div>
             <div class="form-group">
@@ -86,7 +86,7 @@
           <div class="row">
             <div class="col-lg-2 col-md-2 col-sm-2">
               <label for="explorationTitle">
-                Title
+                标题
               </label>
             </div>
             <div class="col-lg-10 col-md-10 col-sm-10">
@@ -99,7 +99,7 @@
           <div class="row">
             <div class="col-lg-2 col-md-2 col-sm-2">
               <label for="explorationObjective">
-                Goal
+                目标
               </label>
             </div>
             <div class="col-lg-10 col-md-10 col-sm-10">
@@ -112,7 +112,7 @@
           <div class="row">
             <div class="col-lg-2 col-md-2 col-sm-2">
               <label for="explorationCategory">
-                Category
+                类别
               </label>
             </div>
             <div class="col-lg-10 col-md-10 col-sm-10">
@@ -124,7 +124,7 @@
 
           <div class="row">
             <div class="col-lg-2 col-md-2 col-sm-2">
-              <label for="explorationLanguageCode">Language</label>
+              <label for="explorationLanguageCode">语言</label>
             </div>
             <div class="col-lg-10 col-md-10 col-sm-10">
               <[explorationLanguageCodeService.getCurrentLanguageDescription()]>
@@ -145,7 +145,7 @@
   </md-card>
 
   <md-card class="oppia-editor-card" ng-if="editabilityService.isEditable()">
-    <h3>其他特点</h3>
+    <h3>其他设置</h3>
     <div class="row">
       <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">

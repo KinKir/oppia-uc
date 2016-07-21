@@ -494,13 +494,13 @@ oppia.controller('StateResponses', [
               AnswerClassificationService.getMatchingClassificationResult(
                 _explorationId, _state, answer, true).then(
                     function(classificationResult) {
-                  var feedback = 'Nothing';
+                  var feedback = '空';
                   var dest = classificationResult.outcome.dest;
                   if (classificationResult.outcome.feedback.length > 0) {
                     feedback = classificationResult.outcome.feedback[0];
                   }
                   if (dest === _stateName) {
-                    dest = '<em>(try again)</em>';
+                    dest = '<em>(重新输入)</em>';
                   }
                   $scope.trainingDataAnswer = answer;
                   $scope.trainingDataFeedback = feedback;
@@ -718,7 +718,7 @@ oppia.filter('summarizeAnswerGroup', [
       var firstRule = $filter('convertToPlainText')(
         $filter('parameterizeRuleDescription')(
           answerGroup.rule_specs[0], interactionId, answerChoices));
-      summary = 'Answer ' + firstRule;
+      summary = '答案 ' + firstRule;
 
       if (hasFeedback && shortenRule) {
         summary = $filter('wrapTextWithEllipsis')(
@@ -750,9 +750,9 @@ oppia.filter('summarizeDefaultOutcome', [
       if (interactionId && INTERACTION_SPECS[interactionId].is_linear) {
         summary = INTERACTION_SPECS[interactionId].default_outcome_heading;
       } else if (answerGroupCount > 0) {
-        summary = 'All other answers';
+        summary = '所有其他回答';
       } else {
-        summary = 'All answers';
+        summary = '所有回答';
       }
 
       if (hasFeedback && shortenRule) {

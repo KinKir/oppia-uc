@@ -21,7 +21,7 @@ TAB_CONTENT_SCHEMA = {
     'type': 'dict',
     'properties': [{
         'name': 'title',
-        'description': 'Tab title',
+        'description': '标签标题',
         'schema': {
             'type': 'unicode',
             'validators': [{
@@ -30,7 +30,7 @@ TAB_CONTENT_SCHEMA = {
         }
     }, {
         'name': 'content',
-        'description': 'Tab content',
+        'description': '标签内容',
         'schema': {
             'type': 'html',
             'ui_config': {
@@ -47,28 +47,28 @@ class Tabs(base.BaseRichTextComponent):
 
     name = 'Tabs'
     category = 'Basic Input'
-    description = 'A series of tabs.'
+    description = '标签页面.'
     frontend_name = 'tabs'
-    tooltip = 'Insert tabs (e.g. for hints)'
+    tooltip = '插入标签页面'
     is_complex = True
     is_block_element = True
 
     _customization_arg_specs = [{
         'name': 'tab_contents',
-        'description': 'The tab titles and contents.',
+        'description': '标签名称和内容.',
         'schema': {
             'type': 'list',
             'items': TAB_CONTENT_SCHEMA,
             'ui_config': {
-                'add_element_text': 'Add new tab'
+                'add_element_text': '添加'
             }
         },
         'default_value': [{
-            'title': 'Hint introduction',
-            'content': ('This set of tabs shows some hints. Click on the '
-                        'other tabs to display the relevant hints.')
+            'title': '标签1',
+            'content': ('第一个标签内容 '
+                        '点击标签显示响应的内容.')
         }, {
-            'title': 'Hint 1',
-            'content': 'This is a first hint.'
+            'title': '标签 2',
+            'content': '第二个标签内容.'
         }],
     }]

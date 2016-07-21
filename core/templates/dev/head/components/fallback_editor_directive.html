@@ -15,8 +15,8 @@
             </i>
           </div>
 
-          Once the learner has made <[trigger.customization_args.num_submits.value]>
-          unsuccessful attempt<span ng-if="trigger.customization_args.num_submits.value !== 1">s</span>:
+          一旦学习者输入 <[trigger.customization_args.num_submits.value]>
+          尝试<span ng-if="trigger.customization_args.num_submits.value !== 1">次</span>:
         </div>
       </div>
     </div>
@@ -27,11 +27,11 @@
             name="editFallbackForm.editTriggerForm"
             ng-submit="saveThisTrigger()">
         <div class="oppia-rule-details-header">
-          Once the learner has made
+          一旦学习者输入
           <schema-based-editor schema="INT_FORM_SCHEMA"
                                local-value="trigger.customization_args.num_submits.value">
           </schema-based-editor>
-          unsuccessful attempt<span ng-if="trigger.customization_args.num_submits.value !== 1">s</span>:
+          尝试<span ng-if="trigger.customization_args.num_submits.value !== 1">次</span>:
         </div>
       </form>
 
@@ -40,13 +40,13 @@
           <button type="button"
                   class="btn btn-default protractor-test-cancel-trigger"
                   ng-click="cancelThisTriggerEdit()">
-            Cancel
+            取消
           </button>
           <button type="button"
                   class="btn btn-success protractor-test-save-trigger"
                   ng-disabled="editFallbackForm.editTriggerForm.$invalid"
                   ng-click="saveThisTrigger()">
-            Save
+            保存
           </button>
         </div>
 

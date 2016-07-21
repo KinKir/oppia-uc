@@ -12,17 +12,17 @@
           </i>
         </div>
 
-        <strong>Oppia tells the learner...</strong>
+        <strong>告诉学生...</strong>
         <div style="position: relative;">
           <span ng-if="isSelfLoopWithNoFeedback(outcome) && !suppressWarnings()">
             <span class="oppia-confusing-outcome-warning-text">
               <i class="material-icons">&#xE002;</i>
-              Please give Oppia something useful to say here.
+              请填写一些内容.
             </span>
           </span>
           <span ng-if="(!isSelfLoopWithNoFeedback(outcome) && outcome.feedback.length === 0) || (isSelfLoopWithNoFeedback(outcome) && suppressWarnings())"
                 style="color: #888">
-            <em>Nothing</em>
+            <em>空</em>
           </span>
           <span ng-if="outcome.feedback.length > 0" style="word-wrap: break-word;">
             <span angular-html-bind="outcome.feedback[0]"></span>
@@ -47,13 +47,13 @@
         <button type="button"
                 class="btn btn-default"
                 ng-click="cancelThisFeedbackEdit()">
-          Cancel
+          取消
         </button>
         <button type="button"
                 class="btn btn-success protractor-test-save-outcome-feedback"
                 ng-disabled="invalidStateAfterFeedbackSave() || editOutcomeForm.editFeedbackForm.$invalid"
                 ng-click="saveThisFeedback()">
-          Save Feedback
+          保存内容
         </button>
       </div>
 
@@ -77,14 +77,13 @@
         </div>
 
         <div ng-if="outcome.dest !== getActiveStateName()">
-          <strong ng-if="displayFeedback">And afterwards, directs the learner
-          to...</strong>
-          <strong ng-if="!displayFeedback">Oppia directs the learner to...</strong>
+          <strong ng-if="displayFeedback">然后，引导学生至...</strong>
+          <strong ng-if="!displayFeedback">系统引导学生到...</strong>
           <span ng-if="!isSelfLoop(outcome)" style="position: relative;">
             <[outcome.dest]>
           </span>
           <span ng-if="isSelfLoop(outcome)" style="position: relative;">
-            (try again)
+            (重新输入)
           </span>
         </div>
       </div>
@@ -111,7 +110,7 @@
                 class="btn btn-success protractor-test-save-outcome-dest"
                 ng-disabled="invalidStateAfterDestinationSave() || editOutcomeForm.editDestForm.$invalid"
                 ng-click="saveThisDestination()">
-          Save Destination
+          保存目标
         </button>
       </div>
 

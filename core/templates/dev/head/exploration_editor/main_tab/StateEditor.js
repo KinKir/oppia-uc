@@ -166,7 +166,7 @@ oppia.factory('trainingModalService', ['$rootScope', '$modal', 'alertsService',
                     feedback = classificationResult.outcome.feedback[0];
                   }
                   if (dest === currentStateName) {
-                    dest = '<em>(try again)</em>';
+                    dest = '<em>(重新输入)</em>';
                   }
 
                   // $scope.trainingDataAnswer, $scope.trainingDataFeedback

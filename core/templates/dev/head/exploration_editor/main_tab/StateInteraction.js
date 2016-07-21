@@ -54,7 +54,7 @@ oppia.controller('StateInteraction', [
       stateInteractionIdService, stateCustomizationArgsService,
       editabilityService, explorationStatesService, graphDataService,
       interactionDetailsCache, oppiaExplorationHtmlFormatterService) {
-    var DEFAULT_TERMINAL_STATE_CONTENT = 'Congratulations, you have finished!';
+    var DEFAULT_TERMINAL_STATE_CONTENT = '恭喜您，已经完成本课程的学习!';
 
     // Declare dummy submitAnswer() and adjustPageHeight() methods for the
     // interaction preview.

@@ -24,7 +24,8 @@ oppia.controller('SettingsTab', [
   'explorationInitStateNameService', 'explorationParamSpecsService',
   'changeListService', 'alertsService', 'explorationStatesService',
   'explorationParamChangesService', 'explorationWarningsService',
-  'CATEGORY_LIST', 'explorationAdvancedFeaturesService',
+  'CATEGORY_LIST', 'ALL_CATEGORIES_ZH_MAP',
+  'explorationAdvancedFeaturesService',
   'EXPLORATION_TITLE_INPUT_FOCUS_LABEL',
   function(
       $scope, $http, $window, $modal, $rootScope,
@@ -34,7 +35,7 @@ oppia.controller('SettingsTab', [
       explorationInitStateNameService, explorationParamSpecsService,
       changeListService, alertsService, explorationStatesService,
       explorationParamChangesService, explorationWarningsService,
-      CATEGORY_LIST, explorationAdvancedFeaturesService,
+      CATEGORY_LIST, ALL_CATEGORIES_ZH_MAP, explorationAdvancedFeaturesService,
       EXPLORATION_TITLE_INPUT_FOCUS_LABEL) {
     $scope.EXPLORATION_TITLE_INPUT_FOCUS_LABEL = (
       EXPLORATION_TITLE_INPUT_FOCUS_LABEL);
@@ -43,7 +44,7 @@ oppia.controller('SettingsTab', [
     for (var i = 0; i < CATEGORY_LIST.length; i++) {
       $scope.CATEGORY_LIST_FOR_SELECT2.push({
         id: CATEGORY_LIST[i],
-        text: CATEGORY_LIST[i]
+        text: ALL_CATEGORIES_ZH_MAP[CATEGORY_LIST[i]]
       });
     }
 

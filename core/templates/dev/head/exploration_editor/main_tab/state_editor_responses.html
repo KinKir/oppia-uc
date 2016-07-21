@@ -104,7 +104,7 @@
 {% endif %}
     <div ng-if="editabilityService.isEditableOutsideTutorialMode() && !isCurrentInteractionLinear()">
       <button type="button" class="btn btn-default btn-lg oppia-add-response-button protractor-test-open-add-response-modal" ng-click="openAddAnswerGroupModal()">
-        + Add New Oppia Response
+        + 添加新的问题
       </button>
     </div>
   </md-card>
@@ -113,7 +113,7 @@
 {% if SHOW_TRAINABLE_UNRESOLVED_ANSWERS %}
   <script type="text/ng-template" id="modals/teachOppia">
     <div class="modal-header">
-      <h3>Enter a Sample Answer</h3>
+      <h3>输入一个答案</h3>
     </div>
 
     <div class="modal-body">
@@ -165,7 +165,7 @@
     </div>
 
     <div class="modal-footer">
-      <button class="btn btn-default" ng-click="finishTeaching(false)">Exit</button>
+      <button class="btn btn-default" ng-click="finishTeaching(false)">退出</button>
     </div>
   </script>
 {% endif %}
@@ -224,20 +224,20 @@
 
 <script type="text/ng-template" id="modals/deleteAnswerGroup">
   <div class="modal-header">
-    <h3>Delete Response</h3>
+    <h3>删除问题</h3>
   </div>
 
   <div class="modal-body">
     <p>
-      Are you sure you want to delete this response?
+      您确定要删除该问题吗?
     </p>
   </div>
 
   <div class="modal-footer">
-    <button class="btn btn-default" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-default" ng-click="cancel()">取消</button>
     <button class="btn btn-danger protractor-test-confirm-delete-response"
             ng-click="reallyDelete()">
-      Delete Response
+      删除
     </button>
   </div>
 </script>

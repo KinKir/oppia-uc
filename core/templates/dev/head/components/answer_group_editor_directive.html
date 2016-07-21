@@ -3,13 +3,13 @@
     <!-- For the default answer group, 'rules' is null. Otherwise, 'rules' is a list of rules. -->
     <div ng-if="rules">
       <strong>
-        If the learner's answer...
+        如果学习者的答案是...
       </strong>
       <ul class="nav nav-stacked nav-pills" role="tablist" ng-model="rules">
         <li ng-repeat="rule in rules" ng-class="{'active': activeRuleIndex === $index}" class="oppia-rule-block oppia-sortable-rule-block protractor-test-rule-block" style="margin-top: 0;" ng-style="$last ? {'border-bottom': '1px solid #ccc'} : {}">
           <a ng-click="openRuleEditor($index)" ng-hide="activeRuleIndex === $index" class="oppia-rule-tab protractor-test-answer-tab" ng-class="{'oppia-rule-tab-disabled': !isEditable}">
             <div class="oppia-rule-header">
-              <span ng-if="$index > 0">or</span>
+              <span ng-if="$index > 0">或</span>
               <span ng-if="getCurrentInteractionId() !== 'MultipleChoiceInput' && $index !== activeRuleIndex">
                 <[rule | parameterizeRuleDescription:getCurrentInteractionId():answerChoices]>...
               </span>
@@ -36,7 +36,7 @@
       </ul>
 
       <button type="button" ng-if="isEditable" class="btn btn-default btn-lg oppia-add-rule-button protractor-test-add-answer" ng-click="addNewRule()">
-        + Add Another Possible Answer
+        + 添加另一个可能的答案
       </button>
     </div>
 

@@ -24,14 +24,14 @@ class Image(base.BaseRichTextComponent):
     category = 'Basic Input'
     description = 'An image.'
     frontend_name = 'image'
-    tooltip = 'Insert image'
+    tooltip = '插入图片'
     requires_fs = True
     is_block_element = True
 
     _customization_arg_specs = [{
         'name': 'filepath',
         'description': (
-            'The name of the image file. (Allowed extensions: gif, jpeg, jpg, '
+            '文件名称. (允许文件类型: gif, jpeg, jpg, '
             'png.)'),
         'schema': {
             'type': 'custom',
@@ -39,15 +39,15 @@ class Image(base.BaseRichTextComponent):
         },
         'default_value': '',
     }, {
-        'name': 'caption',
-        'description': ('Caption for image (optional)'),
+        'name': '标题',
+        'description': ('文件标题 (可选)'),
         'schema': {
             'type': 'unicode',
         },
         'default_value': '',
     }, {
         'name': 'alt',
-        'description': 'Alternative text (for screen readers)',
+        'description': '提示文字',
         'schema': {
             'type': 'unicode',
         },

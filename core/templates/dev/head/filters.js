@@ -294,7 +294,7 @@ oppia.filter('summarizeAnswerGroup', [
       var firstRule = $filter('convertToPlainText')(
         $filter('parameterizeRuleDescription')(
           answerGroup.rule_specs[0], interactionId, answerChoices));
-      summary = 'Answer ' + firstRule;
+      summary = '答案 ' + firstRule;
 
       if (hasFeedback && shortenRule) {
         summary = $filter('wrapTextWithEllipsis')(
@@ -324,11 +324,11 @@ oppia.filter('summarizeDefaultOutcome', [
     var hasFeedback = feedback.length > 0 && feedback[0];
 
     if (interactionId === 'Continue') {
-      summary = 'When the button is clicked';
+      summary = '当按钮被点击后';
     } else if (answerGroupCount > 0) {
-      summary = 'All other answers';
+      summary = '所有其他回答';
     } else {
-      summary = 'All answers';
+      summary = '所有回答';
     }
 
     if (hasFeedback && shortenRule) {

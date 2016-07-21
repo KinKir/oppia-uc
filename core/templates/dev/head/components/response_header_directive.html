@@ -14,10 +14,10 @@
     </span>
     <span ng-if="!isOutcomeLooping() && isCreatingNewState()">
       <em ng-if="getOutcome().newStateName">(<[getOutcome().newStateName]>)</em>
-      <em ng-if="!getOutcome().newStateName">Nowhere yet...</em>
+      <em ng-if="!getOutcome().newStateName">无...</em>
     </span>
     <span ng-if="isOutcomeLooping()">
-      <em>(try again)</em>
+      <em>(重新输入)</em>
     </span>
   </div>
 

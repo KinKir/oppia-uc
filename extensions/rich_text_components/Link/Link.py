@@ -29,7 +29,7 @@ class Link(base.BaseRichTextComponent):
     _customization_arg_specs = [{
         'name': 'url',
         'description': (
-            'The link URL. If no protocol is specified, HTTPS will be used.'),
+            '链接网址。如果没有指定协议，HTTPS将使用.'),
         'schema': {
             'type': 'custom',
             'obj_type': 'SanitizedUrl',
@@ -38,14 +38,14 @@ class Link(base.BaseRichTextComponent):
     }, {
         'name': 'text',
         'description': (
-            'The link text. If left blank, the link URL will be used.'),
+            '链接文本。如果留空，会使用链接URL作为链接文本.'),
         'schema': {
             'type': 'unicode',
         },
         'default_value': '',
     }, {
         'name': 'open_link_in_same_window',
-        'description': 'Open the link in the same window?',
+        'description': '打开在同一个窗口中的链接?',
         'schema': {
             'type': 'bool'
         },

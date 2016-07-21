@@ -22,13 +22,13 @@ class Math(base.BaseRichTextComponent):
 
     name = 'Math'
     category = 'Basic Input'
-    description = 'A math formula.'
+    description = '数学方程式.'
     frontend_name = 'math'
-    tooltip = 'Insert mathematical formula'
+    tooltip = '插入数学方程式'
 
     _customization_arg_specs = [{
         'name': 'raw_latex',
-        'description': 'The raw string to be displayed as LaTeX.',
+        'description': '要显示的原始字符串.',
         'schema': {
             'type': 'custom',
             'obj_type': 'MathLatexString',

@@ -75,7 +75,7 @@ oppia.config([
     availableLanguageKeys.push(prop);
     availableLanguageKeysMap[prop + '*'] = prop;
   }
-  availableLanguageKeysMap['*'] = 'en';
+  availableLanguageKeysMap['*'] = 'zh';
 
   $translateProvider
     .registerAvailableLanguageKeys(
@@ -86,8 +86,8 @@ oppia.config([
     })
     // The use of default translation improves the loading time when English is
     // selected
-    .translations('en', DEFAULT_TRANSLATIONS)
-    .fallbackLanguage('en')
+    .translations('zh', DEFAULT_TRANSLATIONS)
+    .fallbackLanguage('zh')
     .determinePreferredLanguage()
     .useCookieStorage()
     // The messageformat interpolation method is necessary for pluralization.

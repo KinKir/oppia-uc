@@ -155,7 +155,7 @@ ALPHANUMERIC_REGEX = r'^[A-Za-z0-9]+$'
 # Ex.: 'valid name', 'another valid name', 'invalid   name'.
 ALPHANUMERIC_SPACE_REGEX = r'^[0-9A-Za-z]+(?:[ ]?[0-9A-Za-z]+)*$'
 # A regular expression for tags.
-TAG_REGEX = r'^[a-z ]+$'
+TAG_REGEX = r'' #r'^[a-z ]+$'
 
 # Invalid names for parameters used in expressions.
 AUTOMATICALLY_SET_PARAMETER_NAMES = ['answer', 'choices']
@@ -312,6 +312,9 @@ ALLOWED_RTE_EXTENSIONS = {
     },
     'Video': {
         'dir': os.path.join(RTE_EXTENSIONS_DIR, 'Video')
+    },
+    'VideoMp4':{
+        'dir': os.path.join(RTE_EXTENSIONS_DIR, 'VideoMp4')
     },
 }
 
@@ -557,7 +560,50 @@ CATEGORIES_TO_COLORS = {
     'Sport': '#893327',
     'Welcome': '#992a2b',
 }
-
+CATEGORIES_TO_ZH = {
+    'Mathematics': '数学',
+    'Algebra': '代数',
+    'Arithmetic': '算数',
+    'Calculus': '微积分',
+    'Logic': '逻辑学',
+    'Combinatorics': '组合学',
+    'Graph Theory': '图论',
+    'Probability': '概率',
+    'Statistics': '统计学',
+    'Geometry': '几何',
+    'Trigonometry': '三角',
+    'Algorithms': '算法',
+    'Computing': '计算',
+    'Programming': '程序设计',
+    'Astronomy': '天文学',
+    'Biology': '生物学',
+    'Chemistry': '化学',
+    'Engineering': '工程',
+    'Environment': '环境',
+    'Medicine': '医学',
+    'Physics': '物理',
+    'Architecture': '建筑',
+    'Art': '艺术',
+    'Music': '音乐',
+    'Philosophy': '哲学',
+    'Poetry': '诗歌',
+    'English': '英语',
+    'Languages': '语言',
+    'Latin': '拉丁语',
+    'Reading': '阅读',
+    'Spanish': '西班牙语',
+    'Gaulish': '高卢语',
+    'Business': '商业',
+    'Economics': '经济学',
+    'Geography': '地理',
+    'Government': '政府',
+    'History': '历史',
+    'Law': '法律',
+    'Education': '教育',
+    'Puzzles': '拼图',
+    'Sport': '运动',
+    'Welcome': '礼仪',
+}
 # Types of activities that can be created with Oppia.
 ACTIVITY_TYPE_EXPLORATION = 'exploration'
 ACTIVITY_TYPE_COLLECTION = 'collection'

@@ -34,3 +34,8 @@ class VideoMp4(base.BaseRichTextComponent):
         },
         'default_value': '',
     }]
+
+    @property
+    def preview_url_template(self):
+        # return 'https://img.youtube.com/vi/<[video_id]>/hqdefault.jpg'
+        return 'VideoMp4.png'

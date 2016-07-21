@@ -5,7 +5,7 @@
 
   <div class="modal-body">
     <p>
-      To embed this exploration in another webpage, copy the following HTML into the source code of the webpage:
+      要在其他网页嵌入课程，将下面的HTML复制到网页的源代码中：
     </p>
 
     <accordion close-others="true">
@@ -18,17 +18,18 @@
       <accordion-group heading="If your website does not allow JavaScript" is-open="false" style="margin-top: 3px;">
         <div class="oppia-embed-modal-code" ng-click="selectText($event)">&lt;iframe src="<[serverName]>/explore/<[explorationId]>?iframed=true" width="700" height="1000"&gt;</div>
         <p>
-          <em>Note: explorations embedded using iframes will not have automatic scrolling and expanding on your webpage.</em>
+          <em>
+          注意：使用iframe的嵌入式探索将不会有自动滚动和扩大你的网页。</em>
         </p>
       </accordion-group>
     </accordion>
 
-    <p>
+<!-- <p>
       For more details, as well as instructions on how to embed a particular version of an exploration, please see the <a href="https://oppia.github.io/#/EmbeddingAnExploration" target="_blank">documentation</a>.
-    </p>
+    </p>-->
   </div>
 
   <div class="modal-footer">
-    <button class="btn btn-default" ng-click="close()">Close</button>
+    <button class="btn btn-default" ng-click="close()">关闭</button>
   </div>
 </script>

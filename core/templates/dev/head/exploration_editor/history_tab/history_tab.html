@@ -14,10 +14,10 @@
         <span>
           <em><[explorationVersionMetadata[versionCheckbox.vnum].createdOnStr]></em>
           <span ng-if="versionCheckbox.vnum !== currentVersion && editabilityService.isEditable()">
-            | <a href="#" class='protractor-test-revert-version' ng-click="showRevertExplorationModal(versionCheckbox.vnum)">Revert</a>
+            | <a href="#" class='protractor-test-revert-version' ng-click="showRevertExplorationModal(versionCheckbox.vnum)">恢复</a>
           </span>
           <span>
-            | <a href="#" ng-click="downloadExplorationWithVersion(versionCheckbox.vnum)" title="Download exploration as a zip file.">Download</a>
+            | <a href="#" ng-click="downloadExplorationWithVersion(versionCheckbox.vnum)" title="Download exploration as a zip file.">下载</a>
           </span>
         </span>
       </div>

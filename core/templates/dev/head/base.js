@@ -19,7 +19,7 @@
 // TODO(sll): Get this to read from a common JSON file; it's replicated in
 // feconf.
 oppia.constant('CATEGORY_LIST', GLOBALS.ALL_CATEGORIES || []);
-
+oppia.constant('ALL_CATEGORIES_ZH_MAP', GLOBALS.ALL_CATEGORIES_ZH_MAP || []);
 // We use a slash because this character is forbidden in a state name.
 oppia.constant('PLACEHOLDER_OUTCOME_DEST', '/');
 

@@ -25,7 +25,7 @@ import collections
 import copy
 import logging
 import re
-import string
+#import string
 
 from core.domain import html_cleaner
 from core.domain import gadget_registry
@@ -1473,11 +1473,11 @@ class Exploration(object):
                     'Tags should only contain lowercase letters and spaces, '
                     'received \'%s\'' % tag)
 
-            if (tag[0] not in string.ascii_lowercase or
-                    tag[-1] not in string.ascii_lowercase):
-                raise utils.ValidationError(
-                    'Tags should not start or end with whitespace, received '
-                    ' \'%s\'' % tag)
+            #if (tag[0] not in string.ascii_lowercase or
+            #        tag[-1] not in string.ascii_lowercase):
+            #    raise utils.ValidationError(
+            #        'Tags should not start or end with whitespace, received '
+            #        ' \'%s\'' % tag)
 
             if re.search(r'\s\s+', tag):
                 raise utils.ValidationError(
@@ -2040,7 +2040,7 @@ class Exploration(object):
             states_dict[old_end_dest] = {
                 'content': [{
                     'type': 'text',
-                    'value': 'Congratulations, you have finished!'
+                    'value': '恭喜您，已经完成本课程!'
                 }],
                 'interaction': {
                     'id': 'EndExploration',

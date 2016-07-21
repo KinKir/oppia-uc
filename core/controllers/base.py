@@ -1,3 +1,4 @@
+# coding: utf-8
 # Copyright 2014 The Oppia Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -314,6 +315,7 @@ class BaseHandler(webapp2.RequestHandler):
 
         values.update({
             'ALL_CATEGORIES': feconf.ALL_CATEGORIES,
+            'ALL_CATEGORIES_ZH_MAP': feconf.CATEGORIES_TO_ZH,
             'ALL_LANGUAGE_CODES': feconf.ALL_LANGUAGE_CODES,
             'BEFORE_END_HEAD_TAG_HOOK': jinja2.utils.Markup(
                 BEFORE_END_HEAD_TAG_HOOK.value),

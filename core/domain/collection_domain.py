@@ -23,7 +23,7 @@ should therefore be independent of the specific storage models used.
 
 import copy
 import re
-import string
+#import string
 
 import feconf
 import utils
@@ -544,11 +544,11 @@ class Collection(object):
                     'Tags should only contain lowercase letters and spaces, '
                     'received \'%s\'' % tag)
 
-            if (tag[0] not in string.ascii_lowercase or
-                    tag[-1] not in string.ascii_lowercase):
-                raise utils.ValidationError(
-                    'Tags should not start or end with whitespace, received '
-                    ' \'%s\'' % tag)
+            #if (tag[0] not in string.ascii_lowercase or
+            #        tag[-1] not in string.ascii_lowercase):
+            #    raise utils.ValidationError(
+            #        'Tags should not start or end with whitespace, received '
+            #        ' \'%s\'' % tag)
 
             if re.search(r'\s\s+', tag):
                 raise utils.ValidationError(

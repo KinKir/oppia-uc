@@ -21,7 +21,7 @@ class Continue(base.BaseInteraction):
     """Interaction that takes the form of a simple 'Continue' button."""
 
     name = 'Continue Button'
-    description = 'A simple \'go to next state\' button.'
+    description = '简单的进行下一步按钮.'
     display_mode = base.DISPLAY_MODE_INLINE
     _dependency_ids = []
     is_linear = True
@@ -32,9 +32,9 @@ class Continue(base.BaseInteraction):
 
     _customization_arg_specs = [{
         'name': 'buttonText',
-        'description': 'Button label',
+        'description': '按钮文本',
         'schema': {
             'type': 'unicode',
         },
-        'default_value': 'Continue',
+        'default_value': '继续',
     }]
