@@ -114,8 +114,8 @@
         <div class="col-lg-12 col-md-12 col-sm-12">
           <div>
             <label for="tmpMessageText">
-              Add new message
-              <span ng-if="editabilityService.isEditable() && !activeThread.suggestion">(and/or change status)</span>
+              添加新消息
+              <span ng-if="editabilityService.isEditable() && !activeThread.suggestion">(或修改状态)</span>
             </label>
             <textarea class="form-control" ng-model="tmpMessage.text"
                       id="tmpMessageText" rows="6"
@@ -125,7 +125,7 @@
 
           <div>
             <span ng-show="editabilityService.isEditable() && !activeThread.suggestion">
-              Change status (optional):
+              修改状态 (选填写):
               <select ng-model="tmpMessage.status"
                       ng-options="choice.id as choice.text for choice in STATUS_CHOICES"
                       ng-disabled="messageSendingInProgress">
@@ -137,57 +137,57 @@
             <button class="btn btn-success" style="margin-top: 10px;"
                     ng-click="addNewMessage(activeThread.thread_id, tmpMessage.text, tmpMessage.status)"
                     ng-disabled="messageSendingInProgress || (!tmpMessage.text && activeThread.status === tmpMessage.status)">
-              <span ng-if="messageSendingInProgress">Sending...</span>
-              <span ng-if="!messageSendingInProgress">Send</span>
+              <span ng-if="messageSendingInProgress">正在发送...</span>
+              <span ng-if="!messageSendingInProgress">发送</span>
             </button>
           </div>
         </div>
       </div>
     {% else %}
-      <em>To respond to a feedback thread, please log in.</em>
+      <em>需要登录才能回复.</em>
     {% endif %}
   </div>
 </md-card>
 
 <script type="text/ng-template" id="modals/editorFeedbackCreateThread">
   <div class="modal-header">
-    <h3>Start New Feedback Thread</h3>
+    <h3>发起新的评论</h3>
   </div>
 
   <div class="modal-body">
-    <p>Thread subject: <input type="text" ng-model="newThreadSubject"></p>
-    <p>Message text <textarea ng-model="newThreadText" rows="6"></textarea></p>
+    <p>评论内容: <input type="text" ng-model="newThreadSubject"></p>
+    <p>消息内容 <textarea ng-model="newThreadText" rows="6"></textarea></p>
   </div>
 
   <div class="modal-footer">
-    <button class="btn btn-success" ng-click="create(newThreadSubject, newThreadText)" ng-disabled="!newThreadSubject || !newThreadText">Create Thread</button>
-    <button class="btn btn-default" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-success" ng-click="create(newThreadSubject, newThreadText)" ng-disabled="!newThreadSubject || !newThreadText">发表</button>
+    <button class="btn btn-default" ng-click="cancel()">取消</button>
   </div>
 </script>
 
 <script type="text/ng-template" id="modals/editorViewSuggestion">
   <div class="modal-header">
-    <h3>Review Suggestion</h3>
+    <h3>查看建议</h3>
   </div>
 
   <div class="modal-body">
     <section class="oppia-suggestion-review-container">
       <div class="oppia-suggestion-review-panel-container" style="float: left;">
-        <strong>Current:</strong>
+        <strong>当前:</strong>
         <div class="oppia-suggestion-review-panel">
           <div ng-if="currentContent" angular-html-bind="currentContent"></div>
-          <div ng-if="!currentContent" style="color: red;">Oops! This state no longer exists!</div>
+          <div ng-if="!currentContent" style="color: red;">已经不存在!</div>
         </div>
       </div>
       <div class="oppia-suggestion-review-panel-container" style="float: right;">
-        <strong>Suggested:</strong>
+        <strong>建议:</strong>
         <div class="oppia-suggestion-review-panel">
           <div angular-html-bind="newContent"></div>
         </div>
       </div>
     </section>
     <div style="margin-top: 20px; margin-left: 10px;" ng-show="canAccept">
-      Brief Description of Changes (required if accepting):
+      修改内容的简要说明(如果接受，必填):
       <input type="text" ng-model="commitMessage" style="width: 100%">
     </div>
   </div>
@@ -196,8 +196,8 @@
     <div ng-show="errorMessage" class="oppia-suggestion-review-error">
       <[ errorMessage ]>
     </div>
-    <button class="btn btn-default" ng-click="cancelReview()">Cancel</button>
-    <button class="btn btn-danger" ng-show="canEdit && isOpen" ng-click="rejectSuggestion()" ng-disabled="!canReject">Reject</button>
-    <button class="btn btn-success" ng-show="canEdit && isOpen" ng-click="acceptSuggestion()" ng-disabled="!canAccept || commitMessage.length == 0">Accept</button>
+    <button class="btn btn-default" ng-click="cancelReview()">取消</button>
+    <button class="btn btn-danger" ng-show="canEdit && isOpen" ng-click="rejectSuggestion()" ng-disabled="!canReject">拒绝</button>
+    <button class="btn btn-success" ng-show="canEdit && isOpen" ng-click="acceptSuggestion()" ng-disabled="!canAccept || commitMessage.length == 0">接受</button>
   </div>
 </script>

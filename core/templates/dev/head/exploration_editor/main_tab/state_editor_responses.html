@@ -94,7 +94,7 @@
   <md-card style="margin: 20px 0px; padding: 0px;" ng-if="isCurrentInteractionTrainable()">
     <div ng-if="editabilityService.isEditableOutsideTutorialMode() && !isCurrentInteractionLinear()">
       <button type="button" class="btn btn-default btn-lg oppia-add-response-button protractor-test-open-teach-modal" ng-click="openTeachOppiaModal()">
-        + Teach Oppia
+        + 教学
       </button>
     </div>
   </md-card>
@@ -216,9 +216,9 @@
   </div>
 
   <div class="modal-footer">
-    <button class="btn btn-default protractor-test-close-add-response-modal" ng-click="cancel()">Cancel</button>
-    <button class="btn btn-success protractor-test-add-new-response" ng-click="saveResponse(false)" ng-disabled="addAnswerGroupForm.outcomeDetailsForm.$invalid || isSelfLoopWithNoFeedback(tmpOutcome)">Save Response</button>
-    <button class="btn btn-success" ng-click="saveResponse(true)" ng-disabled="addAnswerGroupForm.outcomeDetailsForm.$invalid || isSelfLoopWithNoFeedback(tmpOutcome)">Save and Add Another</button>
+    <button class="btn btn-default protractor-test-close-add-response-modal" ng-click="cancel()">取消</button>
+    <button class="btn btn-success protractor-test-add-new-response" ng-click="saveResponse(false)" ng-disabled="addAnswerGroupForm.outcomeDetailsForm.$invalid || isSelfLoopWithNoFeedback(tmpOutcome)">保存</button>
+    <button class="btn btn-success" ng-click="saveResponse(true)" ng-disabled="addAnswerGroupForm.outcomeDetailsForm.$invalid || isSelfLoopWithNoFeedback(tmpOutcome)">保存并添加</button>
   </div>
 </script>
 

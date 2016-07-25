@@ -34,12 +34,12 @@ oppia.directive('collectionEditorNavbarBreadcrumb', [function() {
           $scope, routerService, CollectionEditorStateService,
           focusService, COLLECTION_TITLE_INPUT_FOCUS_LABEL) {
         var _TAB_NAMES_TO_HUMAN_READABLE_NAMES = {
-          main: 'Edit',
-          preview: 'Preview',
-          settings: 'Settings',
-          stats: 'Statistics',
-          history: 'History',
-          feedback: 'Feedback'
+          main: '编辑',
+          preview: '预览',
+          settings: '设置',
+          stats: '统计',
+          history: '历史',
+          feedback: '反馈'
         };
 
         $scope.collection = CollectionEditorStateService.getCollection();

@@ -477,16 +477,17 @@
       您即将取消发布课程.
     </p>
     <p ng-if="action === 'publicize_exploration'">
-      您将要给予这种探索一个排名提升在检索结果中。
+      在检索结果中给这个课程提升排名。
     </p>
 
     <div ng-if="willEmailBeSent">
       <br>
       <p>
-        Doing so will send the following email to all exploration owners;
+        给所有课程所有人发送邮件
+        <!--Doing so will send the following email to all exploration owners;
         please edit it as needed. (NB: do not include a salutation or a
         signoff -- the text "Hi [username]" and "Thanks! [your username] (Oppia moderator)" will
-        be auto-added.)
+        be auto-added.)-->
       </p>
 
       <schema-based-editor schema="EMAIL_BODY_SCHEMA" local-value="$parent.emailBody">
@@ -495,10 +496,10 @@
   </div>
 
   <div class="modal-footer">
-    <button class="btn btn-default" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-default" ng-click="cancel()">取消</button>
     <button class="btn btn-success" ng-click="reallyTakeAction()">
-      <span ng-if="action === 'unpublish_exploration'">Unpublish Exploration</span>
-      <span ng-if="action === 'publicize_exploration'" class="protractor-test-feature-exploration-button">Boost Exploration Ranking</span>
+      <span ng-if="action === 'unpublish_exploration'">取消发布</span>
+      <span ng-if="action === 'publicize_exploration'" class="protractor-test-feature-exploration-button">提升排名</span>
     </button>
   </div>
 </script>

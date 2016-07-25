@@ -10,12 +10,12 @@
     <p ng-if="requireTitleToBeSpecified">
        标题: 你的课程名称?
       <input type="text" class="form-control" ng-model="$parent.newTitle"
-             placeholder="Music in the 19th Century">
+             placeholder="填写课程名称">
     </p>
     <p ng-if="requireObjectiveToBeSpecified">
       目标: 你的课程能够帮助学生学到什么?
       <input type="text" class="form-control" ng-model="$parent.newObjective"
-             placeholder="Learn how to ...">
+             placeholder="学会 ...">
     </p>
     <p ng-if="requireCategoryToBeSpecified">
       分类: 你的课程属于哪类?
@@ -24,13 +24,13 @@
                         placeholder="Choose or type new"
                         new-choice-regex="^[A-Z a-z]+$"
                         width="100%"
-                        invalid-search-term-message="Invalid category name">
+                        invalid-search-term-message="课程分类无效">
       </select2-dropdown>
     </p>
   </div>
 
   <div class="modal-footer">
-    <button class="btn btn-default" ng-click="cancel()">Cancel</button>
-    <button class="btn btn-success" ng-click="save()" ng-disabled="!isSavingAllowed()">Save Changes</button>
+    <button class="btn btn-default" ng-click="cancel()">取消</button>
+    <button class="btn btn-success" ng-click="save()" ng-disabled="!isSavingAllowed()">保存</button>
   </div>
 </script>

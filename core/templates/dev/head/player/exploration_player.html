@@ -35,7 +35,7 @@
 {% block local_top_nav_options %}
   <script type="text/ng-template" id="modals/learnerSuggestionSubmitted">
     <div class="modal-header">
-      <h3>Thanks!</h3>
+      <h3>谢谢!</h3>
     </div>
 
     <div class="modal-body">
@@ -61,7 +61,7 @@
     </div>
 
     <div class="modal-footer">
-      <button class="btn btn-default" ng-click="cancelSuggestion()">Cancel</button>
+      <button class="btn btn-default" ng-click="cancelSuggestion()">取消</button>
       <button class="btn btn-success" ng-click="submitSuggestion()" ng-disabled="(initContent == suggestionContent) || !description">
         提交建议
       </button>
