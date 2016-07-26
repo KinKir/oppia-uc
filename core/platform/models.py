@@ -22,7 +22,8 @@ import utils
 # Valid model names.
 NAMES = utils.create_enum(
     'activity', 'base_model', 'collection', 'config', 'email', 'exploration',
-    'feedback', 'file', 'job', 'recommendations', 'statistics', 'user')
+    'feedback', 'file', 'job', 'recommendations', 'statistics', 'user',
+    'privatelog')
 
 
 class _Platform(object):
@@ -73,6 +74,9 @@ class _Gae(_Platform):
             elif name == NAMES.user:
                 from core.storage.user import gae_models as user_models
                 returned_models.append(user_models)
+            elif name == NAMES.privatelog:
+                from core.storage.privatelog import gae_models as privatelog_models # pylint: disable=line-too-long
+                returned_models.append(privatelog_models)
             else:
                 raise Exception('Invalid model name: %s' % name)
 

@@ -49,14 +49,14 @@
               <strong>
                 <a ng-if="notification.author_username" ng-click="navigateToProfile($event, notification.author_username)"><[notification.author_username]></a>
                 <span ng-if="!notification.author_username">
-                  Anonymous
+                  匿名
                 </span>
               </strong>
               <span ng-if="notification.type === 'exploration_commit'">
-                made a new commit to
+                发布新评论
               </span>
               <span ng-if="notification.type === 'feedback_thread'">
-                left a comment on
+                回复
               </span>
               <span class="oppia-notification-activity-title">
                 <[notification.activity_title]>
