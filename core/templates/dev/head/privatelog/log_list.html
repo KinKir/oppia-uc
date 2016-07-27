@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 
 {% block maintitle %}
- 通知  
+ 个人日志  
 {% endblock maintitle %}
 
 {% block navbar_breadcrumb %}
   <ul class="nav navbar-nav oppia-navbar-breadcrumb">
     <li>
       <span class="oppia-navbar-breadcrumb-separator"></span>
-      通知
+      个人日志
     </li>
   </ul>
 
@@ -19,6 +19,7 @@
   </style>
 {% endblock navbar_breadcrumb %}
 
+
 {% block content %}
   <div class="oppia-dashboard-container" ng-controller="DashboardNotifications">
     <h2 class="oppia-page-heading">Notifications</h2>
@@ -28,7 +29,7 @@
 
     <div class="oppia-notifications-tray">
       <md-card ng-if="recentNotifications.length === 0" class="oppia-page-card oppia-notifications-dashboard-card">
-        <em>没有最近的通知.</em>
+        <em>没有发布日志.</em>
       </md-card>
 
       <div ng-if="recentNotifications.length > 0">
@@ -75,6 +76,6 @@
 {% block footer_js %}
   {{ super() }}
   <script>
-    {{ include_js_file('/dashboard/NotificationsDashboard.js') }}
+    {{ include_js_file('/privatelog/LogList.js') }}
   </script>
 {% endblock footer_js %}

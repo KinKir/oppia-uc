@@ -108,7 +108,7 @@ DEFAULT_EXPLORATION_CATEGORY = ''
 DEFAULT_EXPLORATION_OBJECTIVE = ''
 
 # Default name for the initial state of an exploration.
-DEFAULT_INIT_STATE_NAME = 'Introduction'
+DEFAULT_INIT_STATE_NAME = '介绍'
 # The default content text for the initial state of an exploration.
 DEFAULT_INIT_STATE_CONTENT_STR = ''
 

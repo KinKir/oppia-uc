@@ -26,8 +26,8 @@
       </tr>
     </table>
     <p>
-      <button ng-click="submitProof()">Submit</button>
-      <font color="green" ng-show="checkSuccess">Correct!</font>
+      <button ng-click="submitProof()">提交</button>
+      <font color="green" ng-show="checkSuccess">正确!</font>
     </p>
 
 
@@ -39,9 +39,9 @@
     <p></p>
     <p><center><u>Teacher's section </u></center></p>
 
-    <b>Question </b><button ng-click="submitQuestion()">Submit</button>
-    <font color="green" ng-show="questionSuccess">Success</font>
-    <font color="red" ng-hide="questionSuccess">Failure</font>
+    <b>Question </b><button ng-click="submitQuestion()">提交</button>
+    <font color="green" ng-show="questionSuccess">成功</font>
+    <font color="red" ng-hide="questionSuccess">失败</font>
     <p>
       Assumptions: <input type="text" ng-model="assumptionsString" size="30"> Target: <input type="text" ng-model="targetString" size="30">
       <font color="red"> {{questionError}} </font>
