@@ -32,6 +32,7 @@ from core.controllers import reader
 from core.controllers import recent_commits
 from core.controllers import resources
 from core.controllers import uc
+from core.controllers import private_log
 from core.domain import user_services
 from core.platform import models
 import feconf
@@ -420,9 +421,14 @@ URLS = MAPREDUCE_HANDLERS + [
 
     get_redirect_route(
         r'/api/uc', uc.UcApiHandler, 'uc_api_handler'),
+    get_redirect_route(
+        r'/private_log', private_log.PrivateLogPage, 'private_log'),
+    get_redirect_route(
+        r'/privatelog/data', private_log.PrivateLogListHandler,
+        'private_log_data'),
     # 404 error handler.
     get_redirect_route(r'/<:.*>', base.Error404Handler, 'error_404_handler'),
 ]
 
-app = transaction_services.toplevel_wrapper(  # pylint: disable=invalid-name
+app = transaction_services.toplevel_wrapper(# pylint: disable=invalid-name
     webapp2.WSGIApplication(URLS, debug=feconf.DEBUG))

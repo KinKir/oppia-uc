@@ -16,13 +16,13 @@
 
 """Commands for private log operations."""
 
-#import datetime
+# import datetime
 
-#from core.domain import privatelog_domain
-#from core.domain import rights_manager
-#from core.domain import user_services
+from core.domain import privatelog_domain
+# from core.domain import rights_manager
+# from core.domain import user_services
 from core.platform import models
-#import feconf
+# import feconf
 
 (privatelog_models,) = models.Registry.import_models([models.NAMES.privatelog])
 
@@ -51,10 +51,13 @@ def create_category(author_id, category_name):
 
 
 def _get_privatelog_from_model(privatelog_model):
-    return privatelog_model.PrivateLog(privatelog_model.author_id,\
-             privatelog_model.title, privatelog_model.content,\
-                 privatelog_model.category_id, privatelog_model.create_on,\
-                     privatelog_model.last_updated)
+    category_name = privatelog_models.LogCategoryModel\
+        .get(privatelog_model.category_id).category_name
+    return privatelog_domain.PrivateLog(privatelog_model.author_id, \
+             privatelog_model.title, privatelog_model.content, \
+                 privatelog_model.category_id, category_name,\
+                 privatelog_model.created_on, \
+                 privatelog_model.last_updated)
 
 
 def get_all_privatelog(author_id):

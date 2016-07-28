@@ -16,11 +16,15 @@
 
 """Controllers for the feedback thread page."""
 
-#import json
+# import json
 
 from core.controllers import base
 from core.domain import privatelog_services
-#from core.platform import models
+from core.domain import user_services
+from core.domain import config_domain
+import feconf
+import utils
+
 
 class PrivateLogListHandler(base.BaseHandler):
     """
@@ -32,3 +36,44 @@ class PrivateLogListHandler(base.BaseHandler):
                 privatelog_services.\
                      get_all_privatelog(self.user_id)]})
         self.render_json(self.values)
+
+
+class CreateLogCategoryHandler(base.BaseHandler):
+    def get(self):
+        self.render_json(self.values)
+
+    def post(self):
+        privatelog_services.create_category(
+            self.user_id, 'name')
+        self.render_json(self.values)
+
+
+class CreatePrivateLogHandler(base.BaseHandler):
+
+    def get(self, log_id):# pylint: disable=unused-argument
+        self.render_json(self.values)
+
+    def post(self, log_id):# pylint: disable=unused-argument
+        text = "test"
+        title = 'title'
+        privatelog_services.create_private_log(
+            self.user_id, 1, title, text)
+        self.render_json(self.values)
+
+class PrivateLogPage(base.BaseHandler):
+    def get(self):
+        if self.username in config_domain.BANNED_USERNAMES.value:
+            raise self.UnauthorizedUserException("")
+        elif user_services.has_fully_registered(self.user_id):
+            self.values.update({
+                'meta_description':'',
+                'nav_mode':feconf.NAV_MODE_DASHBOARD,
+            })
+            self.render_template(
+                'privatelog/log_list.html',
+                redirect_url_on_logout='/')
+        else:
+            self.redirect(utils.set_url_query_parameter(
+                feconf.SIGNUP_URL, 'return_url', '/private_log'))
+
+

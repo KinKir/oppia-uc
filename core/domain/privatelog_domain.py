@@ -25,13 +25,13 @@ class PrivateLog(object):
         return user_services.get_username(self.author_id)
 
     def __init__(self, author_id, title, content, category_id,
-                 created_on, last_updated):
+                 category_name, created_on, last_updated):
 
         self.author_id = author_id
         self.content = content
         self.title = title
         self.category_id = category_id
-
+        self.category_name = category_name
         self.created_on = created_on
         self.last_updated = last_updated
 
@@ -42,6 +42,7 @@ class PrivateLog(object):
                 self.author_id) if self.author_id else None,
             'title': self.title,
             'category_id': self.category_id,
-            'category_name': self.subject,
-            'created_on': self.created_on
+            'category_name': self.category_name,
+            'content': self.content,
+            'created_on':  utils.get_time_in_millisecs(self.created_on)
         }
