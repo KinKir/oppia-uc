@@ -312,15 +312,15 @@ oppia.directive('graphViz', function() {
         };
 
         $scope.graphOptions = [{
-          text: 'Labeled',
+          text: '节点标签',
           option: 'isLabeled'
         },
         {
-          text: 'Directed',
+          text: '箭头',
           option: 'isDirected'
         },
         {
-          text: 'Weighted',
+          text: '权重',
           option: 'isWeighted'
         }];
         $scope.toggleGraphOption = function(option) {

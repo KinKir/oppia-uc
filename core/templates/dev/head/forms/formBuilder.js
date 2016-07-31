@@ -1555,7 +1555,7 @@ oppia.directive('schemaBasedListEditor', [
         };
 
         $scope.isAddItemButtonPresent = true;
-        $scope.addElementText = 'Add element';
+        $scope.addElementText = '添加元素';
         if ($scope.uiConfig() && $scope.uiConfig().add_element_text) {
           $scope.addElementText = $scope.uiConfig().add_element_text;
         }

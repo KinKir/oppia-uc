@@ -108,7 +108,7 @@ DEFAULT_EXPLORATION_CATEGORY = ''
 DEFAULT_EXPLORATION_OBJECTIVE = ''
 
 # Default name for the initial state of an exploration.
-DEFAULT_INIT_STATE_NAME = '介绍'
+DEFAULT_INIT_STATE_NAME = 'Introduction'
 # The default content text for the initial state of an exploration.
 DEFAULT_INIT_STATE_CONTENT_STR = ''
 
@@ -321,7 +321,7 @@ ALLOWED_RTE_EXTENSIONS = {
 # These categories and interactions are displayed in the order in which they
 # appear in the interaction selector.
 ALLOWED_INTERACTION_CATEGORIES = [{
-    'name': 'General',
+    'name': '常用',
     'interaction_ids': [
         'Continue',
         'EndExploration',
@@ -331,7 +331,7 @@ ALLOWED_INTERACTION_CATEGORIES = [{
         'TextInput'
     ],
 }, {
-    'name': 'Math',
+    'name': '数学',
     'interaction_ids': [
         'GraphInput',
         'LogicProof',
@@ -340,18 +340,18 @@ ALLOWED_INTERACTION_CATEGORIES = [{
         'MathExpressionInput',
     ]
 }, {
-    'name': 'Programming',
+    'name': '编程',
     'interaction_ids': [
         'CodeRepl',
         'PencilCodeEditor',
     ],
 }, {
-    'name': 'Music',
+    'name': '音乐',
     'interaction_ids': [
         'MusicNotesInput'
     ],
 }, {
-    'name': 'Geography',
+    'name': '地理',
     'interaction_ids': [
         'InteractiveMap'
     ],

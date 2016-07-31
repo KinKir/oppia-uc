@@ -42,7 +42,7 @@ oppia.controller('PreviewTab', [
       if (initStateNameForPreview !==
           explorationInitStateNameService.savedMemento) {
         $scope.previewWarning =
-          'Preview started from \"' + initStateNameForPreview + '\"';
+          '从 \"' + initStateNameForPreview + '\"开始预览';
       } else {
         $scope.previewWarning = '';
       }

@@ -967,7 +967,7 @@ oppia.factory('explorationStatesService', [
                 $scope, $modalInstance, explorationGadgetsService,
                 deleteStateName) {
               $scope.deleteStateWarningText = (
-                'Are you sure you want to delete the card "' +
+                '您确定要删除卡片 "' +
                 deleteStateName + '"?');
 
               // Get all the gadgets that are only visible in this state.
@@ -1757,8 +1757,8 @@ oppia.constant('WARNING_TYPES', {
 });
 
 oppia.constant('STATE_ERROR_MESSAGES', {
-  ADD_INTERACTION: 'Please add an interaction to this card.',
-  STATE_UNREACHABLE: 'This card is unreachable.',
+  ADD_INTERACTION: '请添加内容',
+  STATE_UNREACHABLE: '没有到达路径.',
   UNABLE_TO_END_EXPLORATION: (
     'There\'s no way to complete the exploration starting from this card.')
 });
@@ -2000,7 +2000,7 @@ oppia.factory('explorationWarningsService', [
         _warningsList.push({
           type: WARNING_TYPES.ERROR,
           message: (
-            'The following states have errors: ' +
+            '以下内容存在错误: ' +
             Object.keys(stateWarnings).join(', ') + '.')
         });
       };
@@ -2150,7 +2150,7 @@ oppia.factory('lostChangesService', ['utilsService', function(utilsService) {
               if (newValue !== null) {
                 stateWiseEditsMapping[stateName].push(
                   angular.element('<div></div>').html(
-                    '<strong>Edited content: </strong><div class="content">' +
+                    '<strong>编辑内容: </strong><div class="content">' +
                       newValue.value + '</div>')
                     .addClass('state-edit-desc'));
               }
@@ -2160,13 +2160,13 @@ oppia.factory('lostChangesService', ['utilsService', function(utilsService) {
               var lostChangeValue = '';
               if (oldValue === null) {
                 if (newValue !== 'EndExploration') {
-                  lostChangeValue = ('<strong>Added Interaction: </strong>' +
+                  lostChangeValue = ('<strong>添加交互内容: </strong>' +
                                      newValue);
                 } else {
-                  lostChangeValue = 'Ended Exploration';
+                  lostChangeValue = '结束课程';
                 }
               } else {
-                lostChangeValue = ('<strong>Deleted Interaction: </strong>' +
+                lostChangeValue = ('<strong>已删除交互: </strong>' +
                                    oldValue);
               }
               stateWiseEditsMapping[stateName].push(
@@ -2177,11 +2177,11 @@ oppia.factory('lostChangesService', ['utilsService', function(utilsService) {
             case 'widget_customization_args':
               var lostChangeValue = '';
               if (utilsService.isEmpty(oldValue)) {
-                lostChangeValue = 'Added Interaction Customizations';
+                lostChangeValue = '添加交互自定义信息';
               } else if (utilsService.isEmpty(newValue)) {
-                lostChangeValue = 'Removed Interaction Customizations';
+                lostChangeValue = '删除交互自定义信息';
               } else {
-                lostChangeValue = 'Edited Interaction Customizations';
+                lostChangeValue = '编辑交互信息内容';
               }
               stateWiseEditsMapping[stateName].push(
                 angular.element('<div></div>').html(lostChangeValue)
@@ -2196,7 +2196,7 @@ oppia.factory('lostChangesService', ['utilsService', function(utilsService) {
                   '<p class="sub-edit"><i>Destination: </i>' +
                     newValue.outcome.dest + '</p>');
                 answerGroupHtml += (
-                  '<div class="sub-edit"><i>Feedback: </i>' +
+                  '<div class="sub-edit"><i>反馈: </i>' +
                     '<div class="feedback">' +
                     newValue.outcome.feedback + '</div></div>');
                 var rulesList = makeRulesListHumanReadable(newValue);
@@ -2210,7 +2210,7 @@ oppia.factory('lostChangesService', ['utilsService', function(utilsService) {
                   answerGroupHtml += rulesListHtml[0].outerHTML;
                 }
                 stateWiseEditsMapping[stateName].push(
-                  angular.element('<div><strong>Added answer group: ' +
+                  angular.element('<div><strong>已添加答案: ' +
                                   '</strong></div>')
                     .append(answerGroupHtml)
                     .addClass('state-edit-desc answer-group'));
@@ -2223,7 +2223,7 @@ oppia.factory('lostChangesService', ['utilsService', function(utilsService) {
                 if (!angular.equals(
                     newValue.outcome.feedback, oldValue.outcome.feedback)) {
                   answerGroupHtml += (
-                    '<div class="sub-edit"><i>Feedback: </i>' +
+                    '<div class="sub-edit"><i>反馈: </i>' +
                       '<div class="feedback">' + newValue.outcome.feedback +
                       '</div></div>');
                 }
@@ -2240,13 +2240,13 @@ oppia.factory('lostChangesService', ['utilsService', function(utilsService) {
                   }
                 }
                 stateWiseEditsMapping[stateName].push(
-                  angular.element('<div><strong>Edited answer group: <strong>' +
+                  angular.element('<div><strong>编辑答案: <strong>' +
                                   '</div>')
                     .append(answerGroupHtml)
                     .addClass('state-edit-desc answer-group'));
               } else if (answerGroupChanges === 'deleted') {
                 stateWiseEditsMapping[stateName].push(
-                  angular.element('<div>Deleted answer group</div>')
+                  angular.element('<div>删除答案</div>')
                     .addClass('state-edit-desc'));
               }
               break;

@@ -39,7 +39,7 @@ oppia.factory('CollectionCreationService', [
         collectionCreationInProgress = true;
         alertsService.clearWarnings();
 
-        $rootScope.loadingMessage = 'Creating collection';
+        $rootScope.loadingMessage = '正在创建';
         $http.post('/collection_editor_handler/create_new', {}).then(
           function(response) {
             siteAnalyticsService.registerCreateNewCollectionEvent(

@@ -20,9 +20,9 @@ from extensions.interactions import base
 class LogicProof(base.BaseInteraction):
     """Interaction for entering logic proofs."""
 
-    name = 'Logic Proof'
+    name = '逻辑证明'
     description = (
-        'Allows learners to write proofs for simple logical statements.')
+        '填写简单逻辑证明')
     display_mode = base.DISPLAY_MODE_SUPPLEMENTAL
     _dependency_ids = ['logic_proof', 'codemirror']
     answer_type = 'CheckedProof'
@@ -32,7 +32,7 @@ class LogicProof(base.BaseInteraction):
 
     _customization_arg_specs = [{
         'name': 'question',
-        'description': 'Question to ask',
+        'description': '问题',
         'schema': {
             'type': 'custom',
             'obj_type': 'LogicQuestion',

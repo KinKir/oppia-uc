@@ -103,7 +103,7 @@ oppia.directive('oppiaResponseImageClickInput', [function() {
         function($scope, $attrs, oppiaHtmlEscaper) {
       var _answer = oppiaHtmlEscaper.escapedJsonToObj($attrs.answer);
 
-      $scope.clickRegionLabel = '(Clicks on ' + (
+      $scope.clickRegionLabel = '(点击 ' + (
         _answer.clickedRegions.length > 0 ?
         '\'' + _answer.clickedRegions[0] + '\'' : 'image') + ')';
     }]
@@ -120,7 +120,7 @@ oppia.directive('oppiaShortResponseImageClickInput', [
         var _answer = oppiaHtmlEscaper.escapedJsonToObj($attrs.answer);
         $scope.clickRegionLabel = (
           _answer.clickedRegions.length > 0 ? _answer.clickedRegions[0] :
-          'Clicked on image');
+          '点击图片');
       }]
     };
   }

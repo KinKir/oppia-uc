@@ -46,7 +46,7 @@ oppia.controller('Dashboard', [
       $scope.myExplorationsView = viewType;
     };
 
-    $rootScope.loadingMessage = 'Loading';
+    $rootScope.loadingMessage = '加载中';
     DashboardBackendApiService.fetchDashboardData().then(
       function(response) {
         $scope.explorationsList = response.explorations_list.sort(
@@ -63,7 +63,7 @@ oppia.controller('Dashboard', [
       },
       function(errorStatus) {
         if (FATAL_ERROR_CODES.indexOf(errorStatus) !== -1) {
-          alertsService.addWarning('Failed to get dashboard data');
+          alertsService.addWarning('获取数据失败');
         }
       }
     );

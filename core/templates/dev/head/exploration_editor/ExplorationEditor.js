@@ -520,7 +520,7 @@ oppia.controller('ExplorationSaveAndPublishButtons', [
 
     $scope.discardChanges = function() {
       var confirmDiscard = confirm(
-        'Are you sure you want to discard your changes?');
+        '您确定要忽略所做的修改?');
 
       if (confirmDiscard) {
         alertsService.clearWarnings();
@@ -528,7 +528,7 @@ oppia.controller('ExplorationSaveAndPublishButtons', [
 
         $scope.isDiscardInProgress = true;
         changeListService.discardAllChanges();
-        alertsService.addSuccessMessage('Changes discarded.');
+        alertsService.addSuccessMessage('已忽略修改');
         $rootScope.$broadcast('initExplorationPage', function() {
           $scope.lastSaveOrDiscardAction = 'discard';
           $scope.isDiscardInProgress = false;
@@ -598,7 +598,7 @@ oppia.controller('ExplorationSaveAndPublishButtons', [
         $rootScope.$broadcast('refreshVersionHistory', {
           forceRefresh: true
         });
-        alertsService.addSuccessMessage('Changes saved.');
+        alertsService.addSuccessMessage('已保存.');
         $scope.lastSaveOrDiscardAction = 'save';
         $scope.isSaveInProgress = false;
         if (successCallback) {
@@ -729,15 +729,15 @@ oppia.controller('ExplorationSaveAndPublishButtons', [
 
               $scope.save = function() {
                 if (!explorationTitleService.displayed) {
-                  alertsService.addWarning('Please specify a title');
+                  alertsService.addWarning('请输入标题');
                   return;
                 }
                 if (!explorationObjectiveService.displayed) {
-                  alertsService.addWarning('Please specify an objective');
+                  alertsService.addWarning('请填写内容');
                   return;
                 }
                 if (!explorationCategoryService.displayed) {
-                  alertsService.addWarning('Please specify a category');
+                  alertsService.addWarning('请指定一个分类');
                   return;
                 }
 
@@ -799,21 +799,21 @@ oppia.controller('ExplorationSaveAndPublishButtons', [
 
     $scope.getPublishExplorationButtonTooltip = function() {
       if (explorationWarningsService.countWarnings() > 0) {
-        return 'Please resolve the warnings before publishing.';
+        return '请解决当前问题.';
       } else if ($scope.isExplorationLockedForEditing()) {
-        return 'Please save your changes before publishing.';
+        return '请先保存，然后再进行发布.';
       } else {
-        return 'Publish to Oppia Library';
+        return '发布';
       }
     };
 
     $scope.getSaveButtonTooltip = function() {
       if (explorationWarningsService.hasCriticalWarnings() > 0) {
-        return 'Please resolve the warnings.';
+        return '请解决警告.';
       } else if ($scope.isPrivate()) {
-        return 'Save Draft';
+        return '保存草稿';
       } else {
-        return 'Publish Changes';
+        return '发布修改';
       }
     };
 

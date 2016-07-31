@@ -36,7 +36,7 @@ oppia.controller('PrivateLogs', [
   $rootScope.loadingMessage = '加载中...';
   $http.get('/privatelog/data').then(function(response) {
     var data = response.data;
-    $scope.recentNotifications = data.logs;
+    $scope.logs = data.logs;
     $scope.jobQueuedMsec = data.job_queued_msec;
     $scope.lastSeenMsec = data.last_seen_msec || 0.0;
     $scope.currentUsername = data.username;

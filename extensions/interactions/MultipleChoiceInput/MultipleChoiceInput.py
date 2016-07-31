@@ -20,9 +20,9 @@ from extensions.interactions import base
 class MultipleChoiceInput(base.BaseInteraction):
     """Interaction for multiple choice input."""
 
-    name = 'Multiple Choice'
+    name = '多选'
     description = (
-        'Allows learners to select one of a list of multiple-choice options.')
+        '选择多个选项')
     display_mode = base.DISPLAY_MODE_INLINE
     _dependency_ids = []
     answer_type = 'NonnegativeInt'
@@ -32,7 +32,7 @@ class MultipleChoiceInput(base.BaseInteraction):
 
     _customization_arg_specs = [{
         'name': 'choices',
-        'description': 'Multiple Choice options',
+        'description': '多选选项',
         'schema': {
             'type': 'list',
             'validators': [{
@@ -46,8 +46,8 @@ class MultipleChoiceInput(base.BaseInteraction):
                 },
             },
             'ui_config': {
-                'add_element_text': 'Add multiple choice option',
+                'add_element_text': '添加选项',
             }
         },
-        'default_value': ['Sample multiple-choice answer'],
+        'default_value': ['多选'],
     }]

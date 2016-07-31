@@ -20,16 +20,16 @@ from extensions.interactions import base
 class ItemSelectionInput(base.BaseInteraction):
     """Interaction for item selection input."""
 
-    name = 'Item Selection'
+    name = '选择'
     description = (
-        'Allows learners to select various options.')
+        '学生选择选项作答.')
     display_mode = base.DISPLAY_MODE_INLINE
     _dependency_ids = []
     answer_type = 'SetOfHtmlString'
 
     _customization_arg_specs = [{
         'name': 'minAllowableSelectionCount',
-        'description': 'Minimum number of selections permitted.',
+        'description': '至少选择个数.',
         'schema': {
             'type': 'int',
             'validators': [{
@@ -40,7 +40,7 @@ class ItemSelectionInput(base.BaseInteraction):
         'default_value': 1,
     }, {
         'name': 'maxAllowableSelectionCount',
-        'description': 'Maximum number of selections permitted',
+        'description': '最多选择个数',
         'schema': {
             'type': 'int',
             'validators': [{
@@ -51,7 +51,7 @@ class ItemSelectionInput(base.BaseInteraction):
         'default_value': 1,
     }, {
         'name': 'choices',
-        'description': 'Items for selection',
+        'description': '选项',
         'schema': {
             'type': 'list',
             'items': {
@@ -61,8 +61,8 @@ class ItemSelectionInput(base.BaseInteraction):
                 },
             },
             'ui_config': {
-                'add_element_text': 'Add item for selection',
+                'add_element_text': '添加选项',
             }
         },
-        'default_value': ['Sample item answer'],
+        'default_value': ['选择'],
     }]

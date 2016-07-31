@@ -41,7 +41,7 @@ oppia.directive('musicPhraseEditor', [
           ]
         },
         ui_config: {
-          add_element_text: 'Add Note ♩'
+          add_element_text: '添加音符 ♩'
         },
         validators: [{
           id: 'has_length_at_most',

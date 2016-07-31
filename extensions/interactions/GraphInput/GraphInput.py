@@ -20,19 +20,19 @@ from extensions.interactions import base
 class GraphInput(base.BaseInteraction):
     """Interaction for evaluating graphs."""
 
-    name = 'Graph Theory'
-    description = 'Allows learners to create and manipulate graphs.'
+    name = '几何图形'
+    description = '允许创建多种几何图形'
     display_mode = base.DISPLAY_MODE_SUPPLEMENTAL
     is_trainable = False
     _dependency_ids = []
     answer_type = 'Graph'
-    instructions = 'Create a graph'
+    instructions = '创建几何图形'
     narrow_instructions = 'View graph'
     needs_summary = True
 
     _customization_arg_specs = [{
         'name': 'graph',
-        'description': 'Initial graph',
+        'description': '初始图形',
         'schema': {
             'type': 'custom',
             'obj_type': 'Graph',
@@ -66,49 +66,49 @@ class GraphInput(base.BaseInteraction):
         }
     }, {
         'name': 'canAddVertex',
-        'description': 'Allow learner to add vertices',
+        'description': '允许添加点',
         'schema': {
             'type': 'bool',
         },
         'default_value': False
     }, {
         'name': 'canDeleteVertex',
-        'description': 'Allow learner to delete vertices',
+        'description': '允许删除点',
         'schema': {
             'type': 'bool',
         },
         'default_value': False
     }, {
         'name': 'canMoveVertex',
-        'description': 'Allow learner to move vertices',
+        'description': '允许移动点',
         'schema': {
             'type': 'bool',
         },
         'default_value': True
     }, {
         'name': 'canEditVertexLabel',
-        'description': 'Allow learner to edit vertex labels',
+        'description': '允许编辑节点标签',
         'schema': {
             'type': 'bool',
         },
         'default_value': False
     }, {
         'name': 'canAddEdge',
-        'description': 'Allow learner to add edges',
+        'description': '允许添加线',
         'schema': {
             'type': 'bool',
         },
         'default_value': True
     }, {
         'name': 'canDeleteEdge',
-        'description': 'Allow learner to delete edges',
+        'description': '允许删除线',
         'schema': {
             'type': 'bool',
         },
         'default_value': True
     }, {
         'name': 'canEditEdgeWeight',
-        'description': 'Allow learner to edit edge weights',
+        'description': '允许编辑线权重',
         'schema': {
             'type': 'bool',
         },

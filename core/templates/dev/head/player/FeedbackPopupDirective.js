@@ -100,7 +100,7 @@ oppia.directive('feedbackPopup', [
           $scope.saveFeedback = function() {
             if ($scope.feedbackText) {
               $http.post(feedbackUrl, {
-                subject: '(Feedback from a learner)',
+                subject: '(来自学生的反馈)',
                 feedback: $scope.feedbackText,
                 include_author: (
                   !$scope.isSubmitterAnonymized && $scope.isLoggedIn),

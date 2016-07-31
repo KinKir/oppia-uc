@@ -20,9 +20,9 @@ from extensions.interactions import base
 class NumericInput(base.BaseInteraction):
     """Interaction for numeric input."""
 
-    name = 'Number Input'
+    name = '输入数字'
     description = (
-        'Allows learners to enter integers and floating point numbers.')
+        '允许学生输入整数和小数')
     display_mode = base.DISPLAY_MODE_INLINE
     is_trainable = False
     _dependency_ids = []

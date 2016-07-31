@@ -20,8 +20,8 @@ from extensions.interactions import base
 class SetInput(base.BaseInteraction):
     """Interaction for input of an unordered set of strings."""
 
-    name = 'Set Input'
-    description = 'Allows learners to enter an unordered set of strings.'
+    name = '集合输入'
+    description = '输入多行'
     display_mode = base.DISPLAY_MODE_INLINE
     _dependency_ids = []
     answer_type = 'SetOfUnicodeString'

@@ -20,7 +20,7 @@ from extensions.interactions import base
 class Continue(base.BaseInteraction):
     """Interaction that takes the form of a simple 'Continue' button."""
 
-    name = 'Continue Button'
+    name = '继续按钮'
     description = '简单的进行下一步按钮.'
     display_mode = base.DISPLAY_MODE_INLINE
     _dependency_ids = []

@@ -28,12 +28,12 @@
     </div>
 
     <div class="oppia-notifications-tray">
-      <md-card ng-if="recentNotifications.length === 0" class="oppia-page-card oppia-notifications-dashboard-card">
+      <md-card ng-if="logs.length === 0" class="oppia-page-card oppia-notifications-dashboard-card">
         <em>没有发布日志.</em>
       </md-card>
 
       <div ng-if="recentNotifications.length > 0">
-        <md-card ng-repeat="notification in recentNotifications" class="oppia-dashboard-row"
+        <md-card ng-repeat="notification in logs" class="oppia-dashboard-row"
           ng-class="{'oppia-dashboard-row-recent': lastSeenMsec && lastSeenMsec < notification.last_updated_ms && notification.author_username !== currentUsername}" ng-click="navigateToItem(notification.activity_id, notification.type)">
           <div class="oppia-notification-content">
             <span class="oppia-notification-type">
@@ -48,8 +48,8 @@
             </span>
             <span class="oppia-notification-author-username">
               <strong>
-                <a ng-if="notification.author_username" ng-click="navigateToProfile($event, notification.author_username)"><[notification.author_username]></a>
-                <span ng-if="!notification.author_username">
+                <a ng-if="notification.original_author_username" ng-click="navigateToProfile($event, notification.author_username)"><[notification.author_username]></a>
+                <span ng-if="!notification.original_author_username">
                   匿名
                 </span>
               </strong>

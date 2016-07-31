@@ -656,8 +656,8 @@ def _create_exploration(
 
 def save_new_exploration(committer_id, exploration):
     commit_message = (
-        ('新建课程 \'%s\'.' % exploration.title)
-        if exploration.title else '新建课程.')
+        ('\'%s\'.' % exploration.title)
+        if exploration.title else '新建课程')
     _create_exploration(committer_id, exploration, commit_message, [{
         'cmd': CMD_CREATE_NEW,
         'title': exploration.title,

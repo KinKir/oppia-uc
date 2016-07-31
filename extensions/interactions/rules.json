@@ -39,7 +39,7 @@
       "description": "在 {{d|Real}} km 和 {{p|CoordTwoDim}}"
     },
     "NotWithin": {
-      "description": "不再 {{d|Real}} km 和 {{p|CoordTwoDim}}"
+      "description": "不在 {{d|Real}} km 和 {{p|CoordTwoDim}}"
     }
   },
   "ItemSelectionInput": {
@@ -145,13 +145,13 @@
       "description": "是一个{{x|SetOfUnicodeString}}的子集"
     },
     "IsSupersetOf": {
-      "description": "是 {{x|SetOfUnicodeString}}的父级"
+      "description": "是 {{x|SetOfUnicodeString}}的父集"
     },
     "HasElementsIn": {
       "description": "和 {{x|SetOfUnicodeString}}拥有共同的元素"
     },
     "HasElementsNotIn": {
-      "description": "有元素不再 {{x|SetOfUnicodeString}}中"
+      "description": "有元素不在 {{x|SetOfUnicodeString}}中"
     },
     "OmitsElementsIn": {
       "description": "与 {{x|SetOfUnicodeString}}相比，缺少了元素"

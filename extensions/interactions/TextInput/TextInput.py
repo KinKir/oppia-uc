@@ -20,8 +20,8 @@ from extensions.interactions import base
 class TextInput(base.BaseInteraction):
     """Interaction for entering text strings."""
 
-    name = 'Text Input'
-    description = 'Allows learners to enter arbitrary text strings.'
+    name = '文本输入'
+    description = '输入文本'
     display_mode = base.DISPLAY_MODE_INLINE
     is_trainable = True
     is_string_classifier_trainable = True
@@ -40,14 +40,14 @@ class TextInput(base.BaseInteraction):
     # parameter.
     _customization_arg_specs = [{
         'name': 'placeholder',
-        'description': 'Placeholder text (optional)',
+        'description': '文本提示内容（选填）',
         'schema': {
             'type': 'unicode',
         },
         'default_value': ''
     }, {
         'name': 'rows',
-        'description': 'Height (in rows)',
+        'description': '高度',
         'schema': {
             'type': 'int',
             'validators': [{

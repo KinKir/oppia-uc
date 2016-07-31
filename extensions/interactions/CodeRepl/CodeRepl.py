@@ -20,21 +20,21 @@ from extensions.interactions import base
 class CodeRepl(base.BaseInteraction):
     """Interaction that allows programs to be input."""
 
-    name = 'Code Editor'
-    description = 'Allows learners to enter code and get it evaluated.'
+    name = '编码器'
+    description = '学生输入可以执行的代码'
     display_mode = base.DISPLAY_MODE_SUPPLEMENTAL
     is_trainable = False
     _dependency_ids = ['skulpt', 'codemirror']
     answer_type = 'CodeEvaluation'
-    instructions = 'Type code in the editor'
-    narrow_instructions = 'Go to code editor'
+    instructions = '在编辑器中输入代码'
+    narrow_instructions = '输入编码'
     needs_summary = True
 
     # Language options 'lua', 'scheme', 'coffeescript', 'javascript', and
     # 'ruby' have been removed for possible later re-release.
     _customization_arg_specs = [{
         'name': 'language',
-        'description': 'Programming language',
+        'description': '代码语言',
         'schema': {
             'type': 'unicode',
             'choices': [
@@ -44,17 +44,17 @@ class CodeRepl(base.BaseInteraction):
         'default_value': 'python'
     }, {
         'name': 'placeholder',
-        'description': 'Initial code displayed',
+        'description': '初始代码',
         'schema': {
             'type': 'unicode',
             'ui_config': {
                 'coding_mode': 'none',
             },
         },
-        'default_value': '# Type your code here.'
+        'default_value': '# 在这里输入你的代码.'
     }, {
         'name': 'preCode',
-        'description': 'Code to prepend to the learner\'s submission',
+        'description': '添加到学生输入代码之前的代码',
         'schema': {
             'type': 'unicode',
             'ui_config': {
@@ -64,7 +64,7 @@ class CodeRepl(base.BaseInteraction):
         'default_value': ''
     }, {
         'name': 'postCode',
-        'description': 'Code to append after the learner\'s submission',
+        'description': '添加到学生输入代码之后的代码',
         'schema': {
             'type': 'unicode',
             'ui_config': {

@@ -20,24 +20,24 @@ from extensions.interactions import base
 class PencilCodeEditor(base.BaseInteraction):
     """Interaction for running code in Pencil Code."""
 
-    name = 'Pencil Code Editor'
-    description = 'Allows learners to edit code in Pencil Code.'
+    name = '图形程序编码器'
+    description = '输入图形程序.'
     display_mode = base.DISPLAY_MODE_SUPPLEMENTAL
     is_trainable = False
     _dependency_ids = ['pencilcode']
     answer_type = 'CodeEvaluation'
-    instructions = 'Edit the code. Click \'Play\' to check it!'
-    narrow_instructions = 'Show code editor'
+    instructions = '编写完代码点击播放预览代码'
+    narrow_instructions = '显示代码编辑器'
     needs_summary = True
 
     _customization_arg_specs = [{
         'name': 'initial_code',
-        'description': 'The initial code',
+        'description': '初始代码',
         'schema': {
             'type': 'unicode',
             'ui_config': {
                 'coding_mode': 'coffeescript',
             },
         },
-        'default_value': '# Add the initial code snippet here.'
+        'default_value': '# 输入初始代码'
     }]

@@ -25,7 +25,7 @@ class EndExploration(base.BaseInteraction):
     containing it.
     """
 
-    name = 'End Exploration'
+    name = '结束课程'
     description = (
         'Ends the exploration, and suggests recommendations for explorations '
         'to try next.')
