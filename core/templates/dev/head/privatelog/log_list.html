@@ -29,7 +29,7 @@
 
     <div class="oppia-notifications-tray">
       <md-card ng-if="logs.length === 0" class="oppia-page-card oppia-notifications-dashboard-card">
-        <em>没有发布日志.</em>
+        <em>没有日志.</em>
       </md-card>
 
       <div ng-if="recentNotifications.length > 0">
@@ -41,10 +41,7 @@
                     title="Feedback thread">
                 <i class="material-icons">&#xE0B9;</i>
               </span>
-              <span ng-if="notification.type === 'exploration_commit'"
-                    title="Exploration commit">
-                <i class="material-icons">&#xE150;</i>
-              </span>
+             <[notification.title]>
             </span>
             <span class="oppia-notification-author-username">
               <strong>
@@ -53,15 +50,7 @@
                   匿名
                 </span>
               </strong>
-              <span ng-if="notification.type === 'exploration_commit'">
-                发表新评论
-              </span>
-              <span ng-if="notification.type === 'feedback_thread'">
-                回复
-              </span>
-              <span class="oppia-notification-activity-title">
-                <[notification.activity_title]>
-              </span>
+              
             </span>
           </div>
           <div class="oppia-notification-last-updated">

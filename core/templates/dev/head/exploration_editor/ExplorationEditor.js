@@ -57,7 +57,7 @@ oppia.controller('ExplorationEditor', [
     /**********************************************************
      * Called on initial load of the exploration editor page.
      *********************************************************/
-    $rootScope.loadingMessage = 'Loading';
+    $rootScope.loadingMessage = '正在加载';
 
     $scope.explorationId = explorationContextService.getExplorationId();
     $scope.explorationUrl = '/create/' + $scope.explorationId;
@@ -192,11 +192,11 @@ oppia.controller('ExplorationEditor', [
 
     $scope.EDITOR_TUTORIAL_OPTIONS = [{
       type: 'title',
-      heading: 'Creating in Oppia',
+      heading: '创建课程',
       text: (
-        'Explorations are learning experiences that you create using Oppia. ' +
-        'Think of explorations as a conversation between a student ' +
-        'and a tutor.')
+        '使用系统创建课程. ' +
+        '采用互动的方式进行教学' +
+        '')
     }, {
       type: 'function',
       fn: function(isGoingForward) {
@@ -207,13 +207,13 @@ oppia.controller('ExplorationEditor', [
     }, {
       type: 'element',
       selector: _ID_TUTORIAL_STATE_CONTENT,
-      heading: 'Content',
+      heading: '内容',
       text: (
-        '<p>An Oppia exploration is divided into several \'cards.\' ' +
-        'The first part of a card is the <b>content</b>.</p>' +
-        '<p>Use the content section to set the scene. ' +
-        'Tell the learner a story, give them some information, ' +
-        'and then ask a relevant question.</p>'),
+        '<p>一个课程被分为若干\'卡片\'' +
+        '第一个卡片内容用于描述课程背景</p>' +
+        '<p> ' +
+        '讲一个故事，描述一些信息，然后提出响应的问题。' +
+        '</p>'),
       placement: 'bottom'
     }, {
       type: 'function',
@@ -228,25 +228,25 @@ oppia.controller('ExplorationEditor', [
     }, {
       type: 'title',
       selector: _ID_TUTORIAL_STATE_INTERACTION,
-      heading: 'Interaction',
+      heading: '课程内容',
       text: (
-        '<p>After you\'ve written the content of your conversation, ' +
-        'choose an <b>interaction type</b>. ' +
-        'An interaction is how you want your leaner to respond ' +
-        'to your question.</p> ' +
-        '<p>Oppia has several built-in interactions, including:</p>' +
+        '<p>填写完课程介绍后，选择课程交互问答。' +
+        '' +
+        '课程交互问答可以让学生对您的问题作答。 ' +
+        '</p> ' +
+        '<p>我们提供以下类型的交互作答:</p>' +
         '<ul>' +
         '  <li>' +
-        '    Multiple Choice' +
+        '    多选' +
         '  </li>' +
         '  <li>' +
-        '    Text/Number input' +
+        '    文本/数字输入' +
         '  </li>' +
         '  <li>' +
-        '    Code snippets' +
+        '    程序代码' +
         '  </li>' +
         '</ul>' +
-        'and more.')
+        '等等.')
     }, {
       type: 'function',
       fn: function(isGoingForward) {
@@ -259,12 +259,11 @@ oppia.controller('ExplorationEditor', [
       }
     }, {
       type: 'title',
-      heading: 'Responses',
+      heading: '响应',
       text: (
-        'After the learner uses the interaction you created, it\'s your turn ' +
-        'again to choose how your exploration will respond to their input. ' +
-        'You can send a learner to a new card or have them repeat the same ' +
-        'card, depending on how they answer.')
+        '在学生对您提出的问题回答后，您可以对作出的' +
+        '答案进行不同的响应，' +
+        '返回一段描述，或者跳转到一个新的卡片。')
     }, {
       type: 'function',
       fn: function(isGoingForward) {
@@ -278,39 +277,39 @@ oppia.controller('ExplorationEditor', [
     }, {
       type: 'element',
       selector: _ID_TUTORIAL_PREVIEW_TAB,
-      heading: 'Preview',
+      heading: '预览',
       text: (
-        'At any time, you can click the <b>preview</b> button to play ' +
-        'through your exploration.'),
+        '您可以随时点击预览按钮查看您的课程。 ' +
+        ''),
       placement: 'bottom'
     }, {
       type: 'element',
       selector: _ID_TUTORIAL_SAVE_BUTTON,
-      heading: 'Save',
+      heading: '保存',
       text: (
-        'When you\'re done making changes, ' +
-        'be sure to save your work.<br><br>'),
+        '编辑完课程后,进行保存数据 ' +
+        '<br><br>'),
       placement: 'bottom'
     }, {
       type: 'title',
-      heading: 'Tutorial Complete',
+      heading: '结束',
       text: (
-        '<h2>Now for the fun part...</h2>' +
-        'That\'s the end of the tour! ' +
-        'To finish up, here are some things we suggest: ' +
+        '<h2>教程结束</h2>' +
+        ' ' +
+        '我们最后建议: ' +
         '<ul>' +
         '  <li>' +
-        '    Create your first card!' +
+        '    创建第一个卡片!' +
         '  </li>' +
         '  <li>' +
-        '    Preview your exploration.' +
+        '    预览课程.' +
         '  </li>' +
-        '  <li>' +
+        /*'  <li>' +
         '    Check out more resources in the ' +
         '    <a href="https://oppia.github.io/#/" target="_blank">' +
         '      Help Center.' +
         '    </a>' +
-        '  </li>' +
+        '  </li>' +*/
         '</ul>')
     }];
 
