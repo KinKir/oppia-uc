@@ -22,7 +22,7 @@
   <ul class="nav navbar-nav oppia-navbar-breadcrumb">
     <li>
       <span class="oppia-navbar-breadcrumb-separator"></span>
-      Profile
+     个人信息 
       <span class="oppia-navbar-breadcrumb-separator" style="padding-left: 10px;"></span>
       {{PROFILE_USERNAME}}
     </li>
@@ -77,19 +77,19 @@
       <p class="oppia-profile-user-bio">
         <span ng-if="userBio" style="white-space: pre-wrap;"><[userBio]></span>
         <span ng-if="!userBio">
-          <em>This user has not supplied a bio yet.</em>
+          <em>未填写简介.</em>
         </span>
       </p>
 
       <p class="oppia-profile-subject-interest-container">
-        Interests:
+        兴趣爱好:
         <span ng-if="subjectInterests.length > 0"><br>
           <span ng-repeat="interest in subjectInterests track by $index">
             <span class="oppia-profile-subject-interest"><[interest]></span>
           </span>
         </span>
         <span ng-if="subjectInterests.length === 0" class="oppia-profile-no-interests-text">
-          <em>none specified</em>
+          <em>未填写</em>
         </span>
       </p>
 
@@ -106,7 +106,7 @@
     </md-card>
 
     <md-card class="oppia-profile-content-card">
-      <strong>Portfolio</strong>
+      <strong>课程</strong>
       <md-content class="oppia-profile-portfolio-container">
         <exploration-summary-tile ng-repeat="expl in getExplorationsToDisplay()"
           exploration-id="expl.id"
@@ -123,7 +123,7 @@
         </exploration-summary-tile>
 
         <div ng-if="userEditedExplorations.length === 0">
-          <br><em>This user hasn't created or edited any explorations yet.</em>
+          <br><em>未创建课程.</em>
         </div>
       </md-content>
 

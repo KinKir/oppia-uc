@@ -26,7 +26,7 @@ oppia.controller('Profile', [
       return oppiaDatetimeFormatter.getLocaleDateString(millisSinceEpoch);
     };
 
-    $rootScope.loadingMessage = 'Loading';
+    $rootScope.loadingMessage = '正在加载';
     $http.get(profileDataUrl).then(function(response) {
       var data = response.data;
       $rootScope.loadingMessage = '';
@@ -38,16 +38,16 @@ oppia.controller('Profile', [
       $scope.usernameIsLong = data.profile_username.length > 16;
       $scope.userBio = data.user_bio;
       $scope.userDisplayedStatistics = [{
-        title: 'Impact',
+        title: '指标',
         value: data.user_impact_score,
         helpText: (
-          'A rough measure of the impact of explorations created by this ' +
-          'user. Better ratings and more playthroughs improve this score.')
+          '用户所创建的课程的评分和播放次数的考核指标' +
+          '')
       }, {
-        title: 'Created',
+        title: '创建',
         value: data.created_exp_summary_dicts.length
       }, {
-        title: 'Edited',
+        title: '编辑',
         value: data.edited_exp_summary_dicts.length
       }];
 

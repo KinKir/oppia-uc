@@ -37,7 +37,7 @@ oppia.controller('FeedbackTab', [
       oppiaDatetimeFormatter.getLocaleAbbreviatedDatetimeString);
 
     $scope.activeThread = null;
-    $rootScope.loadingMessage = 'Loading';
+    $rootScope.loadingMessage = '正在加载';
     $scope.tmpMessage = {
       status: null,
       text: ''

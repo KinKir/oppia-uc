@@ -16,8 +16,8 @@
  * @fileoverview Data and controllers for the user's private log dashboard.
  */
 oppia.controller('PrivateLogs', [
-    '$scope', '$http', '$rootScope', 'oppiaDatetimeFormatter',
-    function($scope, $http, $rootScope, oppiaDatetimeFormatter) {
+    '$scope', '$http', '$model', '$rootScope', 'oppiaDatetimeFormatter',
+    function($scope, $http, $model, $rootScope, oppiaDatetimeFormatter) {
   $scope.navigateToItem = function(activityId, notificationType) {
     window.location.href = '/create/' + activityId + (
       notificationType === 'feedback_thread' ? '#/feedback' : '');
@@ -32,7 +32,29 @@ oppia.controller('PrivateLogs', [
     return oppiaDatetimeFormatter.getLocaleAbbreviatedDatetimeString(
       millisSinceEpoch);
   };
+  $scope.showCreateLogModal = function() {
+    /* $model.open({
+      templateUrl: 'models/editorPrivateLogCreate',
+      backdrop: true,
+      resolve: {},
+      controller: ['$scope', '$modelInstance',
+      function ($scope, $modelInstance) {
+        $scope.newLogTitle = '';
+        $scope.newLogContent = '';
+        $scope.create = function (newLogTitle, newLogContent) {
+          $modelInstance.close({
+            newLogTitle: newLogTitle,
+            newLogContent: newLogContent
+          })
+        };
+        $scope.cancel = function () {
+          $modelInstance.dismiss('cancel');
+        };
+      }]
+    }).result.then(function (result) {
 
+    })*/
+  };
   $rootScope.loadingMessage = '加载中...';
   $http.get('/privatelog/data').then(function(response) {
     var data = response.data;

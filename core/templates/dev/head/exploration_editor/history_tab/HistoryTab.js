@@ -99,7 +99,7 @@ oppia.controller('HistoryTab', [
 
     // Refreshes the displayed version history log.
     $scope.refreshVersionHistory = function() {
-      $rootScope.loadingMessage = 'Loading';
+      $rootScope.loadingMessage = '正在加载';
       explorationData.getData().then(function(data) {
         var currentVersion = data.version;
         /**

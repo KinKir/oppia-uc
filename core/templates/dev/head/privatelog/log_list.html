@@ -23,6 +23,9 @@
 {% block content %}
   <div class="oppia-dashboard-container" ng-controller="PrivateLogs">
     <h2 class="oppia-page-heading">日志</h2>
+    <button class="btn btn-success pull-right" ng-click="showCreateLogModal()">
+          写日志
+    </button>
     <div class="oppia-page-heading-subtext" ng-if="jobQueuedMsec">
       最后更新: <[getLocaleAbbreviatedDatetimeString(jobQueuedMsec)]>
     </div>
@@ -60,6 +63,21 @@
       </div>
     </div>
   </div>
+<!--<script type="text/ng-template" id="modals/editorPrivateLogCreate">
+  <div class="modal-header">
+    <h3>发起新的评论</h3>
+  </div>
+
+  <div class="modal-body">
+    <p>评论内容: <input type="text" ng-model="newThreadSubject"></p>
+    <p>消息内容 <textarea ng-model="newThreadText" rows="6"></textarea></p>
+  </div>
+
+  <div class="modal-footer">
+    <button class="btn btn-success" ng-click="create(newThreadSubject, newThreadText)" ng-disabled="!newThreadSubject || !newThreadText">发表</button>
+    <button class="btn btn-default" ng-click="cancel()">取消</button>
+  </div>
+</script>-->
 {% endblock %}
 
 {% block footer_js %}

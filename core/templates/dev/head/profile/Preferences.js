@@ -22,7 +22,7 @@ oppia.controller('Preferences', [
   function(
       $scope, $http, $rootScope, $modal, $timeout, $translate, alertsService) {
     var _PREFERENCES_DATA_URL = '/preferenceshandler/data';
-    $rootScope.loadingMessage = 'Loading';
+    $rootScope.loadingMessage = '正在加载';
     $scope.profilePictureDataUrl = '';
 
     var _saveDataItem = function(updateType, data) {
