@@ -426,6 +426,9 @@ URLS = MAPREDUCE_HANDLERS + [
     get_redirect_route(
         r'/privatelog/data', private_log.PrivateLogListHandler,
         'private_log_data'),
+    get_redirect_route(
+        r'/privatelog/handler/<log_id>', private_log.CreatePrivateLogHandler,
+        'private_log_handler'),
     # 404 error handler.
     get_redirect_route(r'/<:.*>', base.Error404Handler, 'error_404_handler'),
 ]

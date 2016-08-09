@@ -30,44 +30,55 @@ class PrivateLogListHandler(base.BaseHandler):
     """
     处理个人日志请求列表
     """
+    PAGE_NAME_FOR_CSRF = 'editor'
+
     def get(self):
         self.values.update({
             'logs': [t.to_dict() for t in \
-                privatelog_services.\
-                     get_all_privatelog(self.user_id)]})
+                     privatelog_services. \
+                         get_all_privatelog(self.user_id)]})
         self.render_json(self.values)
 
 
 class CreateLogCategoryHandler(base.BaseHandler):
+    PAGE_NAME_FOR_CSRF = 'editor'
+
     def get(self):
         self.render_json(self.values)
 
     def post(self):
+        name = self.payload.get('name')
         privatelog_services.create_category(
-            self.user_id, 'name')
+            self.user_id, name)
         self.render_json(self.values)
 
 
 class CreatePrivateLogHandler(base.BaseHandler):
+    PAGE_NAME_FOR_CSRF = 'editor'
 
-    def get(self, log_id):# pylint: disable=unused-argument
+    def get(self, log_id):  # pylint: disable=unused-argument
         self.render_json(self.values)
 
-    def post(self, log_id):# pylint: disable=unused-argument
-        text = "test"
-        title = 'title'
+    @base.require_user
+    def post(self, log_id):  # pylint: disable=unused-argument
+        text = self.payload.get('newContent')
+        #category = self.payload.get('newCategory')
+        title = self.payload.get('newTitle')
         privatelog_services.create_private_log(
             self.user_id, 1, title, text)
         self.render_json(self.values)
 
+
 class PrivateLogPage(base.BaseHandler):
+    PAGE_NAME_FOR_CSRF = 'editor'
+
     def get(self):
         if self.username in config_domain.BANNED_USERNAMES.value:
             raise self.UnauthorizedUserException("")
         elif user_services.has_fully_registered(self.user_id):
             self.values.update({
-                'meta_description':'',
-                'nav_mode':feconf.NAV_MODE_DASHBOARD,
+                'meta_description': '',
+                'nav_mode': feconf.NAV_MODE_DASHBOARD,
             })
             self.render_template(
                 'privatelog/log_list.html',
@@ -75,5 +86,3 @@ class PrivateLogPage(base.BaseHandler):
         else:
             self.redirect(utils.set_url_query_parameter(
                 feconf.SIGNUP_URL, 'return_url', '/private_log'))
-
-

@@ -29,7 +29,32 @@
     <div class="oppia-page-heading-subtext" ng-if="jobQueuedMsec">
       最后更新: <[getLocaleAbbreviatedDatetimeString(jobQueuedMsec)]>
     </div>
+    <script type="text/ng-template" id="modals/editorPrivateLogCreate">
+      <div class="modal-header">
+        <h3>写日志</h3>
+      </div>
 
+      <div class="modal-body">
+        <p>标题: <input type="text" ng-model="newThreadSubject"></p>
+        <p class="clear">分类： <select2-dropdown
+                item="$parent.newCategory"
+                ng-model="newCategory"
+                tag-mode="true" allow-multiple-choices="false"
+                new-choice-regex="<[TAG_REGEX_STRING]>" width="60%"
+                placeholder="请输入分类"
+                invalid-search-term-message="<['I18N_PREFERENCES_SUBJECT_INTERESTS_INVALID_SEARCH' | translate]>"
+                on-selection-change="onNewCategorySelectionChange($parent.subjectInterests)">
+        </select2-dropdown>
+
+        </p>
+        <p>日志内容 <textarea ng-model="newThreadText" rows="6"></textarea></p>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-success" ng-click="create(newThreadSubject, newCategory, newThreadText)" ng-disabled="!newThreadSubject || !newThreadText || !newCategory">发表</button>
+        <button class="btn btn-default" ng-click="cancel()">取消</button>
+      </div>
+    </script>
     <div class="oppia-notifications-tray">
       <md-card ng-if="logs.length === 0" class="oppia-page-card oppia-notifications-dashboard-card">
         <em>没有日志.</em>
@@ -63,26 +88,14 @@
       </div>
     </div>
   </div>
-<!--<script type="text/ng-template" id="modals/editorPrivateLogCreate">
-  <div class="modal-header">
-    <h3>发起新的评论</h3>
-  </div>
 
-  <div class="modal-body">
-    <p>评论内容: <input type="text" ng-model="newThreadSubject"></p>
-    <p>消息内容 <textarea ng-model="newThreadText" rows="6"></textarea></p>
-  </div>
-
-  <div class="modal-footer">
-    <button class="btn btn-success" ng-click="create(newThreadSubject, newThreadText)" ng-disabled="!newThreadSubject || !newThreadText">发表</button>
-    <button class="btn btn-default" ng-click="cancel()">取消</button>
-  </div>
-</script>-->
 {% endblock %}
 
 {% block footer_js %}
   {{ super() }}
   <script>
     {{ include_js_file('/privatelog/LogList.js') }}
+    {{ include_js_file('/privatelog/PrivateLogDataService.js') }}
+
   </script>
 {% endblock footer_js %}
