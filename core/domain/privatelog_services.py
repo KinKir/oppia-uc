@@ -22,6 +22,7 @@ from core.domain import privatelog_domain
 # from core.domain import rights_manager
 # from core.domain import user_services
 from core.platform import models
+
 # import feconf
 
 (privatelog_models,) = models.Registry.import_models([models.NAMES.privatelog])
@@ -34,30 +35,38 @@ def create_private_log(author_id, category_id, title, content):
     log = privatelog_models.PrivateLogModel()
     log.title = title
     log.category_id = category_id
-    log.category_name = privatelog_models.LogCategoryModel\
+    log.category_name = privatelog_models.LogCategoryModel \
         .get(category_id).category_name
     log.content = content
     log.author_id = author_id
     log.put()
 
 
-def create_category(author_id, category_name):
+def try_create_category(author_id, category_name):
     """Creates category
     """
-    category = privatelog_models.LogCategoryModel()
-    category.category_name = category_name
-    category.author_id = author_id
-    category.put()
+    if not privatelog_models.LogCategoryModel.check_exist(author_id, category_name):
+        category = privatelog_models.LogCategoryModel()
+        category.category_name = category_name
+        category.author_id = author_id
+        category.put()
+
+
+def get_category_by_name(author_id, category_name):
+    return privatelog_models.LogCategoryModel.get_category_by_name(
+        author_id, category_name)
 
 
 def _get_privatelog_from_model(privatelog_model):
-    category_name = privatelog_models.LogCategoryModel\
+    category_name = privatelog_models.LogCategoryModel \
         .get(privatelog_model.category_id).category_name
-    return privatelog_domain.PrivateLog(privatelog_model.author_id, \
-             privatelog_model.title, privatelog_model.content, \
-                 privatelog_model.category_id, category_name,\
-                 privatelog_model.created_on, \
-                 privatelog_model.last_updated)
+    return privatelog_domain \
+        .PrivateLog(privatelog_model.author_id,
+                    privatelog_model.title,
+                    privatelog_model.content,
+                    privatelog_model.category_id, category_name,
+                    privatelog_model.created_on,
+                    privatelog_model.last_updated)
 
 
 def get_all_privatelog(author_id):

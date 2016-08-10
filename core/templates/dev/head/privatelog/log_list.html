@@ -35,19 +35,12 @@
       </div>
 
       <div class="modal-body">
-        <p>标题: <input type="text" ng-model="newThreadSubject"></p>
-        <p class="clear">分类： <select2-dropdown
-                item="$parent.newCategory"
-                ng-model="newCategory"
-                tag-mode="true" allow-multiple-choices="false"
-                new-choice-regex="<[TAG_REGEX_STRING]>" width="60%"
-                placeholder="请输入分类"
-                invalid-search-term-message="<['I18N_PREFERENCES_SUBJECT_INTERESTS_INVALID_SEARCH' | translate]>"
-                on-selection-change="onNewCategorySelectionChange($parent.subjectInterests)">
+        <p>标题: <input type="text" ng-model="newThreadSubject" placeholder="输入日志标题"/></p>
+        <p class="clear">分类: <input type="text" ng-model="newCategory" placeholder="输入日志分类"/>
         </select2-dropdown>
 
         </p>
-        <p>日志内容 <textarea ng-model="newThreadText" rows="6"></textarea></p>
+        <p>日志内容 <textarea ng-model="newThreadText" rows="6" placeholder="输入日志内容"></textarea></p>
       </div>
 
       <div class="modal-footer">
@@ -60,16 +53,12 @@
         <em>没有日志.</em>
       </md-card>
 
-      <div ng-if="recentNotifications.length > 0">
+      <div ng-if="logs.length > 0">
         <md-card ng-repeat="notification in logs" class="oppia-dashboard-row"
           ng-class="{'oppia-dashboard-row-recent': lastSeenMsec && lastSeenMsec < notification.last_updated_ms && notification.author_username !== currentUsername}" ng-click="navigateToItem(notification.activity_id, notification.type)">
           <div class="oppia-notification-content">
             <span class="oppia-notification-type">
-              <span ng-if="notification.type === 'feedback_thread'"
-                    title="Feedback thread">
-                <i class="material-icons">&#xE0B9;</i>
-              </span>
-             <[notification.title]>
+             <[notification.title]>[<[notification.category_name]>]
             </span>
             <span class="oppia-notification-author-username">
               <strong>
@@ -82,7 +71,7 @@
             </span>
           </div>
           <div class="oppia-notification-last-updated">
-            <[getLocaleAbbreviatedDatetimeString(notification.last_updated_ms)]>
+            <[getLocaleAbbreviatedDatetimeString(notification.last_updated)]>
           </div>
         </md-card>
       </div>

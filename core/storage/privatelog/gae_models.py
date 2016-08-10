@@ -24,10 +24,26 @@ from google.appengine.ext import ndb
 
 (base_models,) = models.Registry.import_models([models.NAMES.base_model])
 
+
 class LogCategoryModel(base_models.BaseModel):
     """Log category data model"""
     author_id = ndb.StringProperty(indexed=True)
     category_name = ndb.StringProperty(indexed=True)
+
+    @classmethod
+    def get_by_author(cls, author_id):
+        return cls.get_all().filter(
+            cls.author_id == author_id).order(
+            cls.category_name).fetch(feconf.DEFAULT_QUERY_LIMIT)
+
+    @classmethod
+    def check_exist(cls, author_id, name):
+        return cls.get_category_by_name(author_id,name) is not None
+
+    @classmethod
+    def get_category_by_name(cls, author_id, name):
+        return cls.get_all().filter(
+            ndb.AND(cls.author_id == author_id, cls.category_name == name)).get()
 
 
 class PrivateLogModel(base_models.BaseModel):
@@ -48,20 +64,25 @@ class PrivateLogModel(base_models.BaseModel):
     def get_by_author(cls, author_id):
         return cls.get_all().filter(
             cls.author_id == author_id).order(
-                -cls.last_updated).fetch(feconf.DEFAULT_QUERY_LIMIT)
+            -cls.last_updated).fetch(feconf.DEFAULT_QUERY_LIMIT)
 
     @classmethod
     def get_by_author_and_category(cls, author, categoryid):
         return cls.get_all().filter(
             ndb.AND(cls.author_id == author,
                     cls.category_id == categoryid)).order(
-                        -cls.last_updated).fetch(
-                            feconf.DEFAULT_QUERY_LIMIT)
+            -cls.last_updated).fetch(
+            feconf.DEFAULT_QUERY_LIMIT)
 
     @classmethod
     def get_by_author_filter_title(cls, author, filtertitle):
         return cls.get_all().filter(
             ndb.AND(cls.author_id == author, \
-                cls.title.find(filtertitle) != -1)).order(
-                    -cls.last_updated).fetch(feconf.DEFAULT_QUERY_LIMIT)
+                    cls.title.find(filtertitle) != -1)).order(
+            -cls.last_updated).fetch(feconf.DEFAULT_QUERY_LIMIT)
 
+    @classmethod
+    def get_all_log_by_author(cls, author_id, page_size, urlsafe_start_cursor):
+        return cls._fetch_page_sorted_by_last_updated(
+            cls.query(PrivateLogModel.author_id == author_id), page_size, urlsafe_start_cursor
+        )
