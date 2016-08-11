@@ -45,7 +45,8 @@ def create_private_log(author_id, category_id, title, content):
 def try_create_category(author_id, category_name):
     """Creates category
     """
-    if not privatelog_models.LogCategoryModel.check_exist(author_id, category_name):
+    if not privatelog_models.LogCategoryModel.check_exist(
+            author_id, category_name):
         category = privatelog_models.LogCategoryModel()
         category.category_name = category_name
         category.author_id = author_id

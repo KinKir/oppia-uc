@@ -20,13 +20,16 @@ oppia.factory('privateLogDataService', [
   function($http, $q, alertsService) {
     var _PRIVATELOG_HANDLER_URL = '/privatelog/handler/0';
     return {
-      createNewLog: function(newTitle, newCategory, newContent) {
+      createNewLog: function(newTitle, newCategory, newContent, saveSuccess) {
         $http.post(_PRIVATELOG_HANDLER_URL, {
           newTitle: newTitle,
           newCategory: newCategory,
           newContent: newContent
         }).then(function() {
-          alertsService.addWarning('日志发表成功！！！');
+          if (saveSuccess) {
+            saveSuccess();
+          }
+          alertsService.addSuccessMessage('日志发表成功！！！');
         }, function() {
           alertsService.addWarning('保存日志失败.');
         });
