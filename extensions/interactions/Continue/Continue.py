@@ -28,7 +28,7 @@ class Continue(base.BaseInteraction):
     instructions = None
     narrow_instructions = None
     needs_summary = False
-    default_outcome_heading = 'When the button is clicked'
+    default_outcome_heading = '当点击按钮时'
 
     _customization_arg_specs = [{
         'name': 'buttonText',

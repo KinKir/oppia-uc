@@ -105,17 +105,17 @@ oppia.directive('filepathEditor', [
           alertsService.clearWarnings();
 
           if (!file || !file.size) {
-            alertsService.addWarning('Empty file detected.');
+            alertsService.addWarning('请选择文件.');
             return;
           }
           if (!file.type.match('image.*')) {
             alertsService.addWarning(
-              'This file is not recognized as an image.');
+              '请选择图片格式文件.');
             return;
           }
 
           if (!filename) {
-            alertsService.addWarning('Filename must not be empty.');
+            alertsService.addWarning('文件名不能为空.');
             return;
           }
 

@@ -144,7 +144,7 @@
                       <ul class="nav oppia-navbar-nav oppia-navbar-profile">
                         {% if username %}
                           <li class="dropdown pull-right">
-                            <a class="dropdown-toggle oppia-navbar-dropdown-toggle" data-toggle="dropdown" ng-mouseover="onMouseoverProfilePictureOrDropdown($event)" ng-mouseleave="onMouseoutProfilePictureOrDropdown($event)">
+                            <a class="dropdown-toggle oppia-navbar-dropdown-toggle" data-toggle="dropdown" ng-mouseover="onMouseoverProfilePictureOrDropdown($event)" ng-mouseleave="onMouseoutProfilePictureOrDropdown($event)" ng-touchstart="onMouseoverProfilePictureOrDropdown($event)" >
                               <div class="oppia-navbar-profile-picture-container" ng-cloak>
                                 {% if profile_picture_data_url %}
                                   <img src="{{profile_picture_data_url}}" class="oppia-navbar-profile-picture img-circle">
@@ -179,18 +179,18 @@
 
                             <ul class="dropdown-menu ng-cloak oppia-navbar-dropdown" role="menu" ng-mouseover="onMouseoverProfilePictureOrDropdown($event)" ng-mouseleave="onMouseoutProfilePictureOrDropdown($event)" ng-show="profileDropdownIsActive">
                               <li>
-                                <a ng-click="onMouseoutProfilePictureOrDropdown($event)" href="/profile/{{username}}">
+                                <a href="/profile/{{username}}">
                                   <strong>{{username}}</strong>
                                 </a>
                               </li>
                               <hr class="oppia-top-right-menu-item-separator">
                               <li>
-                                <a ng-click="onMouseoutProfilePictureOrDropdown($event)" href="/dashboard">
+                                <a href="/dashboard">
                                   <span translate="I18N_TOPNAV_DASHBOARD"></span>
                                 </a>
                               </li>
                               <li>
-                                <a ng-click="onMouseoutProfilePictureOrDropdown($event)" href="/notifications_dashboard">
+                                <a href="/notifications_dashboard">
                                   <span translate="I18N_TOPNAV_NOTIFICATIONS"></span>
                                   <span ng-if="numUnseenNotifications > 0">
                                     (<[numUnseenNotifications]>)
@@ -198,28 +198,28 @@
                                 </a>
                               </li>
                               <li>
-                                <a ng-click="onMouseoutProfilePictureOrDropdown($event)" href="/preferences">
+                                <a  href="/preferences">
                                   <span translate="I18N_TOPNAV_PREFERENCES"></span>
                                 </a>
                               </li>
 
                               {% if is_moderator %}
                                 <li>
-                                  <a ng-click="onMouseoutProfilePictureOrDropdown($event)" href="/moderator" target="_blank">
+                                  <a href="/moderator" target="_blank">
                                     <span translate="I18N_TOPNAV_MODERATOR_PAGE"></span>
                                   </a>
                                 </li>
                               {% endif %}
                               {% if is_super_admin %}
                                 <li>
-                                  <a ng-click="onMouseoutProfilePictureOrDropdown($event)" href="/admin" target="_blank">
+                                  <a href="/admin" target="_blank">
                                     <span translate="I18N_TOPNAV_ADMIN_PAGE"></span>
                                   </a>
                                 </li>
                               {% endif %}
                               <hr class="oppia-top-right-menu-item-separator">
                               <li>
-                                <a ng-click="onMouseoutProfilePictureOrDropdown($event)" href="{{logout_url}}">
+                                <a href="{{logout_url}}">
                                   <span translate="I18N_TOPNAV_LOGOUT"></span>
                                 </a>
                               </li>

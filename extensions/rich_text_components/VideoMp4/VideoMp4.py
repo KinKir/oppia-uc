@@ -20,15 +20,15 @@ from extensions.rich_text_components import base
 class VideoMp4(base.BaseRichTextComponent):
     """A rich-text component representing an MP4 video."""
 
-    name = 'MP4 Video'
+    name = 'MP4 视频'
     category = 'Basic Input'
-    description = 'A link to an MP4 video.'
+    description = 'Mp4视频链接'
     frontend_name = 'video-mp4'
-    tooltip = 'Insert MP4 video'
+    tooltip = '插入mp4视频'
 
     _customization_arg_specs = [{
         'name': 'video_url',
-        'description': 'The URL for this video.',
+        'description': '视频链接.',
         'schema': {
             'type': 'unicode',
         },

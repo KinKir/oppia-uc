@@ -118,7 +118,9 @@ class ExplorationFileSystem(object):
     def _save_file(self, user_id, filepath, raw_bytes):
         """Create or update a file."""
         if len(raw_bytes) > feconf.MAX_FILE_SIZE_BYTES:
-            raise Exception('The maximum allowed file size is 1 MB.')
+            raise Exception(
+                '文件大小不能超过 %s MB.' % (
+                    feconf.MAX_FILE_SIZE_BYTES/1024/1024))
 
         metadata = self._get_file_metadata(filepath, None)
         if not metadata:

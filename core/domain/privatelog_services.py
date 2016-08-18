@@ -51,6 +51,9 @@ def try_create_category(author_id, category_name):
         category.category_name = category_name
         category.author_id = author_id
         category.put()
+        return category
+    else:
+        return get_category_by_name(author_id, category_name)
 
 
 def get_category_by_name(author_id, category_name):

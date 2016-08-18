@@ -63,8 +63,7 @@ class CreatePrivateLogHandler(base.BaseHandler):
     def post(self, log_id):  # pylint: disable=unused-argument
         text = self.payload.get('newContent')
         category = self.payload.get('newCategory')
-        privatelog_services.try_create_category(self.user_id, category)
-        obj_category = privatelog_services.get_category_by_name(
+        obj_category = privatelog_services.try_create_category(
             self.user_id, category)
         title = self.payload.get('newTitle')
         privatelog_services.create_private_log(

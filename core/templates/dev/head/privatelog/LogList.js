@@ -41,9 +41,12 @@ oppia.controller('PrivateLogs', [
         resolve: {},
         controller: ['$scope', '$modalInstance',
           function($scope, $modalInstance) {
+            $scope.schema = {
+              type: 'html'
+            };
             $scope.newLogTitle = '';
             $scope.newLogContent = '';
-            $scope.newLogContent = '';
+            $scope.newCategory = '';
             $scope.create = function(newLogTitle, newCategory, newLogContent) {
               $modalInstance.close({
                 newLogTitle: newLogTitle,

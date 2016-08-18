@@ -40,7 +40,9 @@
         </select2-dropdown>
 
         </p>
-        <p>日志内容 <textarea ng-model="newThreadText" rows="6" class="form-control" placeholder="输入日志内容"></textarea></p>
+        <p>日志内容:<schema-based-editor local-value="newLogContent" schema="schema">
+          </schema-based-editor>
+        </p>
       </div>
 
       <div class="modal-footer">
@@ -59,15 +61,6 @@
           <div class="oppia-notification-content">
             <span class="oppia-notification-type">
              <[notification.title]>[<[notification.category_name]>]
-            </span>
-            <span class="oppia-notification-author-username">
-              <strong>
-                <a ng-if="notification.original_author_username" ng-click="navigateToProfile($event, notification.author_username)"><[notification.author_username]></a>
-                <span ng-if="!notification.original_author_username">
-                  匿名
-                </span>
-              </strong>
-              
             </span>
           </div>
           <div class="oppia-notification-last-updated">

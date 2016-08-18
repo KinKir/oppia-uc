@@ -22,7 +22,7 @@ class Image(base.BaseRichTextComponent):
 
     name = 'Image'
     category = 'Basic Input'
-    description = 'An image.'
+    description = '图片.'
     frontend_name = 'image'
     tooltip = '插入图片'
     requires_fs = True
