@@ -16,52 +16,63 @@
  * @fileoverview Data and controllers for the user's private log dashboard.
  */
 oppia.controller('PrivateLogs', [
-    '$scope', '$http', '$model', '$rootScope', 'oppiaDatetimeFormatter',
-    function($scope, $http, $model, $rootScope, oppiaDatetimeFormatter) {
-  $scope.navigateToItem = function(activityId, notificationType) {
-    window.location.href = '/create/' + activityId + (
-      notificationType === 'feedback_thread' ? '#/feedback' : '');
-  };
+  '$scope', '$http', '$modal', '$rootScope', 'oppiaDatetimeFormatter',
+  'privateLogDataService',
+  function($scope, $http, $modal, $rootScope, oppiaDatetimeFormatter,
+            privateLogDataService) {
+    $scope.navigateToItem = function(activityId, notificationType) {
+      window.location.href = '/create/' + activityId + (
+          notificationType === 'feedback_thread' ? '#/feedback' : '');
+    };
 
-  $scope.navigateToProfile = function($event, username) {
-    $event.stopPropagation();
-    window.location.href = '/profile/' + username;
-  };
+    $scope.navigateToProfile = function($event, username) {
+      $event.stopPropagation();
+      window.location.href = '/profile/' + username;
+    };
 
-  $scope.getLocaleAbbreviatedDatetimeString = function(millisSinceEpoch) {
-    return oppiaDatetimeFormatter.getLocaleAbbreviatedDatetimeString(
-      millisSinceEpoch);
-  };
-  $scope.showCreateLogModal = function() {
-    /* $model.open({
-      templateUrl: 'models/editorPrivateLogCreate',
-      backdrop: true,
-      resolve: {},
-      controller: ['$scope', '$modelInstance',
-      function ($scope, $modelInstance) {
-        $scope.newLogTitle = '';
-        $scope.newLogContent = '';
-        $scope.create = function (newLogTitle, newLogContent) {
-          $modelInstance.close({
-            newLogTitle: newLogTitle,
-            newLogContent: newLogContent
-          })
-        };
-        $scope.cancel = function () {
-          $modelInstance.dismiss('cancel');
-        };
-      }]
-    }).result.then(function (result) {
-
-    })*/
-  };
-  $rootScope.loadingMessage = '加载中...';
-  $http.get('/privatelog/data').then(function(response) {
-    var data = response.data;
-    $scope.logs = data.logs;
-    $scope.jobQueuedMsec = data.job_queued_msec;
-    $scope.lastSeenMsec = data.last_seen_msec || 0.0;
-    $scope.currentUsername = data.username;
-    $rootScope.loadingMessage = '';
-  });
-}]);
+    $scope.getLocaleAbbreviatedDatetimeString = function(millisSinceEpoch) {
+      return oppiaDatetimeFormatter.getLocaleAbbreviatedDatetimeString(
+        millisSinceEpoch);
+    };
+    $scope.showCreateLogModal = function() {
+      $modal.open({
+        templateUrl: 'modals/editorPrivateLogCreate',
+        backdrop: true,
+        resolve: {},
+        controller: ['$scope', '$modalInstance',
+          function($scope, $modalInstance) {
+            $scope.schema = {
+              type: 'html'
+            };
+            $scope.newLogTitle = '';
+            $scope.newLogContent = '';
+            $scope.newCategory = '';
+            $scope.create = function(newLogTitle, newCategory, newLogContent) {
+              $modalInstance.close({
+                newLogTitle: newLogTitle,
+                newLogContent: newLogContent,
+                newCategory: newCategory
+              });
+            };
+            $scope.cancel = function() {
+              $modalInstance.dismiss('cancel');
+            };
+          }]
+      }).result.then(function(result) {
+        privateLogDataService.createNewLog(result.newLogTitle,
+          result.newCategory, result.newLogContent, $scope.loadData);
+      });
+    };
+    $scope.loadData = function() {
+      $rootScope.loadingMessage = '加载中...';
+      $http.get('/privatelog/data').then(function(response) {
+        var data = response.data;
+        $scope.logs = data.logs;
+        $scope.jobQueuedMsec = data.job_queued_msec;
+        $scope.lastSeenMsec = data.last_seen_msec || 0.0;
+        $scope.currentUsername = data.username;
+        $rootScope.loadingMessage = '';
+      });
+    };
+    $scope.loadData();
+  }]);

@@ -20,29 +20,29 @@ from extensions.rich_text_components import base
 class Collapsible(base.BaseRichTextComponent):
     """A rich-text component representing a collapsible block."""
 
-    name = 'Collapsible'
+    name = '折叠面板'
     category = 'Basic Input'
-    description = 'A collapsible block of HTML.'
+    description = '折叠面板.'
     frontend_name = 'collapsible'
-    tooltip = 'Insert collapsible block'
+    tooltip = '插入折叠面板'
     is_complex = True
     is_block_element = True
 
     _customization_arg_specs = [{
         'name': 'heading',
-        'description': 'The heading for the collapsible block',
+        'description': '名称',
         'schema': {
             'type': 'unicode',
         },
-        'default_value': 'Sample Header',
+        'default_value': '名称',
     }, {
         'name': 'content',
-        'description': 'The content of the collapsible block',
+        'description': '内容',
         'schema': {
             'type': 'html',
             'ui_config': {
                 'hide_complex_extensions': True,
             }
         },
-        'default_value': 'You have opened the collapsible block.'
+        'default_value': '打开后显示的内容.'
     }]

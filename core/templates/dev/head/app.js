@@ -244,7 +244,7 @@ oppia.factory('oppiaDatetimeFormatter', ['$filter', function($filter) {
         // The replace function removes 'seconds' from the time returned.
         return date.toLocaleTimeString().replace(/:\d\d /, ' ');
       } else if (date.getFullYear() === new Date().getFullYear()) {
-        return $filter('date')(date, 'MMM d');
+        return $filter('date')(date, 'MM/d');
       } else {
         return $filter('date')(date, 'shortDate');
       }

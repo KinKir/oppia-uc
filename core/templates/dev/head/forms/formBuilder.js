@@ -992,7 +992,7 @@ oppia.filter('isFloat', [function() {
     // .555..
     // -.555..
     // All examples above with '.' replaced with ',' are also valid.
-    // Expressions containing % are also valid (5.1% etc).
+    // ExpressionIsDisables containing % are also valid (5.1% etc).
 
     var viewValue = '';
     try {

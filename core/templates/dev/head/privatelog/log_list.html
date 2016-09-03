@@ -22,67 +22,62 @@
 
 {% block content %}
   <div class="oppia-dashboard-container" ng-controller="PrivateLogs">
-    <h2 class="oppia-page-heading">日志</h2>
+    <h2 class="oppia-page-heading" style="display: inline">日志</h2>
     <button class="btn btn-success pull-right" ng-click="showCreateLogModal()">
           写日志
     </button>
     <div class="oppia-page-heading-subtext" ng-if="jobQueuedMsec">
       最后更新: <[getLocaleAbbreviatedDatetimeString(jobQueuedMsec)]>
     </div>
+    <script type="text/ng-template" id="modals/editorPrivateLogCreate">
+      <div class="modal-header">
+        <h3>写日志</h3>
+      </div>
 
+      <div class="modal-body" stop-event="touchend">
+        <p>标题: <input type="text"  class="form-control" ng-model="newThreadSubject" placeholder="输入日志标题"/></p>
+        <p class="clear">分类: <input type="text" class="form-control" ng-model="newCategory" placeholder="输入日志分类"/>
+        </select2-dropdown>
+
+        </p>
+        <p>日志内容:<schema-based-editor local-value="newLogContent" schema="schema">
+          </schema-based-editor>
+        </p>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-success" ng-click="create(newThreadSubject, newCategory, newThreadText)" ng-disabled="!newThreadSubject || !newThreadText || !newCategory">发表</button>
+        <button class="btn btn-default" ng-click="cancel()">取消</button>
+      </div>
+    </script>
     <div class="oppia-notifications-tray">
       <md-card ng-if="logs.length === 0" class="oppia-page-card oppia-notifications-dashboard-card">
         <em>没有日志.</em>
       </md-card>
 
-      <div ng-if="recentNotifications.length > 0">
+      <div ng-if="logs.length > 0">
         <md-card ng-repeat="notification in logs" class="oppia-dashboard-row"
           ng-class="{'oppia-dashboard-row-recent': lastSeenMsec && lastSeenMsec < notification.last_updated_ms && notification.author_username !== currentUsername}" ng-click="navigateToItem(notification.activity_id, notification.type)">
           <div class="oppia-notification-content">
             <span class="oppia-notification-type">
-              <span ng-if="notification.type === 'feedback_thread'"
-                    title="Feedback thread">
-                <i class="material-icons">&#xE0B9;</i>
-              </span>
-             <[notification.title]>
-            </span>
-            <span class="oppia-notification-author-username">
-              <strong>
-                <a ng-if="notification.original_author_username" ng-click="navigateToProfile($event, notification.author_username)"><[notification.author_username]></a>
-                <span ng-if="!notification.original_author_username">
-                  匿名
-                </span>
-              </strong>
-              
+             <[notification.title]>[<[notification.category_name]>]
             </span>
           </div>
           <div class="oppia-notification-last-updated">
-            <[getLocaleAbbreviatedDatetimeString(notification.last_updated_ms)]>
+            <[getLocaleAbbreviatedDatetimeString(notification.last_updated)]>
           </div>
         </md-card>
       </div>
     </div>
   </div>
-<!--<script type="text/ng-template" id="modals/editorPrivateLogCreate">
-  <div class="modal-header">
-    <h3>发起新的评论</h3>
-  </div>
 
-  <div class="modal-body">
-    <p>评论内容: <input type="text" ng-model="newThreadSubject"></p>
-    <p>消息内容 <textarea ng-model="newThreadText" rows="6"></textarea></p>
-  </div>
-
-  <div class="modal-footer">
-    <button class="btn btn-success" ng-click="create(newThreadSubject, newThreadText)" ng-disabled="!newThreadSubject || !newThreadText">发表</button>
-    <button class="btn btn-default" ng-click="cancel()">取消</button>
-  </div>
-</script>-->
 {% endblock %}
 
 {% block footer_js %}
   {{ super() }}
   <script>
     {{ include_js_file('/privatelog/LogList.js') }}
+    {{ include_js_file('/privatelog/PrivateLogDataService.js') }}
+
   </script>
 {% endblock footer_js %}
