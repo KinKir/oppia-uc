@@ -29,7 +29,31 @@ oppia.controller('PrivateLogs', [
       $event.stopPropagation();
       window.location.href = '/profile/' + username;
     };
-
+    $scope.showPrivateLogModel = function(logid) {
+      $modal.open({
+        templateUrl: 'modals/editorPrivateLogView',
+        backdrop: true,
+        resolve: {},
+        controller: ['$scope', '$modalInstance',
+          function($scope, $modalInstance) {
+            $scope.schema = {
+              type: 'html'
+            };
+            $scope.save = function(newLogTitle, newCategory,
+                                   newLogContent) {
+              $modalInstance.close({
+                logid: logid,
+                newLogTitle: newLogTitle,
+                newLogContent: newLogContent,
+                newCategory: newCategory
+              });
+            };
+            $scope.cancel = function() {
+              $modalInstance.dismiss('cancel');
+            };
+          }]
+      });
+    };
     $scope.getLocaleAbbreviatedDatetimeString = function(millisSinceEpoch) {
       return oppiaDatetimeFormatter.getLocaleAbbreviatedDatetimeString(
         millisSinceEpoch);
