@@ -18,10 +18,10 @@
 oppia.factory('privateLogDataService', [
   '$http', '$q', 'alertsService',
   function($http, $q, alertsService) {
-    var _PRIVATELOG_HANDLER_URL = '/privatelog/handler/0';
+    var _PRIVATELOG_HANDLER_URL = '/privatelog/handler/';
     return {
       createNewLog: function(newTitle, newCategory, newContent, saveSuccess) {
-        $http.post(_PRIVATELOG_HANDLER_URL, {
+        $http.post(_PRIVATELOG_HANDLER_URL + '0', {
           newTitle: newTitle,
           newCategory: newCategory,
           newContent: newContent
@@ -29,7 +29,29 @@ oppia.factory('privateLogDataService', [
           if (saveSuccess) {
             saveSuccess();
           }
-          alertsService.addSuccessMessage('日志发表成功！！！');
+          alertsService.addSuccessMessage('日志发表成功！');
+        }, function() {
+          alertsService.addWarning('保存日志失败.');
+        });
+      },
+      getPrivateLog: function(scope, logId) {
+        $http.get(_PRIVATELOG_HANDLER_URL + logId).then(function(response) {
+          var data = response.data;
+          scope.newLogTitle = data.title;
+          scope.newCategory = data.category_name;
+          scope.newLogContent = data.content;
+        });
+      },
+      Save: function(logid, newTitle, newCategory, newContent, saveSuccess) {
+        $http.post(_PRIVATELOG_HANDLER_URL + logid, {
+          newTitle: newTitle,
+          newCategory: newCategory,
+          newContent: newContent
+        }).then(function() {
+          if (saveSuccess) {
+            saveSuccess();
+          }
+          alertsService.addSuccessMessage('保存成功');
         }, function() {
           alertsService.addWarning('保存日志失败.');
         });

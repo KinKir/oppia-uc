@@ -57,12 +57,17 @@ class CreatePrivateLogHandler(base.BaseHandler):
     PAGE_NAME_FOR_CSRF = 'editor'
 
     def get(self, log_id):  # pylint: disable=unused-argument
+        print log_id
+        if log_id is not None and log_id != '0':
+            self.values.update(
+                privatelog_services.get_privatelog(log_id).to_dict())
         self.render_json(self.values)
 
     @base.require_user
     def post(self, log_id):  # pylint: disable=unused-argument
         text = self.payload.get('newContent')
         category = self.payload.get('newCategory')
+        # 创建日志分类，如果分类已经存在，则不创建，直接返回现有分类
         obj_category = privatelog_services.try_create_category(
             self.user_id, category)
         title = self.payload.get('newTitle')

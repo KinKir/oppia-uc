@@ -31,7 +31,7 @@ class VideoList(base_models.BaseModel):
     # 视频编号
     ids = ndb.StringProperty(required=True)
 
-    # 位置
+    # 分类
     category = ndb.StringProperty(required=True)
     # 作者，上传人
     author_id = ndb.StringProperty(indexed=True)

@@ -35,12 +35,12 @@
       </div>
 
       <div class="modal-body" stop-event="touchend">
-        <p>标题: <input type="text"  class="form-control" ng-model="newThreadSubject" placeholder="输入日志标题"/></p>
+        <p>标题: <input type="text"  class="form-control" ng-model="newLogTitle" placeholder="输入日志标题"/></p>
         <p class="clear">分类: <input type="text" class="form-control" ng-model="newCategory" placeholder="输入日志分类"/>
         </select2-dropdown>
 
         </p>
-        <p>日志内容:<schema-based-editor local-value="newLogContent" schema="schema">
+        <p>日志内容:<schema-based-editor local-value="newLogContent" ng-model="newLogContent" schema="schema">
           </schema-based-editor>
         </p>
       </div>
@@ -57,7 +57,7 @@
 
       <div ng-if="logs.length > 0">
         <md-card ng-repeat="notification in logs" class="oppia-dashboard-row"
-          ng-class="{'oppia-dashboard-row-recent': lastSeenMsec && lastSeenMsec < notification.last_updated_ms && notification.author_username !== currentUsername}" ng-click="navigateToItem(notification.activity_id, notification.type)">
+          ng-class="{'oppia-dashboard-row-recent': lastSeenMsec && lastSeenMsec < notification.last_updated_ms && notification.author_username !== currentUsername}" ng-click="showPrivateLogModel(notification.id)">
           <div class="oppia-notification-content">
             <span class="oppia-notification-type">
              <[notification.title]>[<[notification.category_name]>]

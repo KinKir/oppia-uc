@@ -24,7 +24,7 @@ class PrivateLog(object):
     def get_author_name(self):
         return user_services.get_username(self.author_id)
 
-    def __init__(self, author_id, title, content, category_id,
+    def __init__(self, mid, author_id, title, content, category_id,
                  category_name, created_on, last_updated):
 
         self.author_id = author_id
@@ -34,9 +34,11 @@ class PrivateLog(object):
         self.category_name = category_name
         self.created_on = created_on
         self.last_updated = last_updated
+        self.id = mid
 
     def to_dict(self):
         return {
+            'id': self.id,
             'last_updated': utils.get_time_in_millisecs(self.last_updated),
             'original_author_username': user_services.get_username(
                 self.author_id) if self.author_id else None,

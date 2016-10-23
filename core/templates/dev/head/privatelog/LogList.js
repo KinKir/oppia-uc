@@ -31,7 +31,7 @@ oppia.controller('PrivateLogs', [
     };
     $scope.showPrivateLogModel = function(logid) {
       $modal.open({
-        templateUrl: 'modals/editorPrivateLogView',
+        templateUrl: 'modals/editorPrivateLogCreate',
         backdrop: true,
         resolve: {},
         controller: ['$scope', '$modalInstance',
@@ -39,6 +39,7 @@ oppia.controller('PrivateLogs', [
             $scope.schema = {
               type: 'html'
             };
+            privateLogDataService.getPrivateLog($scope, logid);
             $scope.save = function(newLogTitle, newCategory,
                                    newLogContent) {
               $modalInstance.close({
@@ -52,6 +53,9 @@ oppia.controller('PrivateLogs', [
               $modalInstance.dismiss('cancel');
             };
           }]
+      }).result.then(function(result) {
+        privateLogDataService.Save(result.newLogTitle,
+          result.newCategory, result.newLogContent, $scope.loadData);
       });
     };
     $scope.getLocaleAbbreviatedDatetimeString = function(millisSinceEpoch) {

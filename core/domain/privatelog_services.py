@@ -56,6 +56,11 @@ def try_create_category(author_id, category_name):
         return get_category_by_name(author_id, category_name)
 
 
+def get_privatelog(log_id):
+    return _get_privatelog_from_model(
+        privatelog_models.PrivateLogModel.get(long(log_id)))
+
+
 def get_category_by_name(author_id, category_name):
     return privatelog_models.LogCategoryModel.get_category_by_name(
         author_id, category_name)
@@ -65,7 +70,8 @@ def _get_privatelog_from_model(privatelog_model):
     category_name = privatelog_models.LogCategoryModel \
         .get(privatelog_model.category_id).category_name
     return privatelog_domain \
-        .PrivateLog(privatelog_model.author_id,
+        .PrivateLog(privatelog_model.id,
+                    privatelog_model.author_id,
                     privatelog_model.title,
                     privatelog_model.content,
                     privatelog_model.category_id, category_name,
