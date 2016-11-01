@@ -42,5 +42,12 @@ class VideoList(base_models.BaseModel):
         return cls.get_all().count()
 
     @classmethod
-    def get_all(cls):
-        return cls.get_all()
+    def get_by_author(cls, author_id, page_size, urlsafe_start_cursor):
+        return cls._fetch_page_sorted_by_last_updated(
+            cls.query().filter(cls.author_id == author_id),
+            page_size, urlsafe_start_cursor)
+
+    @classmethod
+    def get_all_video(cls, page_size, urlsafe_start_cursor):
+        return cls._fetch_page_sorted_by_last_updated(
+            cls.query(), page_size, urlsafe_start_cursor)

@@ -393,7 +393,9 @@ oppia.factory('expressionSyntaxTreeService', [
         eval: function(args) {
           verifyNumArgs(args, 2);
           var numericArgs = _coerceAllArgsToNumber(args);
-          return Math.log(numericArgs[0]) / Math.log(numericArgs[1]);
+          return Math.floor(Math.log(numericArgs[0]) /
+            Math.log(numericArgs[1]) *
+            100000000000000) / 100000000000000;
         },
         getType: function(args) {
           verifyNumArgs(args, 2);

@@ -57,7 +57,6 @@ class CreatePrivateLogHandler(base.BaseHandler):
     PAGE_NAME_FOR_CSRF = 'editor'
 
     def get(self, log_id):  # pylint: disable=unused-argument
-        print log_id
         if log_id is not None and log_id != '0':
             self.values.update(
                 privatelog_services.get_privatelog(log_id).to_dict())

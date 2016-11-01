@@ -33,9 +33,11 @@ from core.controllers import recent_commits
 from core.controllers import resources
 from core.controllers import uc
 from core.controllers import private_log
+from core.controllers import video_list
 from core.domain import user_services
 from core.platform import models
 import feconf
+
 # pylint: enable=relative-import
 
 from mapreduce import main as mapreduce_main
@@ -47,7 +49,8 @@ transaction_services = models.Registry.import_transaction_services()
 
 
 class FrontendErrorHandler(base.BaseHandler):
-    """Handles errors arising from the frontend."""
+    """Handles error
+    s arising from the frontend."""
 
     REQUIRE_PAYLOAD_CSRF_CHECK = False
 
@@ -429,6 +432,12 @@ URLS = MAPREDUCE_HANDLERS + [
     get_redirect_route(
         r'/privatelog/handler/<log_id>', private_log.CreatePrivateLogHandler,
         'private_log_handler'),
+    get_redirect_route(
+        r'/video/list', video_list.VideoListPage, r'video_list'
+    ),
+    get_redirect_route(
+        r'/video/data/<video_id>', video_list.VideoListData, r'video_data'
+    ),
     # 404 error handler.
     get_redirect_route(r'/<:.*>', base.Error404Handler, 'error_404_handler'),
 ]

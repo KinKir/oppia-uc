@@ -17,10 +17,12 @@
 """Controllers for the videioList page."""
 
 from core.controllers import base
-from core.domain import user_services
-from core.domain import config_domain
+# from core.domain import user_services
+# from core.domain import config_domain
+from core.domain import video_list_service
 import feconf
-import utils
+# import utils
+
 
 class VedioListHandler(base.BaseHandler):
     """处理视频列表"""
@@ -30,21 +32,34 @@ class VedioListHandler(base.BaseHandler):
         self.render_json(self.values)
 
 
-class VedioListPage(base.BaseHandler):
-    PAGE_NAME_FOR_CSRF = 'editor'
-
+class VideoListPage(base.BaseHandler):
     def get(self):
-        if self.username in config_domain.BANNED_USERNAMES.value:
-            raise self.UnauthorizedUserException("")
-        elif user_services.has_fully_registered(self.user_id):
-            self.values.update({
-                'meta_description': '',
-                'nav_mode': feconf.NAV_MODE_DASHBOARD,
-            })
-            self.render_template(
-                'privatelog/log_list.html',
-                redirect_url_on_logout='/')
-        else:
-            self.redirect(utils.set_url_query_parameter(
-                feconf.SIGNUP_URL, 'return_url', '/private_log'))
+        self.values.update({
+            'meta_description': feconf.SPLASH_PAGE_DESCRIPTION,
+            'nav_mode': 'video',
+        })
+        self.render_template(
+            'video_list/video_list.html')
 
+
+class VideoListData(base.BaseHandler):
+    """视频数据处理"""
+    def get(self, video_id):
+        if video_id is not None and video_id != '0':
+            video = video_list_service.get_by_id(video_id)
+            self.values.update(video.to_dict())
+            self.render_json(self.values)
+        else:
+            urlsafe_start_cursor = self.request.get('cursor')
+            lists, new_urlsafe_start_cursor, more = \
+                video_list_service.get_all_video(
+                    urlsafe_start_cursor=urlsafe_start_cursor)
+            self.render_json({
+                'results': [m.to_dict() for m in lists],
+                'cursor': new_urlsafe_start_cursor,
+                'more': more,
+            })
+
+    def delete(self, video_id):
+        """删除视频"""
+        video_list_service.delete_video(video_id)
