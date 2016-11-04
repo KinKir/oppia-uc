@@ -33,7 +33,7 @@ var argv = yargs
     function(yargs) {
       argv = yargs
         .usage('Usage: $0 start_devserver [--gae_devserver_path]' +
-         '[--clear_datastore] [--enable_sendmail] [--use_minification]')
+          '[--clear_datastore] [--enable_sendmail] [--use_minification]')
         .option('gae_devserver_path', {
           describe: 'A path to app engine'
         })
@@ -66,7 +66,7 @@ var params = {
   host: '0.0.0.0',
   port: 8181,
   skip_sdk_update_check: true,
-  datastore_path: path.join(path.resolve('../'),"oppia.data")
+  datastore_path: path.join(path.resolve('../'), 'oppia.data')
 };
 if (argv.clear_datastore) {
   params.clear_datastore = true;
@@ -101,7 +101,7 @@ var checkCommands = function(yargs, argv, numRequired) {
 checkCommands(yargs, argv, 1);
 
 var isMinificationNeeded = (
-  argv.minify === 'True' || argv.use_minification === 'True');
+argv.minify === 'True' || argv.use_minification === 'True');
 var frontendDependencies = manifest.dependencies.frontend;
 var cssFilePaths = [];
 var jsFilePaths = [];
@@ -157,13 +157,13 @@ gulp.task('generateJs', function() {
   requireFilesExist(jsFilePaths);
   gulp.src(jsFilePaths)
     .pipe(sourcemaps.init())
-      .pipe(concat('third_party.js'))
-      .pipe(isMinificationNeeded ? minify({
-        ext: {
-          src: '.js',
-          min: '.min.js'
-        }
-      }) : gulpUtil.noop())
+    .pipe(concat('third_party.js'))
+    .pipe(isMinificationNeeded ? minify({
+      ext: {
+        src: '.js',
+        min: '.min.js'
+      }
+    }) : gulpUtil.noop())
     // This maps a combined/minified file back to an unbuilt state by holding
     // information about original files. When you query a certain line and
     // column number in your generated JavaScript, you can do a lookup in the

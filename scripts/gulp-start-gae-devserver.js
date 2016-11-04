@@ -59,7 +59,7 @@ module.exports = function(action, args, params) {
   var runScript = function(file, args, params, cb) {
     var scriptArgs = args.concat(parseParams(params));
     if (os.platform() === 'win32') {
-      proc = exec(file + " " + scriptArgs.join("  "));
+      proc = exec(file + ' ' + scriptArgs.join(' '));
     } else {
       proc = spawn(file, scriptArgs);
     }
