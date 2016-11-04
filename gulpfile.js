@@ -65,7 +65,8 @@ var params = {
   admin_port: 8000,
   host: '0.0.0.0',
   port: 8181,
-  skip_sdk_update_check: true
+  skip_sdk_update_check: true,
+  datastore_path: path.join(path.resolve('../'),"oppia.data")
 };
 if (argv.clear_datastore) {
   params.clear_datastore = true;
