@@ -25,8 +25,11 @@
 
 var gulpUtil = require('gulp-util');
 var path = require('path');
-var spawn = require('child_process').spawn;
+var cprocess = require('child_process');
+var spawn = cprocess.spawn;
+var exec = cprocess.exec;
 var through = require('through2');
+var os = require('os');
 
 var File = gulpUtil.File;
 var PluginError = gulpUtil.PluginError;
@@ -55,7 +58,11 @@ module.exports = function(action, args, params) {
 
   var runScript = function(file, args, params, cb) {
     var scriptArgs = args.concat(parseParams(params));
-    proc = spawn(file, scriptArgs);
+    if (os.platform() == 'win32') {
+      proc = exec(file + " " + scriptArgs.join("  "));
+    } else {
+      proc = spawn(file, scriptArgs);
+    }
     proc.stdout.pipe(process.stdout);
     proc.stderr.pipe(process.stderr);
     cb && cb();
