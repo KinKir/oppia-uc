@@ -38,4 +38,4 @@ class VideoMp4(base.BaseRichTextComponent):
     @property
     def preview_url_template(self):
         # return 'https://img.youtube.com/vi/<[video_id]>/hqdefault.jpg'
-        return 'VideoMp4.png'
+        return '/images/social/youtube.png'

@@ -65,8 +65,9 @@ oppia.directive('oppiaNoninteractiveVideo', [
             }
 
             $scope.videoUrl = $sce.trustAsResourceUrl(
-              'https://www.youtube.com/embed/' + $scope.videoId + '?rel=0' +
-              $scope.timingParams + $scope.autoplaySuffix);
+             // 'https://www.youtube.com/embed/' + $scope.videoId + '?rel=0' +
+             // $scope.timingParams + $scope.autoplaySuffix);
+            $scope.videoId);
           }, 900);
           // (^)Here timeout is set to 900ms. This is time it takes to bring the
           // frame to correct point in browser and bring user to the main

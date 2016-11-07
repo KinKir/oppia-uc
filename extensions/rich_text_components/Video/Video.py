@@ -16,7 +16,6 @@
 
 from extensions.rich_text_components import base
 
-
 NONNEGATIVE_INT_SCHEMA = {
     'type': 'int',
     'validators': [{
@@ -39,36 +38,38 @@ class Video(base.BaseRichTextComponent):
     _customization_arg_specs = [{
         'name': 'video_id',
         'description': (
-            'The YouTube id for this video. This is the 11-character string '
-            'after \'v=\' in the video URL.'),
+            '视频链接地址，输入flash地址 '
+            ''),
         'schema': {
             'type': 'unicode',
         },
         'default_value': '',
-    }, {
-        'name': 'start',
-        'description': (
-            'Video start time in seconds: (leave at 0 to start at the '
-            'beginning.)'),
-        'schema': NONNEGATIVE_INT_SCHEMA,
-        'default_value': 0
-    }, {
-        'name': 'end',
-        'description': (
-            'Video end time in seconds: (leave at 0 to play until the end.)'),
-        'schema': NONNEGATIVE_INT_SCHEMA,
-        'default_value': 0
-    }, {
-        'name': 'autoplay',
-        'description': (
-            'Autoplay this video once the question has loaded?'),
-        'schema': {
-            'type': 'bool'
-        },
-        'default_value': False,
     }]
+
+    # }, {
+    #     'name': 'start',
+    #     'description': (
+    #         'Video start time in seconds: (leave at 0 to start at the '
+    #         'beginning.)'),
+    #     'schema': NONNEGATIVE_INT_SCHEMA,
+    #     'default_value': 0
+    # }, {
+    #     'name': 'end',
+    #     'description': (
+    #         'Video end time in seconds: (leave at 0 to play until the end.)'),
+    #     'schema': NONNEGATIVE_INT_SCHEMA,
+    #     'default_value': 0
+    # }, {
+    #     'name': 'autoplay',
+    #     'description': (
+    #         'Autoplay this video once the question has loaded?'),
+    #     'schema': {
+    #         'type': 'bool'
+    #     },
+    #     'default_value': False,
+    # }]
 
     @property
     def preview_url_template(self):
-        #return 'https://img.youtube.com/vi/<[video_id]>/hqdefault.jpg'
-        return 'Video.png'
+        # return 'https://img.youtube.com/vi/<[video_id]>/hqdefault.jpg'
+        return '/images/social/youtube.png'
