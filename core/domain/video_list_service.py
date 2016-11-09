@@ -47,7 +47,7 @@ def _get_video_from_model(model):
                    model.ids,
                    model.category,
                    model.author_id,
-                   model.create_on,
+                   model.created_on,
                    model.last_updated
                   )
 

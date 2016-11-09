@@ -32,13 +32,13 @@ class Video(base.BaseRichTextComponent):
     category = 'Basic Input'
     description = 'A YouTube video.'
     frontend_name = 'video'
-    tooltip = 'Insert video'
+    tooltip = '插入视频'
     is_block_element = True
 
     _customization_arg_specs = [{
         'name': 'video_id',
         'description': (
-            '视频链接地址，输入flash地址 '
+            '视频链接地址，输入优酷、土豆、爱奇艺等分享链接地址（flash地址）'
             ''),
         'schema': {
             'type': 'unicode',

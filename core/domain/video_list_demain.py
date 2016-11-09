@@ -32,8 +32,8 @@ class VideoList(object):
         self.name = name
         self.ids = ids
         self.category = category
-        self.create_on = created_on
-        self.last_update = last_updated
+        self.created_on = created_on
+        self.last_updated = last_updated
         self.id = mid
 
     def to_dict(self):

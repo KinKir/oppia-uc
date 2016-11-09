@@ -21,6 +21,8 @@ from core.controllers import base
 # from core.domain import config_domain
 from core.domain import video_list_service
 import feconf
+
+
 # import utils
 
 
@@ -33,6 +35,8 @@ class VedioListHandler(base.BaseHandler):
 
 
 class VideoListPage(base.BaseHandler):
+    PAGE_NAME_FOR_CSRF = "editor"
+
     def get(self):
         self.values.update({
             'meta_description': feconf.SPLASH_PAGE_DESCRIPTION,
@@ -43,7 +47,10 @@ class VideoListPage(base.BaseHandler):
 
 
 class VideoListData(base.BaseHandler):
+    PAGE_NAME_FOR_CSRF = "editor"
+
     """视频数据处理"""
+
     def get(self, video_id):
         if video_id is not None and video_id != '0':
             video = video_list_service.get_by_id(video_id)
@@ -59,6 +66,19 @@ class VideoListData(base.BaseHandler):
                 'cursor': new_urlsafe_start_cursor,
                 'more': more,
             })
+
+    def post(self, video_id):
+        name = self.payload.get('name')
+        category = self.payload.get('category')
+        ids = self.payload.get('ids')
+        if video_id is not None and video_id != '0':
+            video = video_list_service.get_by_id(video_id)
+            video.name = name
+            video.category = category
+            video.ids = ids
+        else:
+            video_list_service.create_video(self.user_id, name, category, ids)
+        self.render_json(self.values)
 
     def delete(self, video_id):
         """删除视频"""

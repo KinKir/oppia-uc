@@ -34,12 +34,12 @@ oppia.factory('privateLogDataService', [
           alertsService.addWarning('保存日志失败.');
         });
       },
-      getPrivateLog: function(scope, logId) {
+      getPrivateLog: function(logId, loaded) {
         $http.get(_PRIVATELOG_HANDLER_URL + logId).then(function(response) {
           var data = response.data;
-          scope.newLogTitle = data.title;
-          scope.newCategory = data.category_name;
-          scope.newLogContent = data.content;
+          if (loaded) {
+            loaded(data);
+          }
         });
       },
       Save: function(logid, newTitle, newCategory, newContent, saveSuccess) {

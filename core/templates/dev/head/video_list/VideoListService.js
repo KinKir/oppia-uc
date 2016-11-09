@@ -29,7 +29,7 @@ oppia.factory('videoListService', ['$http', '$q', 'alertsService',
         });
       },
       createVideo: function(name, ids, category, saveSuccess) {
-        $http.post(_VIDEO_LIST_DATA_HANLDER_URL, {
+        $http.post(_VIDEO_LIST_DATA_HANLDER_URL + '0', {
           name: name,
           ids: ids,
           category: category

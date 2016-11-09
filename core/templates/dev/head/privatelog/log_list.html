@@ -42,11 +42,12 @@
         </p>
         <p>日志内容:<schema-based-editor local-value="newLogContent" ng-model="newLogContent" schema="schema">
           </schema-based-editor>
+          <div angular-html-bind="newLogContent"></div>
         </p>
       </div>
 
       <div class="modal-footer">
-        <button class="btn btn-success" ng-click="create(newThreadSubject, newCategory, newLogContent)" ng-disabled="!newThreadSubject || !newLogContent || !newCategory">发表</button>
+        <button class="btn btn-success" ng-click="save(newLogTitle, newCategory, newLogContent)" ng-disabled="!newLogTitle || !newCategory || !newLogContent">发表</button>
         <button class="btn btn-default" ng-click="cancel()">取消</button>
       </div>
     </script>

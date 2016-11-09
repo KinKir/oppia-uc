@@ -41,7 +41,7 @@ oppia.controller('VideoList', ['$scope', '$modal', '$rootScope', '$window',
               type: 'html'
             };
             $scope.create = function(name, ids,
-                                   category) {
+                                     category) {
               $modalInstance.close({
                 name: name,
                 ids: ids,
@@ -52,9 +52,8 @@ oppia.controller('VideoList', ['$scope', '$modal', '$rootScope', '$window',
               $modalInstance.dismiss('cancel');
             };
           }]
+      }).result.then(function(result) {
+        videoListService.createVideo(result.name, result.ids, result.category);
       });
-    };
-    $scope.create = function(name, ids, category) {
-      videoListService.createVideo(name, ids, category);
     };
   }]);

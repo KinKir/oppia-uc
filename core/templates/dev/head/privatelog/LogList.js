@@ -19,7 +19,7 @@ oppia.controller('PrivateLogs', [
   '$scope', '$http', '$modal', '$rootScope', 'oppiaDatetimeFormatter',
   'privateLogDataService',
   function($scope, $http, $modal, $rootScope, oppiaDatetimeFormatter,
-            privateLogDataService) {
+           privateLogDataService) {
     $scope.navigateToItem = function(activityId, notificationType) {
       window.location.href = '/create/' + activityId + (
           notificationType === 'feedback_thread' ? '#/feedback' : '');
@@ -30,32 +30,36 @@ oppia.controller('PrivateLogs', [
       window.location.href = '/profile/' + username;
     };
     $scope.showPrivateLogModel = function(logid) {
-      $modal.open({
-        templateUrl: 'modals/editorPrivateLogCreate',
-        backdrop: true,
-        resolve: {},
-        controller: ['$scope', '$modalInstance',
-          function($scope, $modalInstance) {
-            $scope.schema = {
-              type: 'html'
-            };
-            privateLogDataService.getPrivateLog($scope, logid);
-            $scope.save = function(newLogTitle, newCategory,
-                                   newLogContent) {
-              $modalInstance.close({
-                logid: logid,
-                newLogTitle: newLogTitle,
-                newLogContent: newLogContent,
-                newCategory: newCategory
-              });
-            };
-            $scope.cancel = function() {
-              $modalInstance.dismiss('cancel');
-            };
-          }]
-      }).result.then(function(result) {
-        privateLogDataService.Save(result.newLogTitle,
-          result.newCategory, result.newLogContent, $scope.loadData);
+      privateLogDataService.getPrivateLog(logid, function(data) {
+        $modal.open({
+          templateUrl: 'modals/editorPrivateLogCreate',
+          backdrop: true,
+          resolve: {},
+          controller: ['$scope', '$modalInstance',
+            function($scope, $modalInstance) {
+              $scope.schema = {
+                type: 'html'
+              };
+              $scope.newLogTitle = data.title;
+              $scope.newCategory = data.category_name;
+              $scope.newLogContent = data.content;
+              $scope.save = function(newLogTitle, newCategory,
+                                     newLogContent) {
+                $modalInstance.close({
+                  logid: logid,
+                  newLogTitle: newLogTitle,
+                  newLogContent: newLogContent,
+                  newCategory: newCategory
+                });
+              };
+              $scope.cancel = function() {
+                $modalInstance.dismiss('cancel');
+              };
+            }]
+        }).result.then(function(result) {
+          privateLogDataService.Save(result.newLogTitle,
+            result.newCategory, result.newLogContent, $scope.loadData);
+        });
       });
     };
     $scope.getLocaleAbbreviatedDatetimeString = function(millisSinceEpoch) {
@@ -75,7 +79,7 @@ oppia.controller('PrivateLogs', [
             $scope.newLogTitle = '';
             $scope.newLogContent = '';
             $scope.newCategory = '';
-            $scope.create = function(newLogTitle, newCategory, newLogContent) {
+            $scope.save = function(newLogTitle, newCategory, newLogContent) {
               $modalInstance.close({
                 newLogTitle: newLogTitle,
                 newLogContent: newLogContent,
