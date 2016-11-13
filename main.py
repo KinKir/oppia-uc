@@ -36,7 +36,9 @@ from core.controllers import private_log
 from core.controllers import video_list
 from core.domain import user_services
 from core.platform import models
+from core.controllers import login
 import feconf
+
 
 # pylint: enable=relative-import
 
@@ -437,6 +439,9 @@ URLS = MAPREDUCE_HANDLERS + [
     ),
     get_redirect_route(
         r'/video/data/<video_id>', video_list.VideoListData, r'video_data'
+    ),
+    get_redirect_route(
+        r'/login', login.LoginHandler, r'login_page'
     ),
     # 404 error handler.
     get_redirect_route(r'/<:.*>', base.Error404Handler, 'error_404_handler'),

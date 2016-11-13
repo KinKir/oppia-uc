@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block maintitle %}
+  I18N_SPLASH_PAGE_TITLE
+{% endblock maintitle %}
+
+{% block header_js %}
+  {{ super() }}
+
+  <style>
+    html, body {
+      background-color: #f2f2ee;
+    }
+  </style>
+{% endblock %}
+
+{% block navbar_breadcrumb %}
+{% endblock navbar_breadcrumb %}
+
+{% block content %}
+<div view-title="Login" class="oppia-dashboard-container" style="max-width: 400px;" name="login-view" ng-controller="Login">
+  <md-card >
+      <div class="list list-inset">
+          <label class="item item-input">
+            用户名<input type="text" placeholder="用户名" ng-model="data.username"/>
+          </label>
+          <label class="item item-input">
+              密&nbsp;&nbsp;&nbsp;&nbsp;码<input type="password" placeholder="密码" ng-model="data.password"/>
+          </label>
+      </div>
+      <button class="oppia-clickable-navbar-element center-block " ng-click="login()">登录</button>
+  </md-card>
+</div>
+{% endblock %}
+
+{% block footer %}
+  {% include 'footer.html' %}
+{% endblock %}
+
+{% block footer_js %}
+    {{ super() }}
+  <script>
+    {{ include_js_file('login.js') }}
+  </script>
+{% endblock footer_js %}
