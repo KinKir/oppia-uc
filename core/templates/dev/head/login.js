@@ -21,10 +21,20 @@
 // Translations of strings that are loaded in the front page. They are listed
 
 oppia.controller('Login', ['$scope', '$modal', '$rootScope', '$window',
-  '$http',
-  function($scope) {
+  '$http', 'alertsService',
+  function($scope, $modal, $rootScope, $window, $http) {
+    var LOGIN_URL = '/login';
     $scope.login = function() {
-      return true;
+      $http.post(LOGIN_URL, {
+        username: $scope.username,
+        password: $scope.password
+      }).then(function(response) {
+          var data = response.data;
+          alertsService.addWarning('登录成功');
+        },
+        function() {
+          alertsService.addWarning('登录失败');
+        });
     };
   }
 ]);

@@ -81,7 +81,7 @@ class UcApiHandler(base.BaseHandler):
         get.update(post)
         email = get['email']
         username = get['username']
-        userid = _create_userid_from_email(email)
+        userid = create_userid_from_email(email)
         logging.warning(username)
         self.user_id = userid
 
@@ -250,7 +250,7 @@ def _clear_user_info_cookie(cookie_name=_COOKIE_NAME):
     return cookie[cookie_name].OutputString()
 
 
-def _create_userid_from_email(email):
+def create_userid_from_email(email):
     if email:
         user_id_digest = hashlib.md5(email.lower()).digest()
         user_id = '1' + ''.join(['%02d' % ord(x) for x in user_id_digest])[:20]
@@ -269,7 +269,7 @@ def _create_cookie_data(email, admin):
     Returns:
       A string containing the cookie payload.
     """
-    user_id = _create_userid_from_email(email)
+    user_id = create_userid_from_email(email)
     return '%s:%s:%s' % (email, admin, user_id)
 
 

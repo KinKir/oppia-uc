@@ -155,7 +155,7 @@ ALPHANUMERIC_REGEX = r'^[A-Za-z0-9]+$'
 # Ex.: 'valid name', 'another valid name', 'invalid   name'.
 ALPHANUMERIC_SPACE_REGEX = r'^[0-9A-Za-z]+(?:[ ]?[0-9A-Za-z]+)*$'
 # A regular expression for tags.
-TAG_REGEX = r'' #r'^[a-z ]+$'
+TAG_REGEX = r''  # r'^[a-z ]+$'
 
 # Invalid names for parameters used in expressions.
 AUTOMATICALLY_SET_PARAMETER_NAMES = ['answer', 'choices']
@@ -313,7 +313,7 @@ ALLOWED_RTE_EXTENSIONS = {
     'Video': {
         'dir': os.path.join(RTE_EXTENSIONS_DIR, 'Video')
     },
-    'VideoMp4':{
+    'VideoMp4': {
         'dir': os.path.join(RTE_EXTENSIONS_DIR, 'VideoMp4')
     },
 }
@@ -783,3 +783,9 @@ TERMS_PAGE_DESCRIPTION = (
     'Oppia is a 501(c)(3) registered non-profit open-source e-learning '
     'platform. Learn about our terms and conditions for creating and '
     'distributing learning material.')
+
+UC_URL = 'http://localhost/uc_server/index.php'
+UC_CLIENT_RELEASE = '20141101'
+UC_KEY = "4364Ofz0ebI4vak4V1t7D5j4udYfMfw4K7P2sbBbR4A270q2149093PdPdDavaj0"
+UC_APPID = "2"
+UC_IP = '127.0.0.1'

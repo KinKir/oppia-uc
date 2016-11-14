@@ -9,7 +9,7 @@
 
   <style>
     html, body {
-      background-color: #f2f2ee;
+      background:url('/images/general/background.jpg');
     }
   </style>
 {% endblock %}
@@ -18,14 +18,12 @@
 {% endblock navbar_breadcrumb %}
 
 {% block content %}
-<div view-title="Login" class="oppia-dashboard-container" style="max-width: 400px;" name="login-view" ng-controller="Login">
-  <md-card >
+<div view-title="Login" class="oppia-dashboard-container form-group" style="max-width: 400px;" name="login-view" ng-controller="Login">
+  <md-card style="background-color:#ddd">
       <div class="list list-inset">
-          <label class="item item-input">
-            用户名<input type="text" placeholder="用户名" ng-model="data.username"/>
+          <label class="item item-input">&nbsp;&nbsp;&nbsp;&nbsp;用户名：<input type="text" placeholder="用户名" ng-model="username"/>
           </label>
-          <label class="item item-input">
-              密&nbsp;&nbsp;&nbsp;&nbsp;码<input type="password" placeholder="密码" ng-model="data.password"/>
+          <label class="item item-input">&nbsp;&nbsp;&nbsp;&nbsp;密&nbsp;&nbsp;&nbsp;&nbsp;码：<input type="password" placeholder="密码" ng-model="data.password"/>
           </label>
       </div>
       <button class="oppia-clickable-navbar-element center-block " ng-click="login()">登录</button>

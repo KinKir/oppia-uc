@@ -3,12 +3,14 @@ import time
 import urllib
 import urllib2
 import xml.etree.cElementTree as ET
+import feconf
 
-URL = 'http://localhost/uc_server/index.php'
-UC_CLIENT_RELEASE = '20141101'
-UC_KEY = "4364Ofz0ebI4vak4V1t7D5j4udYfMfw4K7P2sbBbR4A270q2149093PdPdDavaj0"
-UC_APPID = "2"
-UC_IP = '127.0.0.1'
+
+URL = feconf.UC_URL
+UC_CLIENT_RELEASE = feconf.UC_CLIENT_RELEASE
+UC_KEY = feconf.UC_KEY
+UC_APPID = feconf.UC_APPID
+UC_IP = feconf.UC_IP
 
 
 def uc_user_login(username, password, isuid=0, checkques=0,
