@@ -88,7 +88,7 @@ class UcApiHandler(base.BaseHandler):
         user_services.get_or_create_user(
             self.user_id, email)
         self.response.headers['Set-Cookie'] = \
-            _set_user_info_cookie(email, username.lower() == 'admin')
+            set_user_info_cookie(email, username.lower() == 'admin')
         has_ever_registered = user_services.has_ever_registered(self.user_id)
         has_fully_registered = user_services.has_fully_registered(self.user_id)
 
@@ -273,7 +273,7 @@ def _create_cookie_data(email, admin):
     return '%s:%s:%s' % (email, admin, user_id)
 
 
-def _set_user_info_cookie(email, admin, cookie_name=_COOKIE_NAME):
+def set_user_info_cookie(email, admin, cookie_name=_COOKIE_NAME):
     """Creates a cookie to set the user information for the requestor.
 
     Args:

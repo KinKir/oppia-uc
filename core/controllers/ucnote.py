@@ -5,12 +5,12 @@ import urllib2
 import xml.etree.cElementTree as ET
 import feconf
 
-
 URL = feconf.UC_URL
 UC_CLIENT_RELEASE = feconf.UC_CLIENT_RELEASE
 UC_KEY = feconf.UC_KEY
 UC_APPID = feconf.UC_APPID
 UC_IP = feconf.UC_IP
+USER_AGENT = 'Python-urllib/2.7'
 
 
 def uc_user_login(username, password, isuid=0, checkques=0,
@@ -30,7 +30,7 @@ def xml_unserilize(xml):
     data = {}
     for child in root:
         data[child.attrib['id']] = child.text
-        if len(child) or (child is not None):
+        if len(child):
             childdata = {}
             for subchild in child:
                 childdata[subchild.attrib['id']] = subchild.text
@@ -186,7 +186,7 @@ def uc_fopen2(url, post='', timeout=15):
 
 
 def uc_fopen(url, post='', timeout=15):
-    req = urllib2.Request(url)
+    req = urllib2.Request(url=url, headers={'User-Agent': USER_AGENT})
     # data = urllib.quote(data)
     # enable cookie
     opener = urllib2.build_opener(urllib2.HTTPCookieProcessor())
@@ -210,7 +210,7 @@ def md5(md5str):
 
 def uc_api_input(data):
     return urllib.quote_plus(uc_authcode(data + "&agent=" +
-                                         md5("Python-urllib/2.7") +
+                                         md5(USER_AGENT) +
                                          "&time=" + str(int(time.time())),
                                          "ENCODE", UC_KEY))
 

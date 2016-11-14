@@ -22,7 +22,7 @@
 
 oppia.controller('Login', ['$scope', '$modal', '$rootScope', '$window',
   '$http', 'alertsService',
-  function($scope, $modal, $rootScope, $window, $http) {
+  function($scope, $modal, $rootScope, $window, $http, alertsService) {
     var LOGIN_URL = '/login';
     $scope.login = function() {
       $http.post(LOGIN_URL, {
@@ -30,7 +30,11 @@ oppia.controller('Login', ['$scope', '$modal', '$rootScope', '$window',
         password: $scope.password
       }).then(function(response) {
           var data = response.data;
-          alertsService.addWarning('登录成功');
+          if (data.res === true || data.res === 'true') {
+            document.write(data.msg);
+          } else {
+            alertsService.addWarning('登录失败' + data.msg);
+          }
         },
         function() {
           alertsService.addWarning('登录失败');

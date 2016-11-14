@@ -35,17 +35,39 @@ class LoginHandler(base.BaseHandler):
 
     def post(self):
         username = self.payload.get('username')
+        email = ''
         password = self.payload.get('password')
         if re.match(r"[^@]+@[^@]+\.[^@]+", username):
             uid = uc.create_userid_from_email(username)
-            if user_services.is_user_registered(uid) is False:
-                self.values.update({
-                    'res': 'false', 'msg': '未找到用户信息'})
-                self.render_json(self.values)
-                return
+            email = username
+            username = user_services.get_username(uid)
+        else:
+            email = user_services.get_user_id_from_username(username)
+            uid = uc.create_userid_from_email(username)
+        if user_services.is_user_registered(uid) is False:
+            self.values.update({
+                'res': 'false', 'msg': '未找到用户信息'})
+            self.render_json(self.values)
+            return
+        else:
+            logRes = ucnote.uc_user_login(username, password)
+            logResObj = ucnote.xml_unserilize(logRes)
+            msg = '登录成功'
+            success = 'true'
+            if logResObj['0'] == '-1':
+                msg = '用户不存在，或者被删除'
+                success = 'false'
+            elif logResObj['0'] == '-2':
+                msg = '密码错'
+                success = 'false'
+            elif logResObj['0'] == '-3':
+                msg = '安全提问错'
+                success = 'false'
             else:
-                username = user_services.get_user_id_from_username(username)
-        if user_services.get_user_id_from_username(username):
-            self.values.update({'res': 'true',\
-                'msg': ucnote.uc_user_login(username, password)})
+                success = 'true'
+                uc.set_user_info_cookie(email, username.lower() == 'admin')
+                msg = ucnote.uc_user_synlogin(int(logResObj['0']))
+            self.values.update(
+                {'res': success, \
+                 'msg': msg})
             self.render_json(self.values)
