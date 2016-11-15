@@ -27,7 +27,8 @@ oppia.controller('Login', ['$scope', '$modal', '$rootScope', '$window',
     $scope.login = function() {
       $http.post(LOGIN_URL, {
         username: $scope.username,
-        password: $scope.password
+        password: $scope.password,
+        return_url: $scope.return_url
       }).then(function(response) {
           var data = response.data;
           if (data.res === true || data.res === 'true') {

@@ -31,11 +31,19 @@ class LoginHandler(base.BaseHandler):
     REDIRECT_UNFINISHED_SIGNUPS = False
 
     def get(self):
+        login_url = '/splash'
+        continue_url = self.request.get('return_url') or login_url
+        self.values.update({'return_url':continue_url})
         self.render_template('login.html')
 
     def post(self):
         username = self.payload.get('username')
         email = ''
+        login_url = '/splash'
+        continue_url = self.payload.get('return_url')
+        redirect_url = continue_url or login_url
+        if isinstance(redirect_url, unicode):
+            redirect_url = redirect_url.encode('ascii')
         password = self.payload.get('password')
         if re.match(r"[^@]+@[^@]+\.[^@]+", username):
             uid = uc.create_userid_from_email(username)
@@ -65,8 +73,12 @@ class LoginHandler(base.BaseHandler):
                 success = 'false'
             else:
                 success = 'true'
-                uc.set_user_info_cookie(email, username.lower() == 'admin')
+                self.response.headers['Set-Cookie'] = \
+                    uc.set_user_info_cookie(email, username.lower() == 'admin')
                 msg = ucnote.uc_user_synlogin(int(logResObj['0']))
+                # self.response.status = 302
+                self.response.status_message = 'Redirecting to continue URL'
+                msg += '<script>window.location=\'%s\'</script>' % redirect_url
             self.values.update(
                 {'res': success, \
                  'msg': msg})

@@ -344,7 +344,8 @@ class BaseHandler(webapp2.RequestHandler):
             'SYSTEM_USERNAMES': feconf.SYSTEM_USERNAMES,
             'user_is_logged_in': user_services.has_fully_registered(
                 self.user_id),
-            'preferred_site_language_code': self.preferred_site_language_code
+            'preferred_site_language_code': self.preferred_site_language_code,
+            'bbs': feconf.BBS_URL
         })
 
         if 'meta_name' not in values:
