@@ -148,8 +148,12 @@ class LogoutPage(webapp2.RequestHandler):
         _clear_login_cookies(self.response.headers)
 
         if feconf.DEV_MODE:
-            self.redirect(users.create_logout_url(url_to_redirect_to),
-                          body=ucnote.uc_user_synlogout())
+            self.response.write('<script>window.location=\'%s\'</script>%s' %
+                                (users.create_logout_url(url_to_redirect_to),
+                                 ucnote.uc_user_synlogout()))
+            # 同步退出存在問題
+            # self.redirect(users.create_logout_url(url_to_redirect_to),
+            #               body=ucnote.uc_user_synlogout())
         else:
             self.redirect(url_to_redirect_to)
 

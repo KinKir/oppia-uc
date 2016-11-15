@@ -33,7 +33,7 @@ class LoginHandler(base.BaseHandler):
     def get(self):
         login_url = '/splash'
         continue_url = self.request.get('return_url') or login_url
-        self.values.update({'return_url':continue_url})
+        self.values.update({'return_url': continue_url})
         self.render_template('login.html')
 
     def post(self):
@@ -50,9 +50,11 @@ class LoginHandler(base.BaseHandler):
             email = username
             username = user_services.get_username(uid)
         else:
-            email = user_services.get_user_id_from_username(username)
-            uid = uc.create_userid_from_email(username)
-        if user_services.is_user_registered(uid) is False:
+            uid = user_services.get_user_id_from_username(username)
+            email = user_services.get_email_from_user_id(uid) \
+                if uid is not None else ''
+        if uid is None or \
+            user_services.is_user_registered(uid) is False:
             self.values.update({
                 'res': 'false', 'msg': '未找到用户信息'})
             self.render_json(self.values)
@@ -79,7 +81,5 @@ class LoginHandler(base.BaseHandler):
                 # self.response.status = 302
                 self.response.status_message = 'Redirecting to continue URL'
                 msg += '<script>window.location=\'%s\'</script>' % redirect_url
-            self.values.update(
-                {'res': success, \
-                 'msg': msg})
+            self.values.update({'res': success, 'msg': msg})
             self.render_json(self.values)
