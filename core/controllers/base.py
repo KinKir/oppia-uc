@@ -39,9 +39,11 @@ from core.domain import rights_manager
 from core.domain import rte_component_registry
 from core.domain import user_services
 from core.platform import models
+from core.controllers import ucnote
 import feconf
 import jinja_utils
 import utils
+
 
 current_user_services = models.Registry.import_current_user_services()
 (user_models,) = models.Registry.import_models([models.NAMES.user])
@@ -70,6 +72,7 @@ SITE_FEEDBACK_FORM_URL = config_domain.ConfigProperty(
 
 def require_user(handler):
     """Decorator that checks if a user is associated to the current session."""
+
     def test_login(self, **kwargs):
         """Checks if the user for the current session is logged in."""
         if not self.user_id:
@@ -83,6 +86,7 @@ def require_user(handler):
 
 def require_moderator(handler):
     """Decorator that checks if the current user is a moderator."""
+
     def test_is_moderator(self, **kwargs):
         """Check that the user is a moderator."""
         if not self.user_id:
@@ -95,6 +99,7 @@ def require_moderator(handler):
                 'You do not have the credentials to access this page.')
 
         return handler(self, **kwargs)
+
     return test_is_moderator
 
 
@@ -132,7 +137,6 @@ def _clear_login_cookies(response_headers):
 
 
 class LogoutPage(webapp2.RequestHandler):
-
     def get(self):
         """Logs the user out, and returns them to a specified page or the home
         page.
@@ -144,7 +148,8 @@ class LogoutPage(webapp2.RequestHandler):
         _clear_login_cookies(self.response.headers)
 
         if feconf.DEV_MODE:
-            self.redirect(users.create_logout_url(url_to_redirect_to))
+            self.redirect(users.create_logout_url(url_to_redirect_to),
+                          body=ucnote.uc_user_synlogout())
         else:
             self.redirect(url_to_redirect_to)
 

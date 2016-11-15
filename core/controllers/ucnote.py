@@ -89,7 +89,7 @@ def uc_user_synlogin(uid):
 
 
 def uc_user_synlogout():
-    return uc_api_post('user', 'synlogout', [])
+    return uc_api_post('user', 'synlogout', {})
 
 
 def uc_user_edit(username, oldpw, newpw, email,
@@ -161,7 +161,7 @@ def uc_user_logincheck(username, local_ip):
 
 def uc_api_post(module, action, arg=None):
     if arg is None:
-        arg = []
+        arg = {}
     s = sep = ''
     for (k, v) in arg.items():
         k = urllib.quote_plus(k)
