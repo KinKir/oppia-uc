@@ -901,7 +901,7 @@ class EditorAutosaveHandler(ExplorationHandler):
     """Handles requests from the editor for draft autosave."""
 
     @require_editor
-    def put(self, exploration_id):
+    def post(self, exploration_id):
         """Handles PUT requests for draft updation."""
         # Raise an Exception if the draft change list fails non-strict
         # validation.
