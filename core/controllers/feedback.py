@@ -159,7 +159,7 @@ class SuggestionActionHandler(base.BaseHandler):
     _REJECT_ACTION = 'reject'
 
     @editor.require_editor
-    def put(self, exploration_id, thread_id):
+    def post(self, exploration_id, thread_id):
         action = self.payload.get('action')
         if action == self._ACCEPT_ACTION:
             exp_services.accept_suggestion(

@@ -158,7 +158,7 @@ class WritableCollectionDataHandler(CollectionEditorHandler):
                 % (collection_version, version_from_payload))
 
     @require_editor
-    def put(self, collection_id):
+    def post(self, collection_id):
         """Updates properties of the given collection."""
 
         collection = collection_services.get_collection_by_id(collection_id)
@@ -188,7 +188,7 @@ class CollectionRightsHandler(CollectionEditorHandler):
     """Handles management of collection editing rights."""
 
     @require_editor
-    def put(self, collection_id):
+    def post(self, collection_id):
         """Updates the editing rights for the given collection."""
         collection = collection_services.get_collection_by_id(collection_id)
         version = self.payload.get('version')

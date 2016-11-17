@@ -26,7 +26,7 @@ oppia.controller('Preferences', [
     $scope.profilePictureDataUrl = '';
 
     var _saveDataItem = function(updateType, data) {
-      $http.put(_PREFERENCES_DATA_URL, {
+      $http.post(_PREFERENCES_DATA_URL, {
         update_type: updateType,
         data: data
       });
@@ -158,7 +158,7 @@ oppia.controller('Preferences', [
           }
         ]
       }).result.then(function(newProfilePictureDataUrl) {
-        $http.put(_PREFERENCES_DATA_URL, {
+        $http.post(_PREFERENCES_DATA_URL, {
           update_type: 'profile_picture_data_url',
           data: newProfilePictureDataUrl
         }).then(function() {

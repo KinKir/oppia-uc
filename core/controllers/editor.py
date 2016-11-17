@@ -332,7 +332,7 @@ class ExplorationHandler(EditorHandler):
         self.render_json(self.values)
 
     @require_editor
-    def put(self, exploration_id):
+    def post(self, exploration_id):
         """Updates properties of the given exploration."""
         exploration = exp_services.get_exploration_by_id(exploration_id)
         version = self.payload.get('version')
@@ -404,7 +404,7 @@ class ExplorationRightsHandler(EditorHandler):
     PAGE_NAME_FOR_CSRF = 'editor'
 
     @require_editor
-    def put(self, exploration_id):
+    def post(self, exploration_id):
         """Updates the editing rights for the given exploration."""
         exploration = exp_services.get_exploration_by_id(exploration_id)
         version = self.payload.get('version')
@@ -499,7 +499,7 @@ class ExplorationModeratorRightsHandler(EditorHandler):
     PAGE_NAME_FOR_CSRF = 'editor'
 
     @base.require_moderator
-    def put(self, exploration_id):
+    def post(self, exploration_id):
         """Updates the publication status of the given exploration, and sends
         an email to all its owners.
         """
@@ -561,7 +561,7 @@ class ResolvedAnswersHandler(EditorHandler):
     PAGE_NAME_FOR_CSRF = 'editor'
 
     @require_editor
-    def put(self, exploration_id, state_name):
+    def post(self, exploration_id, state_name):
         """Marks learners' answers as resolved."""
         resolved_answers = self.payload.get('resolved_answers')
 
@@ -907,6 +907,11 @@ class EditorAutosaveHandler(ExplorationHandler):
         # validation.
         try:
             change_list = self.payload.get('change_list')
+            if not change_list:
+                # """Handles POST request for discarding draft changes."""
+                exp_services.discard_draft(exploration_id, self.user_id)
+                self.render_json({})
+                return
             version = self.payload.get('version')
             exp_services.create_or_update_draft(
                 exploration_id, self.user_id, change_list, version,
@@ -922,8 +927,8 @@ class EditorAutosaveHandler(ExplorationHandler):
             'is_version_of_draft_valid': exp_services.is_version_of_draft_valid(
                 exploration_id, version)})
 
-    @require_editor
-    def post(self, exploration_id):
-        """Handles POST request for discarding draft changes."""
-        exp_services.discard_draft(exploration_id, self.user_id)
-        self.render_json({})
+    # @require_editor
+    # def post(self, exploration_id):
+    #     """Handles POST request for discarding draft changes."""
+    #     exp_services.discard_draft(exploration_id, self.user_id)
+    #     self.render_json({})

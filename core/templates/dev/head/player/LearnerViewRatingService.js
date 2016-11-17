@@ -31,7 +31,7 @@ oppia.factory('LearnerViewRatingService', [
         });
       },
       submitUserRating: function(ratingValue) {
-        $http.put(ratingsUrl, {
+        $http.post(ratingsUrl, {
           user_rating: ratingValue
         });
         userRating = ratingValue;

@@ -502,7 +502,7 @@ class RatingHandler(base.BaseHandler):
         self.render_json(self.values)
 
     @base.require_user
-    def put(self, exploration_id):
+    def post(self, exploration_id):
         """Handles PUT requests for submitting ratings at the end of an
         exploration.
         """
