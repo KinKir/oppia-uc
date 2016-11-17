@@ -907,7 +907,7 @@ class EditorAutosaveHandler(ExplorationHandler):
         # validation.
         try:
             change_list = self.payload.get('change_list')
-            if not change_list:
+            if change_list is None:
                 # """Handles POST request for discarding draft changes."""
                 exp_services.discard_draft(exploration_id, self.user_id)
                 self.render_json({})
