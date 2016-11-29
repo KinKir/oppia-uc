@@ -230,21 +230,31 @@
                             </ul>
                           </li>
                         {% else %}
-                          <li class="dropdown oppia-navbar-clickable-dropdown pull-right">
-                            <div class="oppia-navbar-button-container" style="margin-right: 10px;">
-                              <button class="btn oppia-navbar-button"
-                                      ng-click="onLoginButtonClicked('{{login_url}}')">
+
+                          <li class="dropdown oppia-navbar-clickable-dropdown pull-right" >
+                           {# <div class="oppia-navbar-button-container" style="margin-right: 10px;">
+                              <button class="btn oppia-navbar-button dropdown-toggle" data-toggle="dropdown"  >
                                 <span translate="I18N_TOPNAV_SIGN_IN"></span>
                                 <span class="caret"></span>
                               </button>
-                            </div>
-                            {#<ul class="dropdown-menu oppia-navbar-dropdown" role="menu" style="margin-right: 15px; padding: 0;" ng-mouseover="onMouseoverDropdownMenu($event)" ng-mouseleave="onMouseoutDropdownMenu($event)">
+                            </div>#}
+                             <a class="oppia-navbar-tab">
+                                <span >账户</span>
+                                <span class="caret"></span>
+                              </a>
+                            <ul class="dropdown-menu oppia-navbar-dropdown" role="menu" ng-touchstart="onMouseoverDropdownMenu($event)" ng-mouseover="onMouseoverDropdownMenu($event)" ng-mouseleave="onMouseoutDropdownMenu($event)">
                               <li>
-                                <a href style="padding: 0; width: 200px;" ng-click="onLoginButtonClicked('{{login_url}}')">
-                                  <img src="/images/signin/Red-signin-Long-base-44dp.png">
+                               <a href ng-click="onLoginButtonClicked('{{login_url}}')" translate="I18N_TOPNAV_SIGN_IN" >
+
                                 </a>
+                                <a href="http://202.194.15.221:8013/member.php?mod=register" >
+                                  注册
+                                </a>
+                                {#<a  translate="I18N_TOPNAV_SIGN_IN"href style="padding: 0; width: 200px;" ng-click="onLoginButtonClicked('{{login_url}}')">
+                                  <img src="/images/signin/Red-signin-Long-base-44dp.png">
+                                </a>#}
                               </li>
-                            </ul>#}
+                            </ul>
                           </li>
                         {% endif %}
                       </ul>
