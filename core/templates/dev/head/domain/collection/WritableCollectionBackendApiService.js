@@ -68,7 +68,7 @@ oppia.factory('WritableCollectionBackendApiService', [
           commit_message: commitMessage,
           change_list: changeList
         };
-        $http.put(writableCollectionDataUrl, putData).then(function(response) {
+        $http.post(writableCollectionDataUrl, putData).then(function(response) {
           // The returned data is an updated collection dict.
           var collection = angular.copy(response.data);
 

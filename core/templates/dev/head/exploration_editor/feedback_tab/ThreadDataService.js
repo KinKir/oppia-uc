@@ -167,7 +167,7 @@ oppia.factory('threadDataService', [
         payload.commit_message = commitMsg;
       }
       _openThreadsCount -= 1;
-      $http.put(_SUGGESTION_ACTION_HANDLER_URL + threadId, payload).then(
+      $http.post(_SUGGESTION_ACTION_HANDLER_URL + threadId, payload).then(
         onSuccess, function() {
         _openThreadsCount += 1;
         if (onFailure) {

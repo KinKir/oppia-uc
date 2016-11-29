@@ -154,7 +154,7 @@ class PreferencesHandler(base.BaseHandler):
         self.render_json(self.values)
 
     @base.require_user
-    def put(self):
+    def post(self):
         """Handles POST requests."""
         update_type = self.payload.get('update_type')
         data = self.payload.get('data')
@@ -325,7 +325,7 @@ class SiteLanguageHandler(base.BaseHandler):
 
     PAGE_NAME_FOR_CSRF = feconf.CSRF_PAGE_NAME_I18N
 
-    def put(self):
+    def post(self):
         """Handles PUT requests."""
         if user_services.has_fully_registered(self.user_id):
             site_language_code = self.payload.get('site_language_code')

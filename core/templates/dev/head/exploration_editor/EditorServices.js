@@ -47,7 +47,7 @@ oppia.factory('explorationData', [
     var explorationData = {
       explorationId: explorationId,
       autosaveChangeList: function(changeList, successCallback, errorCallback) {
-        $http.put(explorationDraftAutosaveUrl, {
+        $http.post(explorationDraftAutosaveUrl, {
           change_list: changeList,
           version: explorationData.data.version
         }).then(function(response) {
@@ -111,7 +111,7 @@ oppia.factory('explorationData', [
       },
       resolveAnswers: function(stateName, resolvedAnswersList) {
         alertsService.clearWarnings();
-        $http.put(
+        $http.post(
             resolvedAnswersUrlPrefix + '/' + encodeURIComponent(stateName), {
           resolved_answers: resolvedAnswersList
         });
@@ -128,7 +128,7 @@ oppia.factory('explorationData', [
        */
       save: function(
           changeList, commitMessage, successCallback, errorCallback) {
-        $http.put(explorationDataUrl, {
+        $http.post(explorationDataUrl, {
           change_list: changeList,
           commit_message: commitMessage,
           version: explorationData.data.version
@@ -531,7 +531,7 @@ oppia.factory('explorationRightsService', [
       requestParams.version = explorationData.data.version;
       var explorationRightsUrl = (
         '/createhandler/rights/' + explorationData.explorationId);
-      $http.put(explorationRightsUrl, requestParams).then(function(response) {
+      $http.post(explorationRightsUrl, requestParams).then(function(response) {
         var data = response.data;
         alertsService.clearWarnings();
         that.init(
@@ -546,7 +546,7 @@ oppia.factory('explorationRightsService', [
 
       var explorationModeratorRightsUrl = (
         '/createhandler/moderatorrights/' + explorationData.explorationId);
-      $http.put(explorationModeratorRightsUrl, {
+      $http.post(explorationModeratorRightsUrl, {
         action: action,
         email_body: emailBody,
         version: explorationData.data.version
