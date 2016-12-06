@@ -78,26 +78,26 @@
                   </a>
                 </li>
                 <li>
-                  <a ng-click="onMouseoutProfilePictureOrDropdown($event)" href="/preferences" style="color: #00376d">Preferences</a>
+                  <a ng-click="onMouseoutProfilePictureOrDropdown($event)" href="/preferences" style="color: #00376d">个人设置</a>
                 </li>
 
                 {% if is_moderator %}
                   <li>
                     <a ng-click="onMouseoutProfilePictureOrDropdown($event)" href="/moderator" target="_blank" style="color: #00376d">
-                      管理页面
+                      课程管理页面
                     </a>
                   </li>
                 {% endif %}
                 {% if is_super_admin %}
                   <li>
                     <a ng-click="onMouseoutProfilePictureOrDropdown($event)" href="/admin" target="_blank" style="color: #00376d">
-                      管理页面
+                      管理员页面
                     </a>
                   </li>
                 {% endif %}
                 <hr class="oppia-top-right-menu-item-separator">
                 <li>
-                  <a ng-click="onMouseoutProfilePictureOrDropdown($event)" href="{{logout_url}}" style="color: #00376d">Logout</a>
+                  <a ng-click="onMouseoutProfilePictureOrDropdown($event)" href="{{logout_url}}" style="color: #00376d">退出</a>
                 </li>
               </ul>
             </li>
@@ -298,7 +298,7 @@
         </md-card>
 
         <md-card class="oppia-page-card oppia-long-text" ng-if="currentTab === TAB_CONFIG" style="max-width: 1050px">
-          <h3>Configuration properties</h3>
+          <h3>参数设置</h3>
           <div class="container" ng-if="isNonemptyObject(configProperties)" style="margin-left: 0;">
             <div ng-repeat="(configPropertyId, configPropertyData) in configProperties">
               <div class="row protractor-test-config-property" style="padding-bottom: 10px;">
@@ -316,7 +316,7 @@
             </div>
 
             <button ng-click="saveConfigProperties()" class="protractor-test-save-all-configs">Save</button>
-            <button ng-click="reloadConfigProperties()">Undo changes</button>
+            <button ng-click="reloadConfigProperties()">重新加载</button>
           </div>
 
           <div ng-if="!isNonemptyObject(configProperties)">
@@ -335,9 +335,9 @@
           </ul>
         </md-card>
         <md-card class="oppia-page-card oppia-long-text" ng-if="currentTab === TAB_MISC" style="max-width: 700px">
-          <h3>Search Index</h3>
+          <h3>搜索索引</h3>
 
-          <button ng-click="clearSearchIndex()">Clear Search Index</button>
+          <button ng-click="clearSearchIndex()">清空索引</button>
         </md-card>
         <md-card class="oppia-page-card oppia-long-text" ng-if="currentTab === TAB_MISC" style="max-width: 700px">
           <h3>Topic Similarities</h3>

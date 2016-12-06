@@ -18,7 +18,9 @@
 
 # import json
 
+import jinja2
 from core.controllers import base
+from core.controllers import editor
 from core.domain import privatelog_services
 from core.domain import user_services
 from core.domain import config_domain
@@ -85,6 +87,8 @@ class PrivateLogPage(base.BaseHandler):
             self.values.update({
                 'meta_description': '',
                 'nav_mode': feconf.NAV_MODE_DASHBOARD,
+                'value_generators_js': jinja2.utils.Markup(
+                    editor.get_value_generators_js()),
             })
             self.render_template(
                 'privatelog/log_list.html',

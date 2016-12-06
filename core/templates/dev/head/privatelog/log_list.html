@@ -1,84 +1,123 @@
 {% extends "base.html" %}
 
 {% block maintitle %}
- 个人日志  
+个人日志
 {% endblock maintitle %}
 
 {% block navbar_breadcrumb %}
-  <ul class="nav navbar-nav oppia-navbar-breadcrumb">
+<ul class="nav navbar-nav oppia-navbar-breadcrumb">
     <li>
-      <span class="oppia-navbar-breadcrumb-separator"></span>
-      个人日志
+        <span class="oppia-navbar-breadcrumb-separator"></span>
+        个人日志
     </li>
-  </ul>
+</ul>
 
-  <style>
+<style>
     html, body {
-      background-color: #eee;
+        background-color: #eee;
     }
-  </style>
+</style>
 {% endblock navbar_breadcrumb %}
 
 
 {% block content %}
-  <div class="oppia-dashboard-container" ng-controller="PrivateLogs">
+<div class="oppia-dashboard-container" ng-controller="PrivateLogs">
     <h2 class="oppia-page-heading" style="display: inline">日志</h2>
     <button class="btn btn-success pull-right" ng-click="showCreateLogModal()">
-          写日志
+        写日志
     </button>
     <div class="oppia-page-heading-subtext" ng-if="jobQueuedMsec">
-      最后更新: <[getLocaleAbbreviatedDatetimeString(jobQueuedMsec)]>
+        最后更新: <[getLocaleAbbreviatedDatetimeString(jobQueuedMsec)]>
     </div>
     <script type="text/ng-template" id="modals/editorPrivateLogCreate">
-      <div class="modal-header">
-        <h3>写日志</h3>
-      </div>
+        <div class="modal-header">
+            <h3>写日志</h3>
+        </div>
 
-      <div class="modal-body" stop-event="touchend">
-        <p>标题: <input type="text"  class="form-control" ng-model="newLogTitle" placeholder="输入日志标题"/></p>
-        <p class="clear">分类: <input type="text" class="form-control" ng-model="newCategory" placeholder="输入日志分类"/>
-        </select2-dropdown>
+        <div class="modal-body" stop-event="touchend">
+            <p>标题: <input type="text" class="form-control" ng-model="newLogTitle" placeholder="输入日志标题"/></p>
+            <p class="clear">分类: <input type="text" class="form-control" ng-model="newCategory" placeholder="输入日志分类"/>
+                </select2-dropdown>
 
-        </p>
-        <p>日志内容:<schema-based-editor local-value="newLogContent" ng-model="newLogContent" schema="schema">
-          </schema-based-editor>
-          <div angular-html-bind="newLogContent"></div>
-        </p>
-      </div>
+            </p>
+            <p>日志内容:
 
-      <div class="modal-footer">
-        <button class="btn btn-success" ng-click="save(newLogTitle, newCategory, newLogContent)" ng-disabled="!newLogTitle || !newCategory || !newLogContent">发表</button>
-        <button class="btn btn-default" ng-click="cancel()">取消</button>
-      </div>
+           <div class="oppia-editor-card-section"><div>
+            <div ng-if="!contentEditorIsOpen" class="protractor-test-edit-content oppia-editable-section"
+                   ng-click="openStateContentEditor()"  >
+                    <i ng-if="true" class="material-icons oppia-editor-edit-icon"
+                       title="编辑卡片内容">&#xE254;
+                    </i>
+                    <div class="oppia-state-content-display oppia-transition-200 oppia-prevent-selection"
+                          title="Card Content">
+      <span ng-show="newLogContent == '' " class="oppia-placeholder">
+        填写日志内容 .
+      </span>
+                        <span ng-show="newLogContent == ''" class="oppia-placeholder">
+        写下您的日志
+      </span>
+                        <span angular-html-bind="newLogContent"
+                              class="oppia-state-content-display-html protractor-test-state-content-display"></span>
+                    </div>
+                    <!-- This is a dummy div created to mask the contents when hovered above user contents-->
+                    <div class="oppia-editable-section-mask protractor-test-state-edit-content"></div>
+                </div>
+</div>
+
+
+
+            <div ng-if="contentEditorIsOpen" class="protractor-test-state-content-editor">
+                <schema-based-editor schema="schema" ng-model="newLogContent"  local-value="newLogContent">
+                </schema-based-editor>
+               <div style="margin-top: 2px;">
+                    <button type="button"
+                            class="btn btn-success oppia-save-state-item-button protractor-test-save-state-content pull-right"
+                            ng-click="onSaveContentButtonClicked()">保存内容
+                    </button>
+                    <button type="button" class="btn btn-default pull-right" ng-click="cancelEdit()">取消</button>
+                    <div style="clear: both;"></div>
+                </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-success" ng-click="save(newLogTitle, newCategory, newLogContent)"
+                    ng-disabled="!newLogTitle || !newCategory || !newLogContent">发表
+            </button>
+            <button class="btn btn-default" ng-click="cancel()">取消</button>
+        </div>
     </script>
     <div class="oppia-notifications-tray">
-      <md-card ng-if="logs.length === 0" class="oppia-page-card oppia-notifications-dashboard-card">
-        <em>没有日志.</em>
-      </md-card>
+        <md-card ng-if="logs.length === 0" class="oppia-page-card oppia-notifications-dashboard-card">
+            <em>没有日志.</em>
+        </md-card>
 
-      <div ng-if="logs.length > 0">
-        <md-card ng-repeat="notification in logs" class="oppia-dashboard-row"
-          ng-class="{'oppia-dashboard-row-recent': lastSeenMsec && lastSeenMsec < notification.last_updated_ms && notification.author_username !== currentUsername}" ng-click="showPrivateLogModel(notification.id)">
-          <div class="oppia-notification-content">
+        <div ng-if="logs.length > 0">
+            <md-card ng-repeat="notification in logs" class="oppia-dashboard-row"
+                     ng-class="{'oppia-dashboard-row-recent': lastSeenMsec && lastSeenMsec < notification.last_updated_ms && notification.author_username !== currentUsername}"
+                     ng-click="showPrivateLogModel(notification.id)">
+                <div class="oppia-notification-content">
             <span class="oppia-notification-type">
              <[notification.title]>[<[notification.category_name]>]
             </span>
-          </div>
-          <div class="oppia-notification-last-updated">
-            <[getLocaleAbbreviatedDatetimeString(notification.last_updated)]>
-          </div>
-        </md-card>
-      </div>
+                </div>
+                <div class="oppia-notification-last-updated">
+                    <[getLocaleAbbreviatedDatetimeString(notification.last_updated)]>
+                </div>
+            </md-card>
+        </div>
     </div>
-  </div>
+</div>
 
 {% endblock %}
 
 {% block footer_js %}
-  {{ super() }}
-  <script>
+{{ super() }}
+<script>
+    {{ value_generators_js }}
     {{ include_js_file('/privatelog/LogList.js') }}
-    {{ include_js_file('/privatelog/PrivateLogDataService.js') }}
+    {{  include_js_file('/privatelog/PrivateLogDataService.js') }}
 
-  </script>
+</script>
 {% endblock footer_js %}

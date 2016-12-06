@@ -1,6 +1,6 @@
 <script type="text/ng-template" id="modals/embedExploration">
   <div class="modal-header">
-    <h3>Embed this exploration</h3>
+    <h3>将课程嵌入到其他网页</h3>
   </div>
 
   <div class="modal-body">
@@ -9,13 +9,13 @@
     </p>
 
     <accordion close-others="true">
-      <accordion-group heading="If your website allows JavaScript" is-open="false">
+      <accordion-group heading="如果网站支持javascript" is-open="false">
         <div class="oppia-embed-modal-code" ng-click="selectText($event)">
 &lt;oppia oppia-id="<[explorationId]>" src="<[serverName]>"&gt;&lt;/oppia&gt;
 &lt;script src="https://cdn.jsdelivr.net/oppia/0.0.1/oppia-player.min.js"&gt;&lt;/script&gt;
         </div>
       </accordion-group>
-      <accordion-group heading="If your website does not allow JavaScript" is-open="false" style="margin-top: 3px;">
+      <accordion-group heading="如果网站不支持javascript" is-open="false" style="margin-top: 3px;">
         <div class="oppia-embed-modal-code" ng-click="selectText($event)">&lt;iframe src="<[serverName]>/explore/<[explorationId]>?iframed=true" width="700" height="1000"&gt;</div>
         <p>
           <em>

@@ -27,13 +27,14 @@
               <img class="thumbnail-image" ng-src="<[exploration.thumbnail_icon_url]>">
               <h2 class="activity-title protractor-test-exp-summary-tile-title">
                 <span><[video.name || '未命名' | truncate:40]></span>
-              </h2>
+              </h2>  <[video.category]>
+                  <span angular-html-bind="video.ids" ></span>
             </div>
             <div class="title-section-mask"></div>
 
             <div ng-attr-section="'<['right-section']>">
               <div ng-if="exploration.status === 'private'" class="exp-private-text">
-               <[video.category]>
+
               </div>
                {#<ul ng-if="exploration.status !== 'private'"
                   layout="row"

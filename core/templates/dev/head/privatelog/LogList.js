@@ -40,6 +40,25 @@ oppia.controller('PrivateLogs', [
               $scope.schema = {
                 type: 'html'
               };
+              $scope.contentEditorIsOpen = false;
+              $scope.saveTextContent = function() {
+                $scope.contentEditorIsOpen = false;
+              };
+              $scope.openStateContentEditor = function() {
+                $scope.contentEditorIsOpen = true;
+              };
+
+              $scope.onSaveContentButtonClicked = function() {
+                $scope.saveTextContent();
+                // Show the interaction when the text content is saved, even if no content
+                // is entered.
+                //$scope.isInteractionShown = true;
+              };
+              $scope.cancelEdit = function() {
+                // $scope.content = explorationStatesService.getStateContentMemento(
+                //   editorContextService.getActiveStateName());
+                $scope.contentEditorIsOpen = false;
+              };
               $scope.newLogTitle = data.title;
               $scope.newCategory = data.category_name;
               $scope.newLogContent = data.content;
@@ -71,14 +90,34 @@ oppia.controller('PrivateLogs', [
         templateUrl: 'modals/editorPrivateLogCreate',
         backdrop: true,
         resolve: {},
+        transclude: true,
+        replace: true,
         controller: ['$scope', '$modalInstance',
           function($scope, $modalInstance) {
             $scope.schema = {
               type: 'html'
             };
-            $scope.newLogTitle = '';
-            $scope.newLogContent = '';
-            $scope.newCategory = '';
+            $scope.contentEditorIsOpen = false;
+            $scope.saveTextContent = function() {
+              //$scope.newLogContent = $scope.newLogContent
+              $scope.contentEditorIsOpen = false;
+            };
+            $scope.openStateContentEditor = function() {
+              $scope.contentEditorIsOpen = true;
+            };
+
+            $scope.onSaveContentButtonClicked = function() {
+              $scope.saveTextContent();
+              // Show the interaction when the text content is saved, even if no content
+              // is entered.
+              //$scope.isInteractionShown = true;
+            };
+            //$scope.newLogContent = '';
+            $scope.cancelEdit = function() {
+              // $scope.content = explorationStatesService.getStateContentMemento(
+              //   editorContextService.getActiveStateName());
+              $scope.contentEditorIsOpen = false;
+            };
             $scope.save = function(newLogTitle, newCategory, newLogContent) {
               $modalInstance.close({
                 newLogTitle: newLogTitle,

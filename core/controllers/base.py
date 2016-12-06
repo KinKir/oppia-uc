@@ -44,7 +44,6 @@ import feconf
 import jinja_utils
 import utils
 
-
 current_user_services = models.Registry.import_current_user_services()
 (user_models,) = models.Registry.import_models([models.NAMES.user])
 
@@ -112,8 +111,8 @@ def require_fully_signed_up(handler):
     def test_registered_as_editor(self, **kwargs):
         """Check that the user has registered as an editor."""
         if (not self.user_id
-                or self.username in config_domain.BANNED_USERNAMES.value
-                or not user_services.has_fully_registered(self.user_id)):
+                or self.username in config_domain.BANNED_USERNAMES.value \
+                    or not user_services.has_fully_registered(self.user_id)):
             raise self.UnauthorizedUserException(
                 'You do not have the credentials to access this page.')
 
@@ -209,8 +208,8 @@ class BaseHandler(webapp2.RequestHandler):
                 self.user_id, email)
             self.values['user_email'] = user_settings.email
 
-            if (self.REDIRECT_UNFINISHED_SIGNUPS and not
-                    user_services.has_fully_registered(self.user_id)):
+            if (self.REDIRECT_UNFINISHED_SIGNUPS and
+                    not user_services.has_fully_registered(self.user_id)):
                 _clear_login_cookies(self.response.headers)
                 self.partially_logged_in = True
                 self.user_id = None
@@ -228,10 +227,17 @@ class BaseHandler(webapp2.RequestHandler):
         self.is_admin = rights_manager.Actor(self.user_id).is_admin()
         self.is_super_admin = (
             current_user_services.is_current_user_super_admin())
-
+        self.can_create_explorations = (
+            self.username in
+            config_domain.WHITELISTED_EXPLORER_EDITOR_USERNAMES.value
+        )
+        self.values['BBS_URL'] = feconf.BBS_URL
         self.values['is_moderator'] = self.is_moderator
         self.values['is_admin'] = self.is_admin
         self.values['is_super_admin'] = self.is_super_admin
+        self.values['can_create_explorations'] = \
+            self.can_create_explorations or \
+            self.is_moderator or self.is_admin or self.is_super_admin
 
         if self.request.get('payload'):
             self.payload = json.loads(self.request.get('payload'))

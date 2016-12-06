@@ -13,8 +13,14 @@
     </li>
     <li {% if nav_mode == 'video' %}class="active"{% endif %}>
       <a href="/video/list">
-        <i class="material-icons oppia-sidebar-menu-icon">&#xE88A;</i>
+        <i class="material-icons oppia-sidebar-menu-icon">video_library</i>
         <span >视频</span>
+      </a>
+    </li>
+    <li >
+      <a href="{{BBS_URL}}" target="_blank">
+        <i class="material-icons oppia-sidebar-menu-icon">supervisor_account</i>
+        <span >论坛</span>
       </a>
     </li>
    {# <li {% if nav_mode == 'about' %}class="active"{% endif %}>
@@ -24,13 +30,13 @@
       </a>
     </li>#}
 
-    <li {% if nav_mode == 'teach' %}class="active"{% endif %}>
+  {#  <li {% if nav_mode == 'teach' %}class="active"{% endif %}>
       <a href="/teach">
         <i class="material-icons oppia-sidebar-menu-icon">&#xE88E;</i>
         <span translate="I18N_SIDEBAR_TEACH_WITH_OPPIA"></span>
       </a>
     </li>
-{#
+
     <li {% if nav_mode == 'forum' %}class="active"{% endif %}>
       <a href="/forum">
         <i class="material-icons oppia-sidebar-menu-icon">&#xE7EF;</i>

@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 
 {% block maintitle %}
-  Moderator Tools - Oppia
+  课程管理 Tools - Oppia
 {% endblock maintitle %}
 
 {% block navbar_breadcrumb %}
   <ul class="nav navbar-nav oppia-navbar-breadcrumb">
     <li>
       <span class="oppia-navbar-breadcrumb-separator"></span>
-      发布人工具
+      课程管理工具
     </li>
   </ul>
 {% endblock navbar_breadcrumb %}
@@ -18,8 +18,8 @@
     <div class="oppia-content">
       <br>
       <tabset>
-        <tab heading="Recent Commits" active>
-          <h3>最近提交 (all non-private explorations)</h3>
+        <tab heading="最近发布" active>
+          <h3>最近发布</h3>
           <div ng-show="allCommits.length">
             <table class="oppia-padded-table">
               <tr>
@@ -28,7 +28,7 @@
                 <th>分类</th>
                 <th>用户名</th>
                 <th>备注</th>
-                <th>权限?</th>
+                <th>是否有权限</th>
               </tr>
               <tr ng-repeat="commit in allCommits track by $index">
                 <td><[getDatetimeAsString(commit.last_updated)]></td>
@@ -48,9 +48,9 @@
           </div>
         </tab>
 
-        <tab heading="Recent Feedback Messages">
+        <tab heading="最近反馈信息">
           <h3>最近反馈信息</h3>
-          (Note that some of these links may be to private explorations, and thus result in authorization errors.)
+          {#(Note that some of these links may be to private explorations, and thus result in authorization errors.)#}
           <br><br>
           <div ng-show="allFeedbackMessages.length">
             <table class="oppia-padded-table">
@@ -72,8 +72,8 @@
           </div>
         </tab>
 
-        <tab heading="Featured Activities">
-          <h3>活动在库特征</h3>
+        <tab heading="库特征">
+          <h3>库特征</h3>
           <br><br>
 
           <schema-based-editor schema="FEATURED_ACTIVITY_REFERENCES_SCHEMA"
@@ -83,7 +83,7 @@
 
           <button class="btn btn-success" ng-click="saveFeaturedActivityReferences()"
                   ng-disabled="isSaveFeaturedActivitiesButtonDisabled()">
-            保存特性活动
+            保存活动
           </button>
         </tab>
       </tabset>

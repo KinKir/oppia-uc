@@ -261,10 +261,14 @@
                       <ul class="nav oppia-navbar-nav">
                         {% if nav_mode not in ['create', 'explore', 'collection']  %}
                           <ul ng-if="windowIsNarrow" class="nav oppia-navbar-tabs-narrow">
+                            {% if can_create_explorations %}
                             <create-activity-button></create-activity-button>
+                            {% endif %}
                           </ul>
                           <ul ng-if="!windowIsNarrow" class="nav oppia-navbar-tabs">
+                            {% if can_create_explorations %}
                             <create-activity-button></create-activity-button>
+                            {% endif %}
 
                            {# <li class="oppia-clickable-navbar-element pull-right">
                               <a class="oppia-navbar-tab" href="/donate" translate="I18N_TOPNAV_DONATE">

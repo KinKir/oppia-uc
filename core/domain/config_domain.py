@@ -192,7 +192,7 @@ def update_admin_ids(committer_id, admin_usernames):
         if user_id is not None:
             admin_ids.append(user_id)
         else:
-            raise Exception('Bad admin username: %s' % username)
+            raise Exception('用户不存在: %s' % username)
 
     Registry.get_config_property('admin_ids').set_value(
         committer_id, admin_ids)
@@ -215,27 +215,34 @@ def update_moderator_ids(committer_id, moderator_usernames):
 
 
 ADMIN_IDS = ConfigProperty(
-    'admin_ids', SET_OF_STRINGS_SCHEMA, 'Admin ids', [],
+    'admin_ids', SET_OF_STRINGS_SCHEMA, '系统管理员 ids', [],
     is_directly_settable=False)
 MODERATOR_IDS = ConfigProperty(
-    'moderator_ids', SET_OF_STRINGS_SCHEMA, 'Moderator ids', [],
+    'moderator_ids', SET_OF_STRINGS_SCHEMA, '课程管理员 ids', [],
     is_directly_settable=False)
 
 ADMIN_USERNAMES = ConfigProperty(
-    'admin_usernames', SET_OF_STRINGS_SCHEMA, 'Usernames of admins', [],
+    'admin_usernames', SET_OF_STRINGS_SCHEMA, '系统管理员用户名', [],
     post_set_hook=update_admin_ids)
 MODERATOR_USERNAMES = ConfigProperty(
-    'moderator_usernames', SET_OF_STRINGS_SCHEMA, 'Usernames of moderators',
+    'moderator_usernames', SET_OF_STRINGS_SCHEMA, '课程管理员用户名',
     [], post_set_hook=update_moderator_ids)
 
 BANNED_USERNAMES = ConfigProperty(
     'banned_usernames',
     SET_OF_STRINGS_SCHEMA,
-    'Banned usernames (editing permissions for these users have been removed)',
+    '禁用用户 ',
     [])
 
 WHITELISTED_COLLECTION_EDITOR_USERNAMES = ConfigProperty(
     'collection_editor_whitelist',
     SET_OF_STRINGS_SCHEMA,
-    'Names of users allowed to use the collection editor',
+    '允许创建系列课程的用户列表',
     [])
+
+WHITELISTED_EXPLORER_EDITOR_USERNAMES = ConfigProperty(
+    'explorer_editor_whitelist',
+    SET_OF_STRINGS_SCHEMA,
+    '允许创建课程的用户列表',
+    []
+)
