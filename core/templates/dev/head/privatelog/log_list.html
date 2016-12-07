@@ -19,6 +19,9 @@
 </style>
 {% endblock navbar_breadcrumb %}
 
+{% block header_js %}
+{{ super() }}
+{% endblock header_js %}
 
 {% block content %}
 <div class="oppia-dashboard-container" ng-controller="PrivateLogs">
@@ -40,50 +43,43 @@
                 </select2-dropdown>
 
             </p>
-            <p>日志内容:
-
-           <div class="oppia-editor-card-section"><div>
-            <div ng-if="!contentEditorIsOpen" class="protractor-test-edit-content oppia-editable-section"
-                   ng-click="openStateContentEditor()"  >
-                    <i ng-if="true" class="material-icons oppia-editor-edit-icon"
-                       title="编辑卡片内容">&#xE254;
-                    </i>
-                    <div class="oppia-state-content-display oppia-transition-200 oppia-prevent-selection"
-                          title="Card Content">
-      <span ng-show="newLogContent == '' " class="oppia-placeholder">
-        填写日志内容 .
-      </span>
-                        <span ng-show="newLogContent == ''" class="oppia-placeholder">
-        写下您的日志
-      </span>
-                        <span angular-html-bind="newLogContent"
-                              class="oppia-state-content-display-html protractor-test-state-content-display"></span>
+             日志内容:
+                    <div ng-if="!contentEditorIsOpen" class="protractor-test-edit-content oppia-editable-section"
+                         ng-click="openStateContentEditor()">
+                        <i ng-if="true" class="material-icons oppia-editor-edit-icon"
+                           title="编辑内容">&#xE254;
+                        </i>
+                        <div class="oppia-state-content-display oppia-transition-200 oppia-prevent-selection"
+                             title="Card Content">
+                              <span ng-show="newLogContent == ''|| !newLogContent " class="oppia-placeholder">
+                                填写日志内容 .
+                              </span>
+                            <span angular-html-bind="newLogContent"
+                                  class="oppia-state-content-display-html protractor-test-state-content-display"></span>
+                        </div>
+                        <!-- This is a dummy div created to mask the contents when hovered above user contents-->
+                        <div class="oppia-editable-section-mask protractor-test-state-edit-content"></div>
                     </div>
-                    <!-- This is a dummy div created to mask the contents when hovered above user contents-->
-                    <div class="oppia-editable-section-mask protractor-test-state-edit-content"></div>
+
+                <div ng-if="contentEditorIsOpen"  >
+                    <schema-based-editor schema="schema" local-value="newLogContent">
+                    </schema-based-editor>
+                    <span angular-html-bind="newLogContent"></span>
+                    <div style="margin-top: 2px;">
+                        <button type="button"
+                                class="btn btn-success oppia-save-state-item-button protractor-test-save-state-content pull-right"
+                                ng-click="onSaveContentButtonClicked(newLogContent)">保存内容
+                        </button>
+                        <button type="button" class="btn btn-default pull-right" ng-click="cancelEdit()">取消</button>
+                        <div style="clear: both;"></div>
+                    </div>
                 </div>
-</div>
 
-
-
-            <div ng-if="contentEditorIsOpen" class="protractor-test-state-content-editor">
-                <schema-based-editor schema="schema" ng-model="newLogContent"  local-value="newLogContent">
-                </schema-based-editor>
-               <div style="margin-top: 2px;">
-                    <button type="button"
-                            class="btn btn-success oppia-save-state-item-button protractor-test-save-state-content pull-right"
-                            ng-click="onSaveContentButtonClicked()">保存内容
-                    </button>
-                    <button type="button" class="btn btn-default pull-right" ng-click="cancelEdit()">取消</button>
-                    <div style="clear: both;"></div>
-                </div>
             </div>
-          </div>
-        </div>
 
         <div class="modal-footer">
             <button class="btn btn-success" ng-click="save(newLogTitle, newCategory, newLogContent)"
-                    ng-disabled="!newLogTitle || !newCategory || !newLogContent">发表
+                    ng-disabled="!newLogTitle || !newCategory ">发表
             </button>
             <button class="btn btn-default" ng-click="cancel()">取消</button>
         </div>
@@ -117,7 +113,9 @@
 <script>
     {{ value_generators_js }}
     {{ include_js_file('/privatelog/LogList.js') }}
-    {{  include_js_file('/privatelog/PrivateLogDataService.js') }}
-
+    {{ include_js_file('/privatelog/PrivateLogDataService.js') }}
 </script>
+{{ interaction_templates }}
+{{ interaction_validators_html }}
+{{ gadget_templates }}
 {% endblock footer_js %}

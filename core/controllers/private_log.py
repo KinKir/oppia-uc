@@ -23,6 +23,10 @@ from core.controllers import base
 from core.controllers import editor
 from core.domain import privatelog_services
 from core.domain import user_services
+from core.domain import gadget_registry
+from core.domain import dependency_registry
+from core.domain import interaction_registry
+from core.domain import rte_component_registry
 from core.domain import config_domain
 import feconf
 import utils
@@ -79,16 +83,45 @@ class CreatePrivateLogHandler(base.BaseHandler):
 
 class PrivateLogPage(base.BaseHandler):
     PAGE_NAME_FOR_CSRF = 'editor'
-
+    EDITOR_PAGE_DEPENDENCY_IDS = []
     def get(self):
         if self.username in config_domain.BANNED_USERNAMES.value:
             raise self.UnauthorizedUserException("")
         elif user_services.has_fully_registered(self.user_id):
+
+            interaction_ids = (
+                interaction_registry.Registry.get_all_interaction_ids())
+
+            interaction_dependency_ids = (
+                interaction_registry.Registry.get_deduplicated_dependency_ids(
+                    interaction_ids))
+            dependencies_html, additional_angular_modules = (
+                dependency_registry.Registry.get_deps_html_and_angular_modules(
+                    interaction_dependency_ids + self.EDITOR_PAGE_DEPENDENCY_IDS))
+
+            interaction_templates = (
+                rte_component_registry.Registry.get_html_for_all_components() +
+                interaction_registry.Registry.get_interaction_html(
+                    interaction_ids))
+            interaction_validators_html = (
+                interaction_registry.Registry.get_validators_html(
+                    interaction_ids))
+
+            gadget_types = gadget_registry.Registry.get_all_gadget_types()
+            gadget_templates = (
+                gadget_registry.Registry.get_gadget_html(gadget_types))
+
             self.values.update({
                 'meta_description': '',
                 'nav_mode': feconf.NAV_MODE_DASHBOARD,
                 'value_generators_js': jinja2.utils.Markup(
                     editor.get_value_generators_js()),
+                'dependencies_html': jinja2.utils.Markup(dependencies_html),
+                'gadget_templates': jinja2.utils.Markup(gadget_templates),
+                'interaction_templates': jinja2.utils.Markup(
+                    interaction_templates),
+                'interaction_validators_html': jinja2.utils.Markup(
+                    interaction_validators_html),
             })
             self.render_template(
                 'privatelog/log_list.html',

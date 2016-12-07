@@ -106,13 +106,13 @@ oppia.controller('PrivateLogs', [
               $scope.contentEditorIsOpen = true;
             };
 
-            $scope.onSaveContentButtonClicked = function() {
+            $scope.onSaveContentButtonClicked = function(content) {
               $scope.saveTextContent();
+              $scope.newLogContent = content;
               // Show the interaction when the text content is saved, even if no content
               // is entered.
               //$scope.isInteractionShown = true;
             };
-            //$scope.newLogContent = '';
             $scope.cancelEdit = function() {
               // $scope.content = explorationStatesService.getStateContentMemento(
               //   editorContextService.getActiveStateName());
