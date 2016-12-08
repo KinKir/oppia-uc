@@ -785,9 +785,15 @@ TERMS_PAGE_DESCRIPTION = (
     'platform. Learn about our terms and conditions for creating and '
     'distributing learning material.')
 
+# 论坛相关
 BBS_URL = 'http://202.194.15.221:8013/'
 UC_URL = 'http://202.194.15.221:8013/uc_server/index.php'
 UC_CLIENT_RELEASE = '20141101'
 UC_KEY = "4364Ofz0ebI4vak4V1t7D5j4udYfMfw4K7P2sbBbR4A270q2149093PdPdDavaj0"
 UC_APPID = "2"
 UC_IP = '127.0.0.1'
+
+# 七牛存储相关
+QN_ACCESS_KEY = '1bqQxt7j3AK3fpNTjC1SKFBw7wVhT3coLfPMV_dy'
+QN_SECRET_KEY = 'AL3ygOTz8KewUs7GliKnbPwUh3lERUWjElL81gyP'
+QN_BUCKET = 'test'

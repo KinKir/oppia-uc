@@ -84,6 +84,7 @@ class CreatePrivateLogHandler(base.BaseHandler):
 class PrivateLogPage(base.BaseHandler):
     PAGE_NAME_FOR_CSRF = 'editor'
     EDITOR_PAGE_DEPENDENCY_IDS = []
+
     def get(self):
         if self.username in config_domain.BANNED_USERNAMES.value:
             raise self.UnauthorizedUserException("")
@@ -97,7 +98,8 @@ class PrivateLogPage(base.BaseHandler):
                     interaction_ids))
             dependencies_html, additional_angular_modules = (
                 dependency_registry.Registry.get_deps_html_and_angular_modules(
-                    interaction_dependency_ids + self.EDITOR_PAGE_DEPENDENCY_IDS))
+                    interaction_dependency_ids +
+                    self.EDITOR_PAGE_DEPENDENCY_IDS))
 
             interaction_templates = (
                 rte_component_registry.Registry.get_html_for_all_components() +
@@ -122,6 +124,7 @@ class PrivateLogPage(base.BaseHandler):
                     interaction_templates),
                 'interaction_validators_html': jinja2.utils.Markup(
                     interaction_validators_html),
+                'additional_angular_modules': additional_angular_modules,
             })
             self.render_template(
                 'privatelog/log_list.html',
