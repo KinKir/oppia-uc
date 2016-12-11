@@ -20,17 +20,26 @@ from extensions.rich_text_components import base
 class VideoMp4(base.BaseRichTextComponent):
     """A rich-text component representing an MP4 video."""
 
-    name = 'MP4 视频'
+    name = '上传视频'
     category = 'Basic Input'
-    description = 'Mp4视频链接'
+    description = '上传本地视频'
     frontend_name = 'video-mp4'
-    tooltip = '插入mp4视频'
+    tooltip = '插入视频'
 
     _customization_arg_specs = [{
         'name': 'video_url',
-        'description': '视频链接.',
+        'description': '输入视频地址.',
         'schema': {
             'type': 'unicode',
+        },
+        'default_value': '',
+    }, {
+        'name': 'filepath',
+        'description': (
+            '或上传(视频格式文件类型 )'),
+        'schema': {
+            'type': 'custom',
+            'obj_type': 'localfilepath',
         },
         'default_value': '',
     }]

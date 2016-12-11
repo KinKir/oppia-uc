@@ -39,7 +39,7 @@ class Image(base.BaseRichTextComponent):
         },
         'default_value': '',
     }, {
-        'name': '标题',
+        'name': 'caption',
         'description': ('文件标题 (可选)'),
         'schema': {
             'type': 'unicode',

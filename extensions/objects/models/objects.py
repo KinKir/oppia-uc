@@ -410,6 +410,19 @@ class Filepath(BaseObject):
     SCHEMA = UnicodeString.SCHEMA
 
 
+class Localfilepath(BaseObject):
+    """A string representing a filepath.
+
+    The path will be prefixed with '[exploration_id]/assets'.
+    """
+
+    description = 'A string that represents a filepath'
+    edit_html_filename = 'localfilepath_editor'
+    edit_js_filename = 'LocalfilepathEditor'
+
+    SCHEMA = UnicodeString.SCHEMA
+
+
 class CheckedProof(BaseObject):
     """A proof attempt and any errors it makes."""
 

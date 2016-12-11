@@ -26,10 +26,23 @@ oppia.directive('oppiaNoninteractiveVideoMp4', [
       restrict: 'E',
       scope: {},
       templateUrl: 'richTextComponent/VideoMp4',
+      link:function(scope, element, attrs){
+
+      },
       controller: ['$scope', '$attrs', function($scope, $attrs) {
+
         $scope.videoUrl = $sce.trustAsResourceUrl(
           oppiaHtmlEscaper.escapedJsonToObj($attrs.videoUrlWithValue));
-
+        var uri = oppiaHtmlEscaper.escapedJsonToObj($attrs.videoUrlWithValue)
+          ||  oppiaHtmlEscaper.escapedJsonToObj($attrs.filepathWithValue);
+        var flashvars = {
+          f: uri,
+          c: 0,
+          p: 1
+        };
+        var params = {bgcolor: '#FFF', allowFullScreen: true, allowScriptAccess: 'always', wmode: 'transparent'};
+        var video = [uri + '->video/mp4'];
+        CKobject.embed('/third_party/static/ckplayer-6.8/ckplayer/ckplayer.swf', 'a1', 'ckplayer_a1', '100%', '100%', true, flashvars, video, params);
         // Clearing the video URL src after a card leaves the user's view
         // helps browsers clear memory and release resources. Without this,
         // a bug was observed where resources would freeze for learning

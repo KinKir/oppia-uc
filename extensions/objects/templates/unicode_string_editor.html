@@ -7,7 +7,7 @@
   <span ng-if="active || alwaysEditable">
     <input ng-if="!largeInput" type="text" ng-model="localValue.label" class="form-control">
     <button type="button" class="btn btn-default" ng-if="!alwaysEditable" ng-click="replaceValue(localValue.label)">
-      Close
+      关闭
     </button>
   </span>
 </span>
@@ -23,7 +23,7 @@
   <div ng-if="active || alwaysEditable">
     <textarea ng-model="localValue.label"></textarea>
     <button type="button" class="btn btn-default"  ng-if="!alwaysEditable" ng-click="replaceValue(localValue.label)">
-      Close
+      关闭
     </button>
   </div>
 </div>
