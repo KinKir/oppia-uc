@@ -47,17 +47,12 @@ oppia.controller('PrivateLogs', [
               $scope.openStateContentEditor = function() {
                 $scope.contentEditorIsOpen = true;
               };
-
-              $scope.onSaveContentButtonClicked = function() {
+              $scope.onSaveContentButtonClicked = function(content) {
                 $scope.saveTextContent();
+                $scope.newLogContent = content;
                 // Show the interaction when the text content is saved, even if no content
                 // is entered.
                 //$scope.isInteractionShown = true;
-              };
-              $scope.cancelEdit = function() {
-                // $scope.content = explorationStatesService.getStateContentMemento(
-                //   editorContextService.getActiveStateName());
-                $scope.contentEditorIsOpen = false;
               };
               $scope.newLogTitle = data.title;
               $scope.newCategory = data.category_name;
@@ -76,7 +71,7 @@ oppia.controller('PrivateLogs', [
               };
             }]
         }).result.then(function(result) {
-          privateLogDataService.Save(result.newLogTitle,
+          privateLogDataService.Save(result.logid, result.newLogTitle,
             result.newCategory, result.newLogContent, $scope.loadData);
         });
       });

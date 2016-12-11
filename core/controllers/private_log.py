@@ -76,8 +76,16 @@ class CreatePrivateLogHandler(base.BaseHandler):
         obj_category = privatelog_services.try_create_category(
             self.user_id, category)
         title = self.payload.get('newTitle')
-        privatelog_services.create_private_log(
-            self.user_id, obj_category.id, title, text)
+        if log_id is not None and log_id != '0':
+            log = privatelog_services.get_privatelog(log_id)
+            log.title = title
+            log.category_id = obj_category.id
+            log.category_name = category
+            log.content = text
+            log.put()
+        else:
+            privatelog_services.create_private_log(
+                self.user_id, obj_category.id, title, text)
         self.render_json(self.values)
 
 

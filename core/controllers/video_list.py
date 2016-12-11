@@ -119,6 +119,7 @@ class VideoListData(base.BaseHandler):
             video.name = name
             video.category = category
             video.ids = ids
+            video.put()
         else:
             video_list_service.create_video(self.user_id, name, category, ids)
         self.render_json(self.values)
