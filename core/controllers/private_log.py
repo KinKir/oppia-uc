@@ -77,7 +77,7 @@ class CreatePrivateLogHandler(base.BaseHandler):
             self.user_id, category)
         title = self.payload.get('newTitle')
         if log_id is not None and log_id != '0':
-            log = privatelog_services.get_privatelog(log_id)
+            log = privatelog_services.get_privatelog_model(log_id)
             log.title = title
             log.category_id = obj_category.id
             log.category_name = category

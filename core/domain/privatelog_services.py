@@ -61,6 +61,10 @@ def get_privatelog(log_id):
         privatelog_models.PrivateLogModel.get(long(log_id)))
 
 
+def get_privatelog_model(log_id):
+    return privatelog_models.PrivateLogModel.get(long(log_id))
+
+
 def get_category_by_name(author_id, category_name):
     return privatelog_models.LogCategoryModel.get_category_by_name(
         author_id, category_name)

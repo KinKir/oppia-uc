@@ -115,7 +115,7 @@ class VideoListData(base.BaseHandler):
         category = self.payload.get('category')
         ids = self.payload.get('ids')
         if video_id is not None and video_id != '0':
-            video = video_list_service.get_by_id(video_id)
+            video = video_list_service.get_video_model(video_id)
             video.name = name
             video.category = category
             video.ids = ids

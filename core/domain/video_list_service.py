@@ -67,5 +67,9 @@ def get_by_id(vid):
         video_list_models.VideoList.get(long(vid)))
 
 
+def get_video_model(vid):
+    return video_list_models.VideoList.get(long(vid))
+
+
 def delete_video(vid):
     video_list_models.VideoList.get(long(vid)).delete()

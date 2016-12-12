@@ -20,10 +20,7 @@
 
 {% block content %}
 <div class="oppia-dashboard-container" ng-controller="VideoList">
-     <button class="btn btn-success pull-right" ng-click="showCreateModal()">
-          上传视频
-    </button>
-  <md-card layout="row" style="width:184px;height:250px;" ng-repeat="video in videos track by video.id">
+  <md-card  style="width:184px;height:250px;float:left;" ng-repeat="video in videos track by video.id">
             <div class="title-section" style="background-color: <[exploration.thumbnail_bg_color]>;">
               <img class="thumbnail-image" ng-src="<[exploration.thumbnail_icon_url]>">
               <h2 class="activity-title protractor-test-exp-summary-tile-title">
