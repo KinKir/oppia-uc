@@ -311,7 +311,6 @@
         "downloadFormat": "zip",
         "url": "http://www.ckplayer.com/down/ckplayer6.8.zip",
         "rootDirPrefix": "ckplayer-",
-        "targetDir": "ckplayer-",
         "targetDirPrefix": "ckplayer-",
         "bundle": {
           "js": ["ckplayer/ckplayer.js"]

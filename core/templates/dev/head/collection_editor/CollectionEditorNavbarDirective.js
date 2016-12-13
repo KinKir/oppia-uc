@@ -27,13 +27,12 @@ oppia.directive('collectionEditorNavbar', [function() {
       'WritableCollectionBackendApiService',
       'EVENT_COLLECTION_INITIALIZED', 'EVENT_COLLECTION_REINITIALIZED',
       'EVENT_UNDO_REDO_SERVICE_CHANGE_APPLIED',
-      function(
-          $scope, $modal, alertsService, routerService, UndoRedoService,
-          CollectionEditorStateService, CollectionValidationService,
-          CollectionRightsBackendApiService,
-          WritableCollectionBackendApiService,
-          EVENT_COLLECTION_INITIALIZED, EVENT_COLLECTION_REINITIALIZED,
-          EVENT_UNDO_REDO_SERVICE_CHANGE_APPLIED) {
+      function($scope, $modal, alertsService, routerService, UndoRedoService,
+               CollectionEditorStateService, CollectionValidationService,
+               CollectionRightsBackendApiService,
+               WritableCollectionBackendApiService,
+               EVENT_COLLECTION_INITIALIZED, EVENT_COLLECTION_REINITIALIZED,
+               EVENT_UNDO_REDO_SERVICE_CHANGE_APPLIED) {
         $scope.collectionId = GLOBALS.collectionId;
         $scope.collection = CollectionEditorStateService.getCollection();
         $scope.isPrivate = GLOBALS.isPrivate;
@@ -95,15 +94,15 @@ oppia.directive('collectionEditorNavbar', [function() {
 
         $scope.isCollectionSaveable = function() {
           return (
-            $scope.getChangeListCount() > 0 &&
-            $scope.validationIssues.length === 0);
+          $scope.getChangeListCount() > 0 &&
+          $scope.validationIssues.length === 0);
         };
 
         $scope.isCollectionPublishable = function() {
           return (
-            $scope.isPrivate &&
-            $scope.getChangeListCount() === 0 &&
-            $scope.validationIssues.length === 0);
+          $scope.isPrivate &&
+          $scope.getChangeListCount() === 0 &&
+          $scope.validationIssues.length === 0);
         };
 
         $scope.saveChanges = function() {
@@ -132,9 +131,8 @@ oppia.directive('collectionEditorNavbar', [function() {
 
         $scope.publishCollection = function() {
           var additionalMetadataNeeded = (
-            !$scope.collection.getTitle() ||
-            !$scope.collection.getObjective() ||
-            !$scope.collection.getCategory());
+          !$scope.collection.getTitle() || !$scope.collection.getObjective() ||
+          !$scope.collection.getCategory());
 
           if (additionalMetadataNeeded) {
             $modal.open({
@@ -143,9 +141,8 @@ oppia.directive('collectionEditorNavbar', [function() {
               controller: [
                 '$scope', '$modalInstance', 'CollectionEditorStateService',
                 'CollectionUpdateService', 'CATEGORY_LIST',
-                function(
-                    $scope, $modalInstance, CollectionEditorStatesService,
-                    CollectionUpdateService, CATEGORY_LIST) {
+                function($scope, $modalInstance, CollectionEditorStatesService,
+                         CollectionUpdateService, CATEGORY_LIST) {
                   var collection = (
                     CollectionEditorStateService.getCollection());
 
@@ -163,7 +160,7 @@ oppia.directive('collectionEditorNavbar', [function() {
                   for (var i = 0; i < CATEGORY_LIST.length; i++) {
                     $scope.CATEGORY_LIST_FOR_SELECT2.push({
                       id: CATEGORY_LIST[i],
-                      text: CATEGORY_LIST[i]
+                      text: ALL_CATEGORIES_ZH_MAP[CATEGORY_LIST[i]]
                     });
                   }
 
@@ -175,7 +172,7 @@ oppia.directive('collectionEditorNavbar', [function() {
 
                   $scope.save = function() {
                     if (!$scope.newTitle) {
-                      alertsService.addWarning('Please specify a title');
+                      alertsService.addWarning('请输入标题');
                       return;
                     }
                     if (!$scope.newObjective) {
@@ -183,7 +180,7 @@ oppia.directive('collectionEditorNavbar', [function() {
                       return;
                     }
                     if (!$scope.newCategory) {
-                      alertsService.addWarning('Please specify a category');
+                      alertsService.addWarning('请选择分类');
                       return;
                     }
 
@@ -215,7 +212,7 @@ oppia.directive('collectionEditorNavbar', [function() {
               ]
             }).result.then(function(metadataList) {
               var commitMessage = (
-                'Add metadata: ' + metadataList.join(', ') + '.');
+              'Add metadata: ' + metadataList.join(', ') + '.');
               CollectionEditorStateService.saveCollection(
                 commitMessage, _publishCollection);
             });

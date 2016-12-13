@@ -35,11 +35,21 @@ oppia.controller('VideoList', ['$scope', '$modal', '$rootScope', '$window',
         templateUrl: 'modals/editorVideoCreate',
         backdrop: true,
         resolve: {},
-        controller: ['$scope', '$modalInstance',
-          function($scope, $modalInstance) {
+        controller: ['$scope', '$modalInstance', 'CATEGORY_LIST',
+          'ALL_CATEGORIES_ZH_MAP',
+          function($scope, $modalInstance, CATEGORY_LIST,
+                   ALL_CATEGORIES_ZH_MAP) {
             $scope.schema = {
               type: 'html'
             };
+            $scope.CATEGORY_LIST_FOR_SELECT2 = [];
+
+            for (var i = 0; i < CATEGORY_LIST.length; i++) {
+              $scope.CATEGORY_LIST_FOR_SELECT2.push({
+                id: CATEGORY_LIST[i],
+                text: ALL_CATEGORIES_ZH_MAP[CATEGORY_LIST[i]]
+              });
+            }
             $scope.create = function(name, ids,
                                      category) {
               $modalInstance.close({

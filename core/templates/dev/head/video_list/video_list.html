@@ -20,6 +20,9 @@
 
 {% block content %}
 <div class="oppia-dashboard-container" ng-controller="VideoList">
+ <button class="btn btn-success pull-right" ng-click="showCreateModal()">
+        上传视频
+    </button>
   <md-card  style="width:184px;height:250px;float:left;" ng-repeat="video in videos track by video.id">
             <div class="title-section" style="background-color: <[exploration.thumbnail_bg_color]>;">
               <img class="thumbnail-image" ng-src="<[exploration.thumbnail_icon_url]>">
@@ -95,7 +98,8 @@
 
       <div class="modal-body" stop-event="touchend">
         <p>名称: <input type="text"  class="form-control" ng-model="name" placeholder="输入视频名称"/></p>
-        <p class="clear">分类: <input type="text" class="form-control" ng-model="category" placeholder="输入视频分类"/>
+        <p class="clear">分类:
+        <select2-dropdown width="100%" choices="CATEGORY_LIST_FOR_SELECT2" item="category" placeholder="请选择分类"></select2-dropdown>
         </p>
         <p>内容:<schema-based-editor local-value="ids" ng-model="ids" schema="schema">
           </schema-based-editor>
