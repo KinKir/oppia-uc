@@ -44,6 +44,8 @@ class VideoList(object):
                 self.get_author_name() if self.author_id else None,
             'name': self.name,
             'category': self.category,
+            'thumbnail_icon_url': utils.get_thumbnail_icon_url_for_category(self.category),
+            'thumbnail_bg_color': utils.get_hex_color_for_category(self.category),
             'ids': self.ids,
             'created_on': utils.get_time_in_millisecs(self.created_on)
         }

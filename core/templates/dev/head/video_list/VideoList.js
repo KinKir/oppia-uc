@@ -63,7 +63,7 @@ oppia.controller('VideoList', ['$scope', '$modal', '$rootScope', '$window',
             };
           }]
       }).result.then(function(result) {
-        videoListService.createVideo(result.name, result.ids, result.category);
+        videoListService.createVideo(result.name, result.ids, result.category, $scope.loadData);
       });
     };
   }]);

@@ -1,47 +1,50 @@
 {% extends "base.html" %}
 
 {% block maintitle %}
-  I18N_SPLASH_PAGE_TITLE
+I18N_SPLASH_PAGE_TITLE
 {% endblock maintitle %}
 
 {% block header_js %}
-  {{ super() }}
+{{ super() }}
 
-  <style>
+<style>
     html, body {
-      background-color: #f2f2ee;
+        background-color: #f2f2ee;
     }
-  </style>
-  {{dependencies_html}}
+</style>
+{{dependencies_html}}
 {% endblock %}
 
 {% block navbar_breadcrumb %}
 {% endblock navbar_breadcrumb %}
 
 {% block content %}
-<div class="oppia-dashboard-container" ng-controller="VideoList">
- <button class="btn btn-success pull-right" ng-click="showCreateModal()">
+<div class="oppia-dashboard-container" style="max-width: 900px" ng-controller="VideoList">
+    <button class="btn btn-success pull-right" ng-click="showCreateModal()">
         上传视频
     </button>
-  <md-card  style="width:184px;height:250px;float:left;" ng-repeat="video in videos track by video.id">
-            <div class="title-section" style="background-color: <[exploration.thumbnail_bg_color]>;">
-              <img class="thumbnail-image" ng-src="<[exploration.thumbnail_icon_url]>">
-              <h2 class="activity-title protractor-test-exp-summary-tile-title">
-                <span><[video.name || '未命名' | truncate:40]></span>
-              </h2>  <[video.category]>
-                  <span angular-html-bind="video.ids" ></span>
+    <div style="clear:both"></div>
+    <md-card class="oppia-activity-summary-tile md-default-theme" style="width:200px;height:258px;float:left;"
+             ng-repeat="video in videos track by video.id">
+        <a href="#" target="_blank">
+            <div class="title-section" style="background-color: <[video.thumbnail_bg_color]>;">
+                <img class="thumbnail-image" ng-src="<[video.thumbnail_icon_url]>">
+                <h2 class="activity-title protractor-test-exp-summary-tile-title">
+                    <span><[video.name || '未命名' | truncate:40]></span>
+                </h2>
             </div>
             <div class="title-section-mask"></div>
+        </a>
+        <div ng-attr-section="'<['right-section']>">
+            <div ng-if="exploration.status === 'private'" class="exp-private-text">
 
-            <div ng-attr-section="'<['right-section']>">
-              <div ng-if="exploration.status === 'private'" class="exp-private-text">
-
-              </div>
-               {#<ul ng-if="exploration.status !== 'private'"
-                  layout="row"
-                  layout-wrap
-                  class="metrics"
-                  layout-align="space-between center">
+            </div>
+            {#
+            <ul ng-if="exploration.status !== 'private'"
+                layout="row"
+                layout-wrap
+                class="metrics"
+                layout-align="space-between center">
                 <li flex="50">
                   <span class="protractor-test-exp-summary-tile-rating">
                     <span class="fa fa-star fa-lg"
@@ -59,7 +62,7 @@
                         tooltip="<['I18N_LIBRARY_VIEWS_TOOLTIP' | translate]>"
                         tooltip-placement="top">
                   </span>
-                  <[exploration.num_views]>
+                    <[exploration.num_views]>
                 </li>
 
                 <li flex="50">
@@ -67,7 +70,7 @@
                         tooltip="<['I18N_LIBRARY_LAST_UPDATED' | translate]>"
                         tooltip-placement="top">
                   </span>
-                  <span>
+                    <span>
                     <[getLocaleAbbreviatedDatetimeString(video.last_updated)]>
                   </span>
                 </li>
@@ -77,7 +80,7 @@
                         tooltip="<['I18N_PLAYER_FEEDBACK_TOOLTIP' | translate]>"
                         tooltip-placement="top">
                   </span>
-                  <[exploration.num_total_threads]>
+                    <[exploration.num_total_threads]>
                 </li>
                 <sharing-links ng-if="exploration.status !== 'private'"
                                ng-click="$event.stopPropagation()"
@@ -86,44 +89,50 @@
                                layout-align-type="center left"
                                twitter-text="DEFAULT_TWITTER_SHARE_MESSAGE_DASHBOARD"
                                exploration-id="exploration.id">
-               </sharing-links>
-              </ul>#}
-            </div>
-</md-card>
+                </sharing-links>
+            </ul>
+            #}
+        </div>
 
-  <script type="text/ng-template" id="modals/editorVideoCreate">
-      <div class="modal-header">
-        <h3>上传视频</h3>
-      </div>
+    </md-card>
 
-      <div class="modal-body" stop-event="touchend">
-        <p>名称: <input type="text"  class="form-control" ng-model="name" placeholder="输入视频名称"/></p>
-        <p class="clear">分类:
-        <select2-dropdown width="100%" choices="CATEGORY_LIST_FOR_SELECT2" item="category" placeholder="请选择分类"></select2-dropdown>
-        </p>
-        <p>内容:<schema-based-editor local-value="ids" ng-model="ids" schema="schema">
-          </schema-based-editor>
-        </p>
-      </div>
+    <script type="text/ng-template" id="modals/editorVideoCreate">
+        <div class="modal-header">
+            <h3>上传视频</h3>
+        </div>
 
-      <div class="modal-footer">
-        <button class="btn btn-success" ng-click="create(name, ids, category)" ng-disabled="!name || !ids|| !category">发布</button>
-        <button class="btn btn-default" ng-click="cancel()">取消</button>
-      </div>
+        <div class="modal-body" stop-event="touchend">
+            <p>名称: <input type="text" class="form-control" ng-model="name" placeholder="输入视频名称"/></p>
+            <p class="clear">分类:
+                <select2-dropdown width="100%" choices="CATEGORY_LIST_FOR_SELECT2" item="category"
+                                  placeholder="请选择分类"></select2-dropdown>
+            </p>
+            <p>内容:
+                <schema-based-editor local-value="ids" ng-model="ids" schema="schema">
+                </schema-based-editor>
+            </p>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-success" ng-click="create(name, ids, category)"
+                    ng-disabled="!name || !ids|| !category">发布
+            </button>
+            <button class="btn btn-default" ng-click="cancel()">取消</button>
+        </div>
     </script>
 </div>
 {% endblock %}
 
 {% block footer %}
-  {% include 'footer.html' %}
+{% include 'footer.html' %}
 {% endblock %}
 
 {% block footer_js %}
-  {{ super() }}
-  <script>
-    {{ include_js_file('video_list/VideoList.js') }}
+{{ super() }}
+<script>
+    {{include_js_file('video_list/VideoList.js') }}
     {{ include_js_file('video_list/VideoListService.js')}}
-  </script>
+</script>
 {{ interaction_templates }}
 {{ interaction_validators_html }}
 {{ gadget_templates }}
