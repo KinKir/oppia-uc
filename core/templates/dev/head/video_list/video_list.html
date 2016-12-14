@@ -26,7 +26,7 @@ I18N_SPLASH_PAGE_TITLE
     <div style="clear:both"></div>
     <md-card class="oppia-activity-summary-tile md-default-theme" style="width:200px;height:258px;float:left;"
              ng-repeat="video in videos track by video.id">
-        <a href="#" target="_blank">
+        <a href="/video/<[video.id]>" target="_blank">
             <div class="title-section" style="background-color: <[video.thumbnail_bg_color]>;">
                 <img class="thumbnail-image" ng-src="<[video.thumbnail_icon_url]>">
                 <h2 class="activity-title protractor-test-exp-summary-tile-title">

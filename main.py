@@ -39,7 +39,6 @@ from core.platform import models
 from core.controllers import login
 import feconf
 
-
 # pylint: enable=relative-import
 
 from mapreduce import main as mapreduce_main
@@ -74,6 +73,7 @@ class HomePageRedirectHandler(base.BaseHandler):
     """When a request is made to '/', check the user's login status, and
     redirect them appropriately.
     """
+
     def get(self):
         if self.user_id and user_services.has_fully_registered(self.user_id):
             self.redirect(feconf.DASHBOARD_URL)
@@ -140,7 +140,6 @@ for path, handler_class in mapreduce_main.create_handlers_map():
 
 # Tell map/reduce internals that this is now the base path to use.
 mapreduce_parameters.config.BASE_PATH = '/mapreduce/worker'
-
 
 # Register the URLs with the classes responsible for handling them.
 URLS = MAPREDUCE_HANDLERS + [
@@ -438,6 +437,9 @@ URLS = MAPREDUCE_HANDLERS + [
         r'/video/list', video_list.VideoListPage, r'video_list'
     ),
     get_redirect_route(
+        r'/video/<video_id>', video_list.VideoView, r'video_view'
+    ),
+    get_redirect_route(
         r'/video/data/<video_id>', video_list.VideoListData, r'video_data'
     ),
     get_redirect_route(
@@ -447,5 +449,5 @@ URLS = MAPREDUCE_HANDLERS + [
     get_redirect_route(r'/<:.*>', base.Error404Handler, 'error_404_handler'),
 ]
 
-app = transaction_services.toplevel_wrapper(# pylint: disable=invalid-name
+app = transaction_services.toplevel_wrapper(  # pylint: disable=invalid-name
     webapp2.WSGIApplication(URLS, debug=feconf.DEBUG))
