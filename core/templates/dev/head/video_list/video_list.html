@@ -26,6 +26,21 @@ I18N_SPLASH_PAGE_TITLE
     </button>
     {% endif %}
     <div style="clear:both"></div>
+     <div ng-if="videos.length === 0" class="oppia-dashboard-empty-text">
+        <md-card layout="row"
+                 class="oppia-page-card oppia-dashboard-intro-card"
+                 style="margin-top: 0;">
+          <div>
+            <p>
+              没有视频！
+            </p>
+          </div>
+          <div class="oppia-dashboard-intro-picture">
+            <img src="/images/general/empty_dashboard.svg">
+          </div>
+        </md-card>
+      </div>
+
     <md-card class="oppia-activity-summary-tile md-default-theme" style="width:200px;height:258px;float:left;"
              ng-repeat="video in videos track by video.id">
         <a href="/video/<[video.id]>" target="_blank">
