@@ -20,9 +20,11 @@ I18N_SPLASH_PAGE_TITLE
 
 {% block content %}
 <div class="oppia-dashboard-container" style="max-width: 900px" ng-controller="VideoList">
+    {% if can_create_explorations %}
     <button class="btn btn-success pull-right" ng-click="showCreateModal()">
         上传视频
     </button>
+    {% endif %}
     <div style="clear:both"></div>
     <md-card class="oppia-activity-summary-tile md-default-theme" style="width:200px;height:258px;float:left;"
              ng-repeat="video in videos track by video.id">
