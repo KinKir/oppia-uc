@@ -121,7 +121,7 @@ def require_editor(handler):
 
         if self.username in config_domain.BANNED_USERNAMES.value:
             raise self.UnauthorizedUserException(
-                'You do not have the credentials to access this page.')
+                u'您没有权限访问该页面.')
 
         try:
             exploration = exp_services.get_exploration_by_id(exploration_id)
@@ -131,7 +131,7 @@ def require_editor(handler):
         if not rights_manager.Actor(self.user_id).can_edit(
                 feconf.ACTIVITY_TYPE_EXPLORATION, exploration_id):
             raise self.UnauthorizedUserException(
-                'You do not have the credentials to edit this exploration.',
+                u'您没有权限编辑课程.',
                 self.user_id)
 
         if not escaped_state_name:

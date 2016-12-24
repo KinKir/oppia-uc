@@ -1,4 +1,4 @@
-# coding: utf-8
+# encoding: utf-8
 #
 # Copyright 2014 The Oppia Authors. All Rights Reserved.
 #
@@ -59,6 +59,7 @@ class ActivityRights(object):
     """Domain object for the rights/publication status of an activity (an
     exploration or a collection).
     """
+
     def __init__(self, exploration_id, owner_ids, editor_ids, viewer_ids,
                  community_owned=False, cloned_from=None,
                  status=ACTIVITY_STATUS_PRIVATE,
@@ -519,7 +520,7 @@ def _assign_role(
 
     if new_role == ROLE_OWNER:
         if Actor(assignee_id)._is_owner(activity_rights):  # pylint: disable=protected-access
-            raise Exception('This user already owns this %s.' % activity_type)
+            raise Exception('用户已经拥有管理 %s 的权限.' % activity_type)
 
         activity_rights.owner_ids.append(assignee_id)
 
@@ -533,11 +534,11 @@ def _assign_role(
     elif new_role == ROLE_EDITOR:
         if Actor(assignee_id)._has_editing_rights(activity_rights):  # pylint: disable=protected-access
             raise Exception(
-                'This user already can edit this %s.'  % activity_type)
+                u'用户已经拥有编辑 %s的权限' % activity_type)
 
         if activity_rights.community_owned:
             raise Exception(
-                'Community-owned %ss can be edited by anyone.' % activity_type)
+                u'已公开权限 %ss 可以被任何人编辑.' % activity_type)
 
         activity_rights.editor_ids.append(assignee_id)
 
@@ -548,11 +549,11 @@ def _assign_role(
     elif new_role == ROLE_VIEWER:
         if Actor(assignee_id)._has_viewing_rights(activity_rights):  # pylint: disable=protected-access
             raise Exception(
-                'This user already can view this %s.' % activity_type)
+                u'用户已经拥有查看 %s.的权限' % activity_type)
 
         if activity_rights.status != ACTIVITY_STATUS_PRIVATE:
             raise Exception(
-                'Public %ss can be viewed by anyone.' % activity_type)
+                u'已经公开的 %ss 可以被任何人查看.' % activity_type)
 
         activity_rights.viewer_ids.append(assignee_id)
 

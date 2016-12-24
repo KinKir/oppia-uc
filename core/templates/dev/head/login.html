@@ -19,7 +19,8 @@
 
 {% block content %}
 <div view-title="Login" class="oppia-dashboard-container form-group" style="max-width: 400px;" name="login-view" ng-controller="Login">
-  <md-card style="background-color:#ddd">
+ <form ng-submit="login()"> 
+  <md-card style="background-color:#ddd">
       <div class="list list-inset">
           <label class="item item-input">&nbsp;&nbsp;&nbsp;&nbsp;用户名：<input type="text" placeholder="用户名" ng-model="username"/>
           </label>
@@ -27,8 +28,8 @@
   <input type="hidden" ng-model="return_url"  ng-init="return_url='{{return_url}}'" name="return_url"/>
           </label>
       </div>
-      <button class="oppia-clickable-navbar-element center-block " ng-click="login()">登录</button>
-  </md-card>
+      <button class="oppia-clickable-navbar-element center-block btn btn-success" type="submit">登录</button>
+  </md-card></form>
 </div>
 {% endblock %}
 

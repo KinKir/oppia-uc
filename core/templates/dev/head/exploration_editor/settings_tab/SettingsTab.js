@@ -110,13 +110,13 @@ oppia.controller('SettingsTab', [
     $scope.initSettingsTab();
 
     $scope.ROLES = [{
-      name: 'Manager (can edit permissions)',
+      name: '管理员 (可以编辑)',
       value: 'owner'
     }, {
-      name: 'Collaborator (can make changes)',
+      name: '参与人员 (可以修改)',
       value: 'editor'
     }, {
-      name: 'Playtester (can give feedback)',
+      name: '测试 (反馈)',
       value: 'viewer'
     }];
 

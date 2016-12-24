@@ -39,16 +39,16 @@ class EndExploration(base.BaseInteraction):
     _customization_arg_specs = [{
         'name': 'recommendedExplorationIds',
         'description': (
-            'IDs of explorations to recommend to the learner (at most 3 are '
-            'shown). The ID of an exploration is the string of characters '
-            'appearing after \'/explore/\' in the URL bar.'),
+            '输入推荐课程的编号(最多显示3各个 '
+            '). 课程编号是显示在浏览器的地址栏中 '
+            ' \'/explore/\' 后的部分.'),
         'schema': {
             'type': 'list',
             'items': {
                 'type': 'unicode',
             },
             'ui_config': {
-                'add_element_text': 'Add exploration ID',
+                'add_element_text': '添加',
             }
         },
         'default_value': [],

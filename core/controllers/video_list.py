@@ -49,24 +49,13 @@ class VideoListPage(base.BaseHandler):
         if self.username in config_domain.BANNED_USERNAMES.value:
             raise self.UnauthorizedUserException("")
         else:
-            interaction_ids = (
-                interaction_registry.Registry.get_all_interaction_ids())
 
-            interaction_dependency_ids = (
-                interaction_registry.Registry.get_deduplicated_dependency_ids(
-                    interaction_ids))
             dependencies_html, additional_angular_modules = (
                 dependency_registry.Registry.get_deps_html_and_angular_modules(
-                    interaction_dependency_ids +
                     self.EDITOR_PAGE_DEPENDENCY_IDS))
 
             interaction_templates = (
-                rte_component_registry.Registry.get_html_for_all_components() +
-                interaction_registry.Registry.get_interaction_html(
-                    interaction_ids))
-            interaction_validators_html = (
-                interaction_registry.Registry.get_validators_html(
-                    interaction_ids))
+                rte_component_registry.Registry.get_html_for_all_components())
 
             gadget_types = gadget_registry.Registry.get_all_gadget_types()
             gadget_templates = (
@@ -77,13 +66,9 @@ class VideoListPage(base.BaseHandler):
                 'nav_mode': 'video',
                 'value_generators_js': jinja2.utils.Markup(
                     editor.get_value_generators_js()),
-                'dependencies_html': jinja2.utils.Markup(dependencies_html),
                 'gadget_templates': jinja2.utils.Markup(gadget_templates),
                 'interaction_templates': jinja2.utils.Markup(
-                    interaction_templates),
-                'interaction_validators_html': jinja2.utils.Markup(
-                    interaction_validators_html),
-                'additional_angular_modules': additional_angular_modules,
+                    interaction_templates)
             })
             self.render_template(
                 'video_list/video_list.html')
@@ -137,24 +122,9 @@ class VideoView(base.BaseHandler):
         if self.username in config_domain.BANNED_USERNAMES.value:
             raise self.UnauthorizedUserException("")
         else:
-            interaction_ids = (
-                interaction_registry.Registry.get_all_interaction_ids())
-
-            interaction_dependency_ids = (
-                interaction_registry.Registry.get_deduplicated_dependency_ids(
-                    interaction_ids))
-            dependencies_html, additional_angular_modules = (
-                dependency_registry.Registry.get_deps_html_and_angular_modules(
-                    interaction_dependency_ids +
-                    self.EDITOR_PAGE_DEPENDENCY_IDS))
 
             interaction_templates = (
-                rte_component_registry.Registry.get_html_for_all_components() +
-                interaction_registry.Registry.get_interaction_html(
-                    interaction_ids))
-            interaction_validators_html = (
-                interaction_registry.Registry.get_validators_html(
-                    interaction_ids))
+                rte_component_registry.Registry.get_html_for_all_components())
 
             gadget_types = gadget_registry.Registry.get_all_gadget_types()
             gadget_templates = (
@@ -165,13 +135,9 @@ class VideoView(base.BaseHandler):
                 'nav_mode': 'video',
                 'value_generators_js': jinja2.utils.Markup(
                     editor.get_value_generators_js()),
-                'dependencies_html': jinja2.utils.Markup(dependencies_html),
                 'gadget_templates': jinja2.utils.Markup(gadget_templates),
                 'interaction_templates': jinja2.utils.Markup(
-                    interaction_templates),
-                'interaction_validators_html': jinja2.utils.Markup(
-                    interaction_validators_html),
-                'additional_angular_modules': additional_angular_modules,
+                    interaction_templates)
             })
             if video_id is not None and video_id != '0':
                 video = video_list_service.get_by_id(video_id)

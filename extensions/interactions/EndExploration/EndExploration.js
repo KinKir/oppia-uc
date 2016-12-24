@@ -81,9 +81,9 @@ oppia.directive('oppiaInteractiveEndExploration', [function() {
             } else {
               var listOfIds = missingExpIds.join('", "');
               $scope.errorMessage = (
-                'Warning: exploration(s) with the IDs "' + listOfIds +
-                '" will ' + 'not be shown as recommendations because they ' +
-                'either do not exist, or are not publicly viewable.');
+                '警告: 课程 "' + listOfIds +
+                '" 不能 ' + '被推荐， ' +
+                '因为不存在');
             }
           });
         }

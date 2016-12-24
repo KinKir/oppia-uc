@@ -19,7 +19,7 @@ I18N_SPLASH_PAGE_TITLE
 {% endblock navbar_breadcrumb %}
 
 {% block content %}
-<div class="oppia-dashboard-container" style="max-width: 900px" ng-controller="VideoList">
+<div class="oppia-dashboard-container" style="position: relative;z-index: 5;max-width: 900px;height:100%;" ng-controller="VideoList">
     {% if can_create_explorations %}
     <button class="btn btn-success pull-right" ng-click="showCreateModal()">
         上传视频
@@ -45,7 +45,7 @@ I18N_SPLASH_PAGE_TITLE
              ng-repeat="video in videos track by video.id">
         <a href="/video/<[video.id]>" target="_blank">
             <div class="title-section" style="background-color: <[video.thumbnail_bg_color]>;">
-                <img class="thumbnail-image" ng-src="<[video.thumbnail_icon_url]>">
+                <img class="thumbnail-image" ng-src="<[video.thumbnail_icon_url]>" />
                 <h2 class="activity-title protractor-test-exp-summary-tile-title">
                     <span><[video.name || '未命名' | truncate:40]></span>
                 </h2>
@@ -140,17 +140,22 @@ I18N_SPLASH_PAGE_TITLE
 </div>
 {% endblock %}
 
-{% block footer %}
-{% include 'footer.html' %}
-{% endblock %}
+
 
 {% block footer_js %}
 {{ super() }}
 <script>
     {{include_js_file('video_list/VideoList.js') }}
     {{ include_js_file('video_list/VideoListService.js')}}
+    {{ include_js_file('library/Library.js') }}
+    {{ include_js_file('library/LibraryFooter.js') }}
 </script>
 {{ interaction_templates }}
 {{ interaction_validators_html }}
 {{ gadget_templates }}
 {% endblock footer_js %}
+{#
+{% block footer %}
+{% include 'footer.html' %}
+{% endblock footer %}
+#}

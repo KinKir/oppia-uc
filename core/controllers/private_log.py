@@ -98,24 +98,12 @@ class PrivateLogPage(base.BaseHandler):
             raise self.UnauthorizedUserException("")
         elif user_services.has_fully_registered(self.user_id):
 
-            interaction_ids = (
-                interaction_registry.Registry.get_all_interaction_ids())
-
-            interaction_dependency_ids = (
-                interaction_registry.Registry.get_deduplicated_dependency_ids(
-                    interaction_ids))
             dependencies_html, additional_angular_modules = (
                 dependency_registry.Registry.get_deps_html_and_angular_modules(
-                    interaction_dependency_ids +
                     self.EDITOR_PAGE_DEPENDENCY_IDS))
 
             interaction_templates = (
-                rte_component_registry.Registry.get_html_for_all_components() +
-                interaction_registry.Registry.get_interaction_html(
-                    interaction_ids))
-            interaction_validators_html = (
-                interaction_registry.Registry.get_validators_html(
-                    interaction_ids))
+                rte_component_registry.Registry.get_html_for_all_components())
 
             gadget_types = gadget_registry.Registry.get_all_gadget_types()
             gadget_templates = (
@@ -130,8 +118,6 @@ class PrivateLogPage(base.BaseHandler):
                 'gadget_templates': jinja2.utils.Markup(gadget_templates),
                 'interaction_templates': jinja2.utils.Markup(
                     interaction_templates),
-                'interaction_validators_html': jinja2.utils.Markup(
-                    interaction_validators_html),
                 'additional_angular_modules': additional_angular_modules,
             })
             self.render_template(
