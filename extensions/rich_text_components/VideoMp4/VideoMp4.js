@@ -42,7 +42,7 @@ oppia.directive('oppiaNoninteractiveVideoMp4', [
         };
         var params = {bgcolor: '#FFF', allowFullScreen: true, allowScriptAccess: 'always', wmode: 'transparent'};
         var video = [uri + '->video/mp4'];
-        CKobject.embed('/third_party/static/ckplayer-6.8/ckplayer/ckplayer.swf', 'a1', 'ckplayer_a1', '100%', '100%', true, flashvars, video, params);
+        CKobject.embed('/third_party/static/ckplayer-6.8/ckplayer/ckplayer.swf', 'a1', 'ckplayer_a1', '100%', '100%', false, flashvars, video, params);
         // Clearing the video URL src after a card leaves the user's view
         // helps browsers clear memory and release resources. Without this,
         // a bug was observed where resources would freeze for learning
