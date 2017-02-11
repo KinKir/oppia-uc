@@ -195,7 +195,7 @@ oppia.directive('localfilepathEditor', [
 
         var qiniuAppCnfg = {
           qiniuUploadUrl: "http://up.qiniu.com",
-          defaultDomain: 'http://ohplokuo4.bkt.clouddn.com/',
+          defaultDomain: 'http://ol7l5h5m9.bkt.clouddn.com/',
           Bucket: "test",
           SignUrl: "token.php",
           policy: {
