@@ -25,6 +25,28 @@ import core.storage.base_model.gae_models as base_models
 from google.appengine.ext import ndb
 
 
+class VideoCategory(base_models.BaseModel):
+
+    def __init__(selCf):
+        pass
+
+    name = ndb.StringProperty(required=True)
+    category = ndb.StringProperty(required=True)
+    author_id = ndb.StringProperty(indexed=True)
+
+    @classmethod
+    def get_by_author(cls, author_id, page_size, urlsafe_start_cursor):
+        return cls._fetch_page_sorted_by_last_updated(
+            cls.query.filter(cls.author_id == author_id),
+            page_size, urlsafe_start_cursor)
+
+    @classmethod
+    def get_all(cls, page_size, urlsafe_start_cursor):
+        return cls._fetch_page_sorted_by_last_updated(
+            cls.query(), page_size, urlsafe_start_cursor
+        )
+
+
 class VideoList(base_models.BaseModel):
     # 视频名称
     name = ndb.StringProperty(required=True)

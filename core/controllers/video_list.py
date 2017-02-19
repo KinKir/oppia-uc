@@ -114,6 +114,52 @@ class VideoListData(base.BaseHandler):
         video_list_service.delete_video(video_id)
 
 
+class VideoCategoryList(base.BaseHandler):
+    PAGE_NAME_FOR_CSRF = "view"
+    EDITOR_PAGE_DEPENDENCY_IDS=[]
+
+    def get(self):
+        if self.username in config_domain.BANNED_USERNAMES.value:
+            raise self.UnauthorizedUserException("用户被禁止访问")
+        else:
+            dependencies_html, additional_angular_modules = (
+                dependency_registry.Registry.get_deps_html_and_angular_modules(
+                    self.EDITOR_PAGE_DEPENDENCY_IDS))
+
+            interaction_templates = (
+                rte_component_registry.Registry.get_html_for_all_components())
+
+            gadget_types = gadget_registry.Registry.get_all_gadget_types()
+            gadget_templates = (
+                gadget_registry.Registry.get_gadget_html(gadget_types))
+
+            self.values.update({
+                'meta_description': feconf.SPLASH_PAGE_DESCRIPTION,
+                'nav_mode': 'video',
+                'value_generators_js': jinja2.utils.Markup(
+                    editor.get_value_generators_js()),
+                'gadget_templates': jinja2.utils.Markup(gadget_templates),
+                'interaction_templates': jinja2.utils.Markup(
+                    interaction_templates)
+            })
+            self.render_template(
+                'video_list/videoCatelogList.html')
+
+
+class VideoCategoryData(base.BaseHandler):
+    PAGE_NAME_FOR_CSRF = "editor"
+
+    def get(self):
+        urlsafe_start_cursor = self.request.get('cursor')
+        lists, new_urlsafe_start_cursor, more = \
+            video_list_service.get_all_video(
+                urlsafe_start_cursor=urlsafe_start_cursor)
+        self.render_json({
+            'results': [m.to_dict() for m in lists],
+            'cursor': new_urlsafe_start_cursor,
+            'more': more,
+        })
+
 class VideoView(base.BaseHandler):
     PAGE_NAME_FOR_CSRF = "view"
     EDITOR_PAGE_DEPENDENCY_IDS = []

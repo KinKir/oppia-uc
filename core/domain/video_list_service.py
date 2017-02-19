@@ -49,7 +49,15 @@ def _get_video_from_model(model):
                    model.author_id,
                    model.created_on,
                    model.last_updated
-                  )
+                   )
+
+
+def get_all_video_category(page_size=feconf.FEEDBACK_TAB_PAGE_SIZE,
+                           urlsafe_start_cursor=None):
+    results, new_urlsafe_start_cursor, more = \
+        video_list_models.VideoCategory.get_all(page_size,
+                                                urlsafe_start_cursor)
+    return results, new_urlsafe_start_cursor, more
 
 
 def get_all_video(page_size=feconf.FEEDBACK_TAB_PAGE_SIZE,
@@ -58,8 +66,7 @@ def get_all_video(page_size=feconf.FEEDBACK_TAB_PAGE_SIZE,
         video_list_models.VideoList.get_all_video(page_size,
                                                   urlsafe_start_cursor)
     return [_get_video_from_model(model)
-            for model in results], \
-           new_urlsafe_start_cursor, more
+            for model in results], new_urlsafe_start_cursor, more
 
 
 def get_by_id(vid):

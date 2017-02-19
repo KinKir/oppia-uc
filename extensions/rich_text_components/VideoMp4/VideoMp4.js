@@ -39,6 +39,7 @@ oppia.directive('oppiaNoninteractiveVideoMp4', [
           f: uri,
           c: 0,
           p: 1
+
         };
         var params = {bgcolor: '#FFF', allowFullScreen: true, allowScriptAccess: 'always', wmode: 'transparent'};
         var video = [uri + '->video/mp4'];

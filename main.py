@@ -437,6 +437,9 @@ URLS = MAPREDUCE_HANDLERS + [
         r'/video/list', video_list.VideoListPage, r'video_list'
     ),
     get_redirect_route(
+        r'/video/category', video_list.VideoCategoryList, r'video_category'
+    ),
+    get_redirect_route(
         r'/video/<video_id>', video_list.VideoView, r'video_view'
     ),
     get_redirect_route(
