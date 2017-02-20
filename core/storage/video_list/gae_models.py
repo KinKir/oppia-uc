@@ -23,6 +23,7 @@ import core.storage.base_model.gae_models as base_models
 # import feconf
 
 from google.appengine.ext import ndb
+import utils
 
 
 class VideoCategory(base_models.BaseModel):
@@ -45,6 +46,20 @@ class VideoCategory(base_models.BaseModel):
         return cls._fetch_page_sorted_by_last_updated(
             cls.query(), page_size, urlsafe_start_cursor
         )
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'last_updated': utils.get_time_in_millisecs(self.last_updated),
+            'original_author_username':
+                self.get_author_name() if self.author_id else None,
+            'name': self.name,
+            'category': self.category,
+            'thumbnail_icon_url': utils.get_thumbnail_icon_url_for_category(self.category),
+            'thumbnail_bg_color': utils.get_hex_color_for_category(self.category),
+            'ids': self.ids,
+            'created_on': utils.get_time_in_millisecs(self.created_on)
+        }
 
 
 class VideoList(base_models.BaseModel):

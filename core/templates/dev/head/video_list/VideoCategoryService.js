@@ -19,16 +19,16 @@
  */
 
 // Translations of strings that are loaded in the front page. They are listed
-oppia.factory('VideoCa', ['$http', '$q', 'alertsService',
+oppia.factory('VideoCategoryService', ['$http', '$q', 'alertsService',
   function($http, $q, alertsService) {
-    var _VIDEO_LIST_DATA_HANLDER_URL = '/video/data/';
+    var _VIDEO_LIST_DATA_HANLDER_URL = '/video_category/data/';
     return {
-      getVideoList: function($scope) {
+      getList: function($scope) {
         $http.get(_VIDEO_LIST_DATA_HANLDER_URL + '0').then(function(response) {
           $scope.videos = response.data.results;
         });
       },
-      createVideo: function(name, ids, category, saveSuccess) {
+      create: function(name, ids, category, saveSuccess) {
         $http.post(_VIDEO_LIST_DATA_HANLDER_URL + '0', {
           name: name,
           ids: ids,
@@ -42,7 +42,7 @@ oppia.factory('VideoCa', ['$http', '$q', 'alertsService',
           alertsService.addWarning('保存失败.');
         });
       },
-      saveEditVideo: function(id, name, ids, category, saveSuccess) {
+      save: function(id, name, ids, category, saveSuccess) {
         $http.post(_VIDEO_LIST_DATA_HANLDER_URL + id, {
           id: id,
           name: name,
@@ -57,7 +57,7 @@ oppia.factory('VideoCa', ['$http', '$q', 'alertsService',
           alertsService.addWarning('保存失败.');
         });
       },
-      getVideo: function(id, $scope) {
+      get: function(id, $scope) {
         $http.get(_VIDEO_LIST_DATA_HANLDER_URL + id).then(function(response) {
           var data = response.data;
           $scope.name = data.name;

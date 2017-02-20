@@ -67,3 +67,51 @@ oppia.controller('VideoList', ['$scope', '$modal', '$rootScope', '$window',
       });
     };
   }]);
+
+oppia.controller('VideoCategoryList', ['$scope', '$modal', '$rootScope', '$window',
+  'oppiaDatetimeFormatter', 'alertsService', 'FATAL_ERROR_CODES',
+  'VideoCategoryService',
+  function($scope, $modal, $rootScope, $window,
+           oppiaDatetimeFormatter, alertsService,
+           FATAL_ERROR_CODES, VideoCategoryService) {
+    $scope.loadData = function() {
+      VideoCategoryService.getList($scope);
+    };
+    $scope.loadData();
+    $scope.showCreateModal = function() {
+      $modal.open({
+        templateUrl: 'modals/editorVideoCreate',
+        backdrop: true,
+        resolve: {},
+        controller: ['$scope', '$modalInstance', 'CATEGORY_LIST',
+          'ALL_CATEGORIES_ZH_MAP',
+          function($scope, $modalInstance, CATEGORY_LIST,
+                   ALL_CATEGORIES_ZH_MAP) {
+            $scope.schema = {
+              type: 'html'
+            };
+            $scope.CATEGORY_LIST_FOR_SELECT2 = [];
+
+            for (var i = 0; i < CATEGORY_LIST.length; i++) {
+              $scope.CATEGORY_LIST_FOR_SELECT2.push({
+                id: CATEGORY_LIST[i],
+                text: ALL_CATEGORIES_ZH_MAP[CATEGORY_LIST[i]]
+              });
+            }
+            $scope.create = function(name, ids,
+                                     category) {
+              $modalInstance.close({
+                name: name,
+                ids: ids,
+                category: category
+              });
+            };
+            $scope.cancel = function() {
+              $modalInstance.dismiss('cancel');
+            };
+          }]
+      }).result.then(function(result) {
+        VideoCategoryService.create(result.name, result.ids, result.category, $scope.loadData);
+      });
+    };
+  }]);

@@ -149,16 +149,17 @@ class VideoCategoryList(base.BaseHandler):
 class VideoCategoryData(base.BaseHandler):
     PAGE_NAME_FOR_CSRF = "editor"
 
-    def get(self):
+    def get(self, category_id):
         urlsafe_start_cursor = self.request.get('cursor')
         lists, new_urlsafe_start_cursor, more = \
-            video_list_service.get_all_video(
+            video_list_service.get_all_video_category(
                 urlsafe_start_cursor=urlsafe_start_cursor)
         self.render_json({
             'results': [m.to_dict() for m in lists],
             'cursor': new_urlsafe_start_cursor,
             'more': more,
         })
+
 
 class VideoView(base.BaseHandler):
     PAGE_NAME_FOR_CSRF = "view"
