@@ -29,8 +29,12 @@ oppia.directive('oppiaNoninteractiveImage', [
       controller: ['$scope', '$attrs', function($scope, $attrs) {
         $scope.filepath = oppiaHtmlEscaper.escapedJsonToObj(
           $attrs.filepathWithValue);
+        var explorationId = "default";
+        if (explorationContextService.isInExplorationContext()) {
+          explorationId = explorationContextService.getExplorationId()
+        }
         $scope.imageUrl = $sce.trustAsResourceUrl(
-          '/imagehandler/' + explorationContextService.getExplorationId() +
+          '/imagehandler/' + explorationId +
           '/' + encodeURIComponent($scope.filepath));
         $scope.imageCaption = '';
         if ($attrs.captionWithValue) {

@@ -27,6 +27,7 @@ from core.domain import gadget_registry
 from core.domain import interaction_registry
 from core.domain import rte_component_registry
 from core.domain import video_list_service
+from core.storage.video_list import gae_models as video_list_models
 import feconf
 
 
@@ -159,6 +160,21 @@ class VideoCategoryData(base.BaseHandler):
             'cursor': new_urlsafe_start_cursor,
             'more': more,
         })
+
+    def post(self, category_id):
+        name = self.payload.get('name')
+        category = self.payload.get('category')
+        ids = self.payload.get('ids')
+        if category_id is not None and category_id != '0':
+            video = video_list_models.VideoCategory.get(long(category_id))
+        else:
+            video = video_list_models.VideoCategory()
+            video.author_id = self.user_id
+        video.name = name
+        video.category = category
+        video.ids = ids
+        video.put()
+        self.render_json(self.values)
 
 
 class VideoView(base.BaseHandler):

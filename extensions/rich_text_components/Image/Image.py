@@ -25,7 +25,7 @@ class Image(base.BaseRichTextComponent):
     description = '图片.'
     frontend_name = 'image'
     tooltip = '插入图片'
-    requires_fs = True
+    requires_fs = False
     is_block_element = True
 
     _customization_arg_specs = [{

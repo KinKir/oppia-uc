@@ -1,7 +1,7 @@
 <span ng-if="!largeInput">
   <span ng-if="!active && !alwaysEditable">
     <[localValue.label]>
-    (<a href="#" onclick="return false;" ng-click="openEditor()">Edit</a>)
+    (<a href="#" onclick="return false;" ng-click="openEditor()">编辑</a>)
   </span>
 
   <span ng-if="active || alwaysEditable">
@@ -17,7 +17,7 @@
     <textarea disabled="true">
       <[localValue.label]>
     </textarea>
-    (<a href="#" onclick="return false;" ng-click="openEditor()">Edit</a>)
+    (<a href="#" onclick="return false;" ng-click="openEditor()">编辑</a>)
   </div>
 
   <div ng-if="active || alwaysEditable">

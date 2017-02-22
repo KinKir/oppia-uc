@@ -725,7 +725,7 @@ class StateYamlHandler(EditorHandler):
 class ExplorationResourcesHandler(EditorHandler):
     """Manages assets associated with an exploration."""
 
-    @require_editor
+    # @require_editor
     def get(self, exploration_id):
         """Handles GET requests."""
         fs = fs_domain.AbstractFileSystem(
@@ -841,7 +841,7 @@ class StateRulesStatsHandler(EditorHandler):
 class ImageUploadHandler(EditorHandler):
     """Handles image uploads."""
 
-    @require_editor
+    # @require_editor
     def post(self, exploration_id):
         """Saves an image uploaded by a content creator."""
 

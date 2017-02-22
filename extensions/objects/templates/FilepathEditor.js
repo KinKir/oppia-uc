@@ -17,9 +17,8 @@
 oppia.directive('filepathEditor', [
   '$compile', '$http', '$sce', 'alertsService', 'explorationContextService',
   'OBJECT_EDITOR_URL_PREFIX',
-  function(
-      $compile, $http, $sce, alertsService, explorationContextService,
-      OBJECT_EDITOR_URL_PREFIX) {
+  function($compile, $http, $sce, alertsService, explorationContextService,
+           OBJECT_EDITOR_URL_PREFIX) {
     return {
       link: function(scope, element) {
         scope.getTemplateUrl = function() {
@@ -39,9 +38,11 @@ oppia.directive('filepathEditor', [
           };
           $scope.imageUploaderIsActive = false;
         });
-
-        $scope.explorationId = explorationContextService.getExplorationId();
-
+        if (explorationContextService.isInExplorationContext()) {
+          $scope.explorationId = explorationContextService.getExplorationId();
+        } else {
+          $scope.explorationId = "default";
+        }
         $scope.validate = function(localValue) {
           return localValue.label && localValue.label.length > 0;
         };
