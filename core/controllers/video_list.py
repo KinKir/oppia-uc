@@ -116,7 +116,7 @@ class VideoListData(base.BaseHandler):
 
 
 class VideoCategoryList(base.BaseHandler):
-    PAGE_NAME_FOR_CSRF = "view"
+    PAGE_NAME_FOR_CSRF = "editor"
     EDITOR_PAGE_DEPENDENCY_IDS=[]
 
     def get(self):

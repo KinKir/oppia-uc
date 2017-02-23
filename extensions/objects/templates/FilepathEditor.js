@@ -156,12 +156,18 @@ oppia.directive('filepathEditor', [
         };
 
         $scope.filepathsLoaded = false;
-        $http.get(
-          '/createhandler/resource_list/' + $scope.explorationId
-        ).then(function(response) {
-          $scope.filepaths = response.data.filepaths;
+        if ($scope.explorationId !== "default") {
+          $http.get(
+            '/createhandler/resource_list/' + $scope.explorationId
+          ).then(function(response) {
+            $scope.filepaths = response.data.filepaths;
+            $scope.filepathsLoaded = true;
+          });
+        }
+        else {
+          $scope.filepaths = [];
           $scope.filepathsLoaded = true;
-        });
+        }
       }
     };
   }
