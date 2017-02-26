@@ -41,7 +41,7 @@ oppia.directive('filepathEditor', [
         if (explorationContextService.isInExplorationContext()) {
           $scope.explorationId = explorationContextService.getExplorationId();
         } else {
-          $scope.explorationId = "default";
+          $scope.explorationId = 'default';
         }
         $scope.validate = function(localValue) {
           return localValue.label && localValue.label.length > 0;
@@ -81,7 +81,7 @@ oppia.directive('filepathEditor', [
 
         $scope.onFileChanged = function(file, filename) {
           if (!file || !file.size || !file.type.match('image.*')) {
-            $scope.uploadWarning = 'This file is not recognized as an image.';
+            $scope.uploadWarning = '请选择图片文件.';
             $scope.resetImageUploader();
             $scope.$apply();
             return;
@@ -156,12 +156,17 @@ oppia.directive('filepathEditor', [
         };
 
         $scope.filepathsLoaded = false;
-        $http.get(
-          '/createhandler/resource_list/' + $scope.explorationId
-        ).then(function(response) {
-          $scope.filepaths = response.data.filepaths;
+        if ($scope.explorationId !== 'default') {
+          $http.get(
+            '/createhandler/resource_list/' + $scope.explorationId
+          ).then(function(response) {
+            $scope.filepaths = response.data.filepaths;
+            $scope.filepathsLoaded = true;
+          });
+        } else {
           $scope.filepathsLoaded = true;
-        });
+          $scope.filepaths = [];
+        }
       }
     };
   }

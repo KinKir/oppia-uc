@@ -19,42 +19,26 @@
  */
 
 // Translations of strings that are loaded in the front page. They are listed
-oppia.factory('videoListService', ['$http', '$q', 'alertsService',
-  function($http, $q, alertsService) {
-    var _VIDEO_LIST_DATA_HANLDER_URL = '/video/data/';
+oppia.factory('videoListService', ['$http',
+  function($http) {
+    var _VIDEO_LIST_DATA_HANLDER_URL = '/video/data/' + categoryId + '/';
     return {
-      getVideoList: function($scope) {
-        $http.get(_VIDEO_LIST_DATA_HANLDER_URL + '0').then(function(response) {
-          $scope.videos = response.data.results;
-        });
+      getVideoList: function() {
+        return $http.get(_VIDEO_LIST_DATA_HANLDER_URL + '0');
       },
-      createVideo: function(name, ids, category, saveSuccess) {
-        $http.post(_VIDEO_LIST_DATA_HANLDER_URL + '0', {
+      createVideo: function(name, ids, category) {
+        return $http.post(_VIDEO_LIST_DATA_HANLDER_URL + '0', {
           name: name,
           ids: ids,
           category: category
-        }).then(function() {
-          if (saveSuccess) {
-            saveSuccess();
-          }
-          alertsService.addSuccessMessage('保存成功');
-        }, function() {
-          alertsService.addWarning('保存失败.');
         });
       },
-      saveEditVideo: function(id, name, ids, category, saveSuccess) {
-        $http.post(_VIDEO_LIST_DATA_HANLDER_URL + id, {
+      saveEditVideo: function(id, name, ids, category) {
+        return $http.post(_VIDEO_LIST_DATA_HANLDER_URL + id, {
           id: id,
           name: name,
           ids: ids,
           category: category
-        }).then(function() {
-          if (saveSuccess) {
-            saveSuccess();
-          }
-          alertsService.addSuccessMessage('保存成功');
-        }, function() {
-          alertsService.addWarning('保存失败.');
         });
       },
       getVideo: function(id, $scope) {

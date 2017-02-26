@@ -25,11 +25,13 @@ oppia.controller('Login', ['$scope', '$modal', '$rootScope', '$window',
   function($scope, $modal, $rootScope, $window, $http, alertsService) {
     var LOGIN_URL = '/login';
     $scope.login = function() {
+      $rootScope.loadingMessage = '加载中...';
       $http.post(LOGIN_URL, {
         username: $scope.username,
         password: $scope.password,
         return_url: $scope.return_url
       }).then(function(response) {
+          $rootScope.loadingMessage = '';
           var data = response.data;
           if (data.res === true || data.res === 'true') {
             document.write(data.msg);

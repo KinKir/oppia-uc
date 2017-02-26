@@ -20,13 +20,16 @@ I18N_SPLASH_PAGE_TITLE
 
 {% block content %}
 <div class="oppia-dashboard-container" style="max-width: 900px" ng-controller="VideoView">
-        <div class="modal-body" stop-event="touchend">
-            <p>名称: {{name}}</p>
-            <p class="clear">分类:{{category}}
-            </p>
-            <p>{{ids |safe}}
-            </p>
-        </div>
+    <ol class="breadcrumb">
+        <li><a href="/video/category">视频</a></li>
+        <li><a href="/video/list/{{category}}">{{category_name}}</a></li>
+        <li class="active">{{name}}</li>
+    </ol>
+    <div class="page-header" stop-event="touchend">
+        <h1>{{name}}<span class="label label-default">{{category_name}}</small></h1>
+        <p>{{ids |safe}}
+        </p>
+    </div>
 </div>
 {% endblock %}
 
@@ -37,8 +40,7 @@ I18N_SPLASH_PAGE_TITLE
 {% block footer_js %}
 {{ super() }}
 <script>
-    {{ include_js_file('video_list/video.js') }}
-    {{ include_js_file('video_list/VideoListService.js') }}
+  {{include_js_file('video_list/VideoListService.js')}}
 </script>
 {{ interaction_templates }}
 {{ interaction_validators_html }}

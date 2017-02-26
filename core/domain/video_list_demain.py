@@ -20,6 +20,38 @@ from core.domain import user_services
 import utils
 
 
+class VideoCategoryList(object):
+    def get_author_name(self):
+        return user_services.get_username(self.author_id)
+
+    def __init__(self, mid, name, picture_name, category, author_id,
+                 created_on, last_updated):
+        self.author_id = author_id
+        self.name = name
+        self.picture_name = picture_name
+        self.category = category
+        self.created_on = created_on
+        self.last_updated = last_updated
+        self.id = mid
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'last_updated': utils.get_time_in_millisecs(self.last_updated),
+            'original_author_username':
+                user_services.get_username(self.author_id) \
+                    if self.author_id else None,
+            'name': self.name,
+            'category': self.category,
+            'thumbnail_icon_url':
+                utils.get_thumbnail_icon_url_for_category(self.category),
+            'thumbnail_bg_color':
+                utils.get_hex_color_for_category(self.category),
+            'picture_name': self.picture_name,
+            'created_on': utils.get_time_in_millisecs(self.created_on)
+        }
+
+
 class VideoList(object):
     """Domain object for a video"""
 
@@ -44,8 +76,10 @@ class VideoList(object):
                 self.get_author_name() if self.author_id else None,
             'name': self.name,
             'category': self.category,
-            'thumbnail_icon_url': utils.get_thumbnail_icon_url_for_category(self.category),
-            'thumbnail_bg_color': utils.get_hex_color_for_category(self.category),
+            'thumbnail_icon_url':
+                utils.get_thumbnail_icon_url_for_category(self.category),
+            'thumbnail_bg_color':
+                utils.get_hex_color_for_category(self.category),
             'ids': self.ids,
             'created_on': utils.get_time_in_millisecs(self.created_on)
         }
