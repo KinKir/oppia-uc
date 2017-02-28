@@ -164,7 +164,8 @@ class VideoCategoryData(base.BaseHandler):
             self.render_json({
                 'results': [video_list_demain.VideoCategoryList(
                     m.id, m.name, m.picture_name, m.category,
-                    m.author_id, m.created_on, m.last_updated
+                    m.author_id, m.created_on, m.last_updated,
+                    m.objective
                 ).to_dict() for m in lists],
                 'cursor': new_urlsafe_start_cursor,
                 'more': more,
@@ -174,6 +175,7 @@ class VideoCategoryData(base.BaseHandler):
         name = self.payload.get('name')
         category = self.payload.get('category')
         picture_name = self.payload.get('picture_name')
+        objective = self.payload.get('objective')
         if category_id is not None and category_id != '0':
             video = video_list_models.VideoCategory.get(long(category_id))
         else:
@@ -181,6 +183,7 @@ class VideoCategoryData(base.BaseHandler):
             video.author_id = self.user_id
         video.name = name
         video.category = category
+        video.objective = objective
         video.picture_name = picture_name
         video.put()
         self.render_json(self.values)

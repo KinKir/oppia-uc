@@ -25,7 +25,7 @@ class VideoCategoryList(object):
         return user_services.get_username(self.author_id)
 
     def __init__(self, mid, name, picture_name, category, author_id,
-                 created_on, last_updated):
+                 created_on, last_updated, objective):
         self.author_id = author_id
         self.name = name
         self.picture_name = picture_name
@@ -33,6 +33,7 @@ class VideoCategoryList(object):
         self.created_on = created_on
         self.last_updated = last_updated
         self.id = mid
+        self.objective = objective
 
     def to_dict(self):
         return {
@@ -48,7 +49,8 @@ class VideoCategoryList(object):
             'thumbnail_bg_color':
                 utils.get_hex_color_for_category(self.category),
             'picture_name': self.picture_name,
-            'created_on': utils.get_time_in_millisecs(self.created_on)
+            'created_on': utils.get_time_in_millisecs(self.created_on),
+            'objective': self.objective
         }
 
 

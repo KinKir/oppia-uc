@@ -55,27 +55,27 @@ I18N_SPLASH_PAGE_TITLE
         </a>
         <div ng-attr-section="'<['right-section']>">
             <div ng-if="exploration.status === 'private'" class="exp-private-text">
-
+<[objective]>
             </div>
-            {#
-            <ul ng-if="exploration.status !== 'private'"
+
+            <ul
                 layout="row"
                 layout-wrap
                 class="metrics"
                 layout-align="space-between center">
-                <li flex="50">
+                <li flex="25">
                   <span class="protractor-test-exp-summary-tile-rating">
-                    <span class="fa fa-star fa-lg"
-                          tooltip="<['I18N_LIBRARY_RATINGS_TOOLTIP' | translate]>"
+                    <span class="fa fa-pencil fa-lg"
+                          tooltip="编辑"
                           tooltip-placement="top">
                     </span>
                     <span>
-                      <[(getAverageRating(video.ratings) | number:1) || 'N/A']>
+                       &nbsp;
                     </span>
                   </span>
                 </li>
 
-                <li flex="50">
+                <li flex="25">
                   <span class="fa fa-eye fa-lg"
                         tooltip="<['I18N_LIBRARY_VIEWS_TOOLTIP' | translate]>"
                         tooltip-placement="top">
@@ -83,7 +83,7 @@ I18N_SPLASH_PAGE_TITLE
                     <[exploration.num_views]>
                 </li>
 
-                <li flex="50">
+                <li flex="25">
                   <span class="fa fa-clock-o fa-lg"
                         tooltip="<['I18N_LIBRARY_LAST_UPDATED' | translate]>"
                         tooltip-placement="top">
@@ -93,12 +93,12 @@ I18N_SPLASH_PAGE_TITLE
                   </span>
                 </li>
 
-                <li flex="50">
-                  <span class="fa fa-comments fa-lg"
+                <li flex="25">
+                  <span class="fa fa-remove fa-lg"
                         tooltip="<['I18N_PLAYER_FEEDBACK_TOOLTIP' | translate]>"
                         tooltip-placement="top">
                   </span>
-                    <[exploration.num_total_threads]>
+                    删除
                 </li>
                 <sharing-links ng-if="exploration.status !== 'private'"
                                ng-click="$event.stopPropagation()"
@@ -109,12 +109,12 @@ I18N_SPLASH_PAGE_TITLE
                                exploration-id="exploration.id">
                 </sharing-links>
             </ul>
-            #}
+
         </div>
 
     </md-card>
 
-    <script type="text/ng-template" id="modals/editorVideoCreate">
+    <script type="text/ng-template" flex="90" id="modals/editorVideoCreate">
         <div class="modal-header">
             <h3>上传视频</h3>
         </div>
@@ -129,11 +129,14 @@ I18N_SPLASH_PAGE_TITLE
                 <object-editor obj-type="Filepath" value="picture_name" always-editable="true">
                 </object-editor>
             </p>
+            <p>简介:
+           <schema-based-editor local-value="objective" ng-model="objective" schema="schema">
+                </schema-based-editor>
         </div>
 
         <div class="modal-footer">
-            <button class="btn btn-success" ng-click="create(name, picture_name, category)"
-                    ng-disabled="!name || !picture_name|| !category">发布
+            <button class="btn btn-success" ng-click="create(name, picture_name, category, Objective)"
+                    ng-disabled="!name || !picture_name|| !category||!objective">发布
             </button>
             <button class="btn btn-default" ng-click="cancel()">取消</button>
         </div>

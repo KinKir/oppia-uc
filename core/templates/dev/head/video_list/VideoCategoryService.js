@@ -33,23 +33,20 @@ oppia.factory('VideoCategoryService', ['$http',
           category: category
         });
       },
-      save: function(id, name, pictureName, category) {
-        $http.post(_VIDEO_LIST_DATA_HANLDER_URL + id, {
+      save: function(id, name, pictureName, category, objective) {
+        return $http.post(_VIDEO_LIST_DATA_HANLDER_URL + id, {
           id: id,
           name: name,
           picture_name: pictureName,
-          category: category
+          category: category,
+          objective: objective
         });
       },
-      get: function(id, $scope) {
-        $http.get(_VIDEO_LIST_DATA_HANLDER_URL + id).then(function(response) {
-          var data = response.data;
-          $scope.name = data.name;
-          $scope.id = data.id;
-          $scope.picture_name = data.picture_name;
-          $scope.create_on = data.create_on;
-          $scope.category = data.category;
-        });
+      get: function(id) {
+        return $http.get(_VIDEO_LIST_DATA_HANLDER_URL + id);
+      },
+      deleteData: function(id) {
+        return $http.delete(_VIDEO_LIST_DATA_HANLDER_URL + id);
       }
     };
   }]);
