@@ -33,14 +33,15 @@ I18N_SPLASH_PAGE_TITLE
                      style="width:200px;"
                      ng-src="{{thumbnail_icon_url}}"/>
             </div>
+            <div>{{objective}}</div>
         </div>
 
     </div>
-    {#{% if can_create_explorations %}#}
+    {% if can_create_explorations %}
     <button class="btn btn-success pull-right" ng-click="showCreateModal()">
         上传视频
     </button>
-    {#{% endif %}#}
+    {% endif %}
     <div style="clear:both"></div>
     <div ng-if="videos.length === 0" class="oppia-dashboard-empty-text">
         <md-card layout="row"
@@ -72,32 +73,11 @@ I18N_SPLASH_PAGE_TITLE
             <div ng-if="exploration.status === 'private'" class="exp-private-text">
 
             </div>
-            {#
             <ul ng-if="exploration.status !== 'private'"
                 layout="row"
                 layout-wrap
                 class="metrics"
                 layout-align="space-between center">
-                <li flex="50">
-                  <span class="protractor-test-exp-summary-tile-rating">
-                    <span class="fa fa-star fa-lg"
-                          tooltip="<['I18N_LIBRARY_RATINGS_TOOLTIP' | translate]>"
-                          tooltip-placement="top">
-                    </span>
-                    <span>
-                      <[(getAverageRating(video.ratings) | number:1) || 'N/A']>
-                    </span>
-                  </span>
-                </li>
-
-                <li flex="50">
-                  <span class="fa fa-eye fa-lg"
-                        tooltip="<['I18N_LIBRARY_VIEWS_TOOLTIP' | translate]>"
-                        tooltip-placement="top">
-                  </span>
-                    <[exploration.num_views]>
-                </li>
-
                 <li flex="50">
                   <span class="fa fa-clock-o fa-lg"
                         tooltip="<['I18N_LIBRARY_LAST_UPDATED' | translate]>"
@@ -107,13 +87,24 @@ I18N_SPLASH_PAGE_TITLE
                     <[getLocaleAbbreviatedDatetimeString(video.last_updated)]>
                   </span>
                 </li>
+                <li flex="25">
+                  <span class="protractor-test-exp-summary-tile-rating">
+                    <span class="fa fa-pencil fa-lg"
+                          tooltip="编辑"
+                          tooltip-placement="top">
+                    </span>
+                    <span>
+                       编辑
+                    </span>
+                  </span>
+                </li>
 
-                <li flex="50">
-                  <span class="fa fa-comments fa-lg"
+                <li flex="25" ng-click="deleteData(video.id,$event)">
+                  <span class="fa fa-remove fa-lg"
                         tooltip="<['I18N_PLAYER_FEEDBACK_TOOLTIP' | translate]>"
                         tooltip-placement="top">
                   </span>
-                    <[exploration.num_total_threads]>
+                    删除
                 </li>
                 <sharing-links ng-if="exploration.status !== 'private'"
                                ng-click="$event.stopPropagation()"
@@ -124,9 +115,7 @@ I18N_SPLASH_PAGE_TITLE
                                exploration-id="exploration.id">
                 </sharing-links>
             </ul>
-            #}
         </div>
-
     </md-card>
 
     <script type="text/ng-template" id="modals/editorVideoCreate">

@@ -28,6 +28,7 @@ class VideoCategory(base_models.BaseModel):
     author_id = ndb.StringProperty(indexed=True)
     picture_name = ndb.StringProperty()
     objective = ndb.StringProperty()
+
     @classmethod
     def get_by_author(cls, author_id, page_size, urlsafe_start_cursor):
         return cls._fetch_page_sorted_by_last_updated(

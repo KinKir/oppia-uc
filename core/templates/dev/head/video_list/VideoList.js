@@ -20,10 +20,10 @@
 
 // Translations of strings that are loaded in the front page. They are listed
 
-oppia.controller('VideoList', ['$scope', '$modal', '$rootScope', '$window',
+oppia.controller('VideoList', ['$scope', '$modal','$mdDialog', '$rootScope', '$window',
   'oppiaDatetimeFormatter', 'alertsService', 'FATAL_ERROR_CODES',
   'videoListService',
-  function($scope, $modal, $rootScope, $window,
+  function($scope, $modal, $mdDialog, $rootScope, $window,
            oppiaDatetimeFormatter, alertsService,
            FATAL_ERROR_CODES, videoListService) {
     $scope.loadData = function() {
@@ -32,6 +32,10 @@ oppia.controller('VideoList', ['$scope', '$modal', '$rootScope', '$window',
         $scope.videos = response.data.results;
         $rootScope.loadingMessage = '';
       });
+    };
+    $scope.getLocaleAbbreviatedDatetimeString = function(millisSinceEpoch) {
+      return oppiaDatetimeFormatter.getLocaleAbbreviatedDatetimeString(
+        millisSinceEpoch);
     };
     $scope.loadData();
     $scope.showCreateModal = function() {
@@ -72,20 +76,54 @@ oppia.controller('VideoList', ['$scope', '$modal', '$rootScope', '$window',
           result.category).then(function() {
           $rootScope.loadingMessage = '';
           alertsService.addSuccessMessage('保存成功');
+          $scope.loadData();
         }, function() {
           $rootScope.loadingMessage = '';
           alertsService.addWarning('保存失败.');
         });
       });
     };
+    $scope.deleteData = function(objid, ev) {
+      var confirm = $mdDialog.confirm({
+        template: [
+          '<md-dialog aria-label="<[dialog.label]>">',
+          '<md-content>',
+          '<h2><[ dialog.title ]></h2>',
+          '<p><[ dialog.content ]></p>',
+          '</md-content>',
+          '<div class="md-actions">',
+          '<md-button ng-if="dialog.$type == \'confirm\'" ng-click="dialog.abort()">',
+          '<[ dialog.cancel ]>',
+          '</md-button>',
+          '<md-button ng-click="dialog.hide()" class="md-primary">',
+          '<[ dialog.ok ]>',
+          '</md-button>',
+          '</div>',
+          '</md-dialog>'
+        ].join('')
+      })
+        .title('确认删除?')
+        .content('您确定要删除数据吗，删除后不能恢复！')
+        .ariaLabel('Lucky day')
+        .ok('确定')
+        .cancel('取消').targetEvent(ev);
+      $mdDialog.show(confirm).then(function() {
+        videoListService.deleteData(objid).then(function(response) {
+          var data = response.data;
+          alertsService.addSuccessMessage('删除成功!');
+          $scope.loadData();
+        })
+      }, function() {
+      });
+    };
   }]);
 
-oppia.controller('VideoCategoryList', ['$scope', '$modal',
+oppia.controller('VideoCategoryList', ['$scope', '$modal', '$mdDialog',
   '$rootScope', '$window',
   'oppiaDatetimeFormatter',
   'alertsService', 'FATAL_ERROR_CODES',
   'VideoCategoryService',
-  function($scope, $modal, $rootScope, $window,
+  function($scope, $modal, $mdDialog, $rootScope, $window,
            oppiaDatetimeFormatter, alertsService,
            FATAL_ERROR_CODES, VideoCategoryService) {
     $scope.loadData = function() {
@@ -94,6 +132,10 @@ oppia.controller('VideoCategoryList', ['$scope', '$modal',
         $scope.videos = response.data.results;
         $rootScope.loadingMessage = '';
       });
+    };
+    $scope.getLocaleAbbreviatedDatetimeString = function(millisSinceEpoch) {
+      return oppiaDatetimeFormatter.getLocaleAbbreviatedDatetimeString(
+        millisSinceEpoch);
     };
     $scope.loadData();
     $scope.showCreateModal = function() {
@@ -139,6 +181,7 @@ oppia.controller('VideoCategoryList', ['$scope', '$modal',
           result.category, result.objective).then(function() {
           $rootScope.loadingMessage = '';
           alertsService.addSuccessMessage('保存成功');
+          $scope.loadData();
         }, function() {
           $rootScope.loadingMessage = '';
           alertsService.addWarning('保存失败.');
@@ -208,21 +251,37 @@ oppia.controller('VideoCategoryList', ['$scope', '$modal',
         });
       });
     };
-    $scope.deleteData = function(objid) {
-      var confirm = $modal.confirm()
+    $scope.deleteData = function(objid, ev) {
+      var confirm = $mdDialog.confirm({
+        template: [
+          '<md-dialog aria-label="<[dialog.label]>">',
+          '<md-content>',
+          '<h2><[ dialog.title ]></h2>',
+          '<p><[ dialog.content ]></p>',
+          '</md-content>',
+          '<div class="md-actions">',
+          '<md-button ng-if="dialog.$type == \'confirm\'" ng-click="dialog.abort()">',
+          '<[ dialog.cancel ]>',
+          '</md-button>',
+          '<md-button ng-click="dialog.hide()" class="md-primary">',
+          '<[ dialog.ok ]>',
+          '</md-button>',
+          '</div>',
+          '</md-dialog>'
+        ].join('')
+      })
         .title('确认删除?')
-        .textContent('您确定要删除数据吗，删除后不能恢复！')
+        .content('您确定要删除数据吗，删除后不能恢复！')
         .ariaLabel('Lucky day')
-        .targetEvent(ev)
-        .ok('确定!')
-        .cancel('取消');
+        .ok('确定')
+        .cancel('取消').targetEvent(ev);
       $mdDialog.show(confirm).then(function() {
-        VideoCategoryService.deleteData().then(function(response) {
+        VideoCategoryService.deleteData(objid).then(function(response) {
           var data = response.data;
-          alertsService.addSuccessMessage('删除成功');
+          alertsService.addSuccessMessage('删除成功!');
           $scope.loadData();
         })
       }, function() {
       });
-    }
+    };
   }]);

@@ -50,6 +50,9 @@ oppia.factory('videoListService', ['$http',
           $scope.create_on = data.create_on;
           $scope.category = data.category;
         });
+      },
+      deleteData: function(id) {
+        return $http.delete(_VIDEO_LIST_DATA_HANLDER_URL + id);
       }
     };
   }]);

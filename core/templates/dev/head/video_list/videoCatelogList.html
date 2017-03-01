@@ -21,11 +21,11 @@ I18N_SPLASH_PAGE_TITLE
 {% block content %}
 <div class="oppia-dashboard-container" style="position: relative;z-index: 5;max-width: 900px;height:100%;"
      ng-controller="VideoCategoryList">
-   {#{% if can_create_explorations %}#}
+    {% if can_create_explorations %}
     <button class="btn btn-success pull-right" ng-click="showCreateModal()">
         创建视频分类
     </button>
-   {# {% endif %}#}
+    {% endif %}
     <div style="clear:both"></div>
     <div ng-if="videos.length === 0" class="oppia-dashboard-empty-text">
         <md-card layout="row"
@@ -54,36 +54,17 @@ I18N_SPLASH_PAGE_TITLE
             <div class="title-section-mask"></div>
         </a>
         <div ng-attr-section="'<['right-section']>">
-            <div ng-if="exploration.status === 'private'" class="exp-private-text">
-<[objective]>
+            <div class="exp-private-text">
+                <[video.objective]>
             </div>
 
             <ul
-                layout="row"
-                layout-wrap
-                class="metrics"
-                layout-align="space-between center">
-                <li flex="25">
-                  <span class="protractor-test-exp-summary-tile-rating">
-                    <span class="fa fa-pencil fa-lg"
-                          tooltip="编辑"
-                          tooltip-placement="top">
-                    </span>
-                    <span>
-                       &nbsp;
-                    </span>
-                  </span>
-                </li>
+                    layout="row"
+                    layout-wrap
+                    class="metrics"
+                    layout-align="space-between center">
 
-                <li flex="25">
-                  <span class="fa fa-eye fa-lg"
-                        tooltip="<['I18N_LIBRARY_VIEWS_TOOLTIP' | translate]>"
-                        tooltip-placement="top">
-                  </span>
-                    <[exploration.num_views]>
-                </li>
-
-                <li flex="25">
+                <li flex="50">
                   <span class="fa fa-clock-o fa-lg"
                         tooltip="<['I18N_LIBRARY_LAST_UPDATED' | translate]>"
                         tooltip-placement="top">
@@ -92,22 +73,25 @@ I18N_SPLASH_PAGE_TITLE
                     <[getLocaleAbbreviatedDatetimeString(video.last_updated)]>
                   </span>
                 </li>
-
                 <li flex="25">
+                  <span class="protractor-test-exp-summary-tile-rating">
+                    <span class="fa fa-pencil fa-lg"
+                          tooltip="编辑"
+                          tooltip-placement="top">
+                    </span>
+                    <span>
+                       编辑
+                    </span>
+                  </span>
+                </li>
+
+                <li flex="25" ng-click="deleteData(video.id,$event)">
                   <span class="fa fa-remove fa-lg"
                         tooltip="<['I18N_PLAYER_FEEDBACK_TOOLTIP' | translate]>"
                         tooltip-placement="top">
                   </span>
                     删除
                 </li>
-                <sharing-links ng-if="exploration.status !== 'private'"
-                               ng-click="$event.stopPropagation()"
-                               flex="100"
-                               layout-type="row"
-                               layout-align-type="center left"
-                               twitter-text="DEFAULT_TWITTER_SHARE_MESSAGE_DASHBOARD"
-                               exploration-id="exploration.id">
-                </sharing-links>
             </ul>
 
         </div>
@@ -130,7 +114,7 @@ I18N_SPLASH_PAGE_TITLE
                 </object-editor>
             </p>
             <p>简介:
-           <schema-based-editor local-value="objective" ng-model="objective" schema="schema">
+                <schema-based-editor local-value="objective" ng-model="objective" schema="schema">
                 </schema-based-editor>
         </div>
 
@@ -148,10 +132,10 @@ I18N_SPLASH_PAGE_TITLE
 {% block footer_js %}
 {{ super() }}
 <script>
-  {{ include_js_file('video_list/VideoList.js') }}
-  {{ include_js_file('video_list/VideoCategoryService.js')}}
-  {{ include_js_file('library/Library.js')}}
-  {{ include_js_file('library/LibraryFooter.js')}}
+  {{include_js_file('video_list/VideoList.js')}}
+  {{include_js_file('video_list/VideoCategoryService.js')}}
+  {{include_js_file('library/Library.js')}}
+  {{include_js_file('library/LibraryFooter.js')}}
 </script>
 {{ interaction_templates }}
 {{ interaction_validators_html }}

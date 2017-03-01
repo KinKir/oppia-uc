@@ -26,11 +26,12 @@ oppia.factory('VideoCategoryService', ['$http',
       getList: function() {
         return $http.get(_VIDEO_LIST_DATA_HANLDER_URL + '0');
       },
-      create: function(name, pictureName, category) {
+      create: function(name, pictureName, category, objective) {
         return $http.post(_VIDEO_LIST_DATA_HANLDER_URL + '0', {
           name: name,
           picture_name: pictureName,
-          category: category
+          category: category,
+          objective: objective
         });
       },
       save: function(id, name, pictureName, category, objective) {

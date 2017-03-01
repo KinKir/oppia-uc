@@ -112,9 +112,9 @@ class VideoListData(base.BaseHandler):
             video_list_service.create_video(self.user_id, name, category, ids)
         self.render_json(self.values)
 
-    def delete(self, video_id):
+    def delete(self, category_id, video_id):
         """删除视频"""
-        video_list_service.delete_video(video_id)
+        video_list_service.delete_video(category_id, video_id)
 
 
 class VideoCategoryList(base.BaseHandler):

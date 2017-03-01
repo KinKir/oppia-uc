@@ -18,6 +18,7 @@
 
 from core.domain import video_list_demain
 # from core.platform import models
+from google.appengine.ext import ndb
 from core.storage.video_list import gae_models as video_list_models
 import feconf
 
@@ -78,5 +79,5 @@ def get_video_model(vid):
     return video_list_models.VideoList.get(long(vid))
 
 
-def delete_video(vid):
+def delete_video(category, vid):
     video_list_models.VideoList.get(long(vid)).delete()
