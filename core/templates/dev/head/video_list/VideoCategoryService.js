@@ -1,13 +1,13 @@
 // Copyright 2015 The Oppia Authors. All Rights Reserved.
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// You may not use this file except in compliance with the License.
+// Licensed under the Apache License, Version 2.0 (the 'License');
+// you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
 //      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
+// distributed under the License is distributed on an 'AS-IS' BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
@@ -19,53 +19,34 @@
  */
 
 // Translations of strings that are loaded in the front page. They are listed
-oppia.factory('VideoCategoryService', ['$http', '$q', 'alertsService',
-  function($http, $q, alertsService) {
+oppia.factory('VideoCategoryService', ['$http',
+  function($http) {
     var _VIDEO_LIST_DATA_HANLDER_URL = '/video_category/data/';
     return {
-      getList: function($scope) {
-        $http.get(_VIDEO_LIST_DATA_HANLDER_URL + '0').then(function(response) {
-          $scope.videos = response.data.results;
-        });
+      getList: function() {
+        return $http.get(_VIDEO_LIST_DATA_HANLDER_URL + '0');
       },
-      create: function(name, ids, category, saveSuccess) {
-        $http.post(_VIDEO_LIST_DATA_HANLDER_URL + '0', {
+      create: function(name, pictureName, category) {
+        return $http.post(_VIDEO_LIST_DATA_HANLDER_URL + '0', {
           name: name,
-          ids: ids,
+          picture_name: pictureName,
           category: category
-        }).then(function() {
-          if (saveSuccess) {
-            saveSuccess();
-          }
-          alertsService.addSuccessMessage('保存成功');
-        }, function() {
-          alertsService.addWarning('保存失败.');
         });
       },
-      save: function(id, name, ids, category, saveSuccess) {
-        $http.post(_VIDEO_LIST_DATA_HANLDER_URL + id, {
+      save: function(id, name, pictureName, category, objective) {
+        return $http.post(_VIDEO_LIST_DATA_HANLDER_URL + id, {
           id: id,
           name: name,
-          ids: ids,
-          category: category
-        }).then(function() {
-          if (saveSuccess) {
-            saveSuccess();
-          }
-          alertsService.addSuccessMessage('保存成功');
-        }, function() {
-          alertsService.addWarning('保存失败.');
+          picture_name: pictureName,
+          category: category,
+          objective: objective
         });
       },
-      get: function(id, $scope) {
-        $http.get(_VIDEO_LIST_DATA_HANLDER_URL + id).then(function(response) {
-          var data = response.data;
-          $scope.name = data.name;
-          $scope.id = data.id;
-          $scope.ids = data.ids;
-          $scope.create_on = data.create_on;
-          $scope.category = data.category;
-        });
+      get: function(id) {
+        return $http.get(_VIDEO_LIST_DATA_HANLDER_URL + id);
+      },
+      deleteData: function(id) {
+        return $http.delete(_VIDEO_LIST_DATA_HANLDER_URL + id);
       }
     };
   }]);

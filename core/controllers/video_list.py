@@ -18,17 +18,15 @@
 import jinja2
 
 from core.controllers import base
-# from core.domain import user_services
-# from core.domain import config_domain
 from core.controllers import editor
 from core.domain import config_domain
-from core.domain import dependency_registry
 from core.domain import gadget_registry
-from core.domain import interaction_registry
 from core.domain import rte_component_registry
 from core.domain import video_list_service
+from core.domain import video_list_demain
 from core.storage.video_list import gae_models as video_list_models
 import feconf
+import utils
 
 
 # import utils
@@ -46,14 +44,10 @@ class VideoListPage(base.BaseHandler):
     PAGE_NAME_FOR_CSRF = "editor"
     EDITOR_PAGE_DEPENDENCY_IDS = []
 
-    def get(self):
+    def get(self, category_id):
         if self.username in config_domain.BANNED_USERNAMES.value:
             raise self.UnauthorizedUserException("")
         else:
-
-            dependencies_html, additional_angular_modules = (
-                dependency_registry.Registry.get_deps_html_and_angular_modules(
-                    self.EDITOR_PAGE_DEPENDENCY_IDS))
 
             interaction_templates = (
                 rte_component_registry.Registry.get_html_for_all_components())
@@ -61,7 +55,7 @@ class VideoListPage(base.BaseHandler):
             gadget_types = gadget_registry.Registry.get_all_gadget_types()
             gadget_templates = (
                 gadget_registry.Registry.get_gadget_html(gadget_types))
-
+            category = video_list_models.VideoCategory.get(long(category_id))
             self.values.update({
                 'meta_description': feconf.SPLASH_PAGE_DESCRIPTION,
                 'nav_mode': 'video',
@@ -69,7 +63,14 @@ class VideoListPage(base.BaseHandler):
                     editor.get_value_generators_js()),
                 'gadget_templates': jinja2.utils.Markup(gadget_templates),
                 'interaction_templates': jinja2.utils.Markup(
-                    interaction_templates)
+                    interaction_templates),
+                'category_id': category_id,
+                'category_name': category.name,
+                'thumbnail_icon_url':
+                    utils.get_thumbnail_icon_url_for_category(
+                        category.category),
+                'thumbnail_bg_color':
+                    utils.get_hex_color_for_category(category.category)
             })
             self.render_template(
                 'video_list/video_list.html')
@@ -80,7 +81,7 @@ class VideoListData(base.BaseHandler):
 
     """视频数据处理"""
 
-    def get(self, video_id):
+    def get(self, category_id, video_id):
         if video_id is not None and video_id != '0':
             video = video_list_service.get_by_id(video_id)
             self.values.update(video.to_dict())
@@ -89,6 +90,7 @@ class VideoListData(base.BaseHandler):
             urlsafe_start_cursor = self.request.get('cursor')
             lists, new_urlsafe_start_cursor, more = \
                 video_list_service.get_all_video(
+                    category_id,
                     urlsafe_start_cursor=urlsafe_start_cursor)
             self.render_json({
                 'results': [m.to_dict() for m in lists],
@@ -96,9 +98,9 @@ class VideoListData(base.BaseHandler):
                 'more': more,
             })
 
-    def post(self, video_id):
+    def post(self, category_id, video_id):
         name = self.payload.get('name')
-        category = self.payload.get('category')
+        category = category_id
         ids = self.payload.get('ids')
         if video_id is not None and video_id != '0':
             video = video_list_service.get_video_model(video_id)
@@ -117,15 +119,12 @@ class VideoListData(base.BaseHandler):
 
 class VideoCategoryList(base.BaseHandler):
     PAGE_NAME_FOR_CSRF = "editor"
-    EDITOR_PAGE_DEPENDENCY_IDS=[]
+    EDITOR_PAGE_DEPENDENCY_IDS = []
 
     def get(self):
         if self.username in config_domain.BANNED_USERNAMES.value:
             raise self.UnauthorizedUserException("用户被禁止访问")
         else:
-            dependencies_html, additional_angular_modules = (
-                dependency_registry.Registry.get_deps_html_and_angular_modules(
-                    self.EDITOR_PAGE_DEPENDENCY_IDS))
 
             interaction_templates = (
                 rte_component_registry.Registry.get_html_for_all_components())
@@ -151,20 +150,32 @@ class VideoCategoryData(base.BaseHandler):
     PAGE_NAME_FOR_CSRF = "editor"
 
     def get(self, category_id):
-        urlsafe_start_cursor = self.request.get('cursor')
-        lists, new_urlsafe_start_cursor, more = \
-            video_list_service.get_all_video_category(
-                urlsafe_start_cursor=urlsafe_start_cursor)
-        self.render_json({
-            'results': [m.to_dict() for m in lists],
-            'cursor': new_urlsafe_start_cursor,
-            'more': more,
-        })
+        if category_id is not None and category_id != '0':
+            video_category = video_list_models.VideoCategory.get(
+                long(category_id), False)
+            if video_category is None:
+                raise self.PageNotFoundException
+            self.values.update(video_category.to_dict())
+        else:
+            urlsafe_start_cursor = self.request.get('cursor')
+            lists, new_urlsafe_start_cursor, more = \
+                video_list_service.get_all_video_category(
+                    urlsafe_start_cursor=urlsafe_start_cursor)
+            self.render_json({
+                'results': [video_list_demain.VideoCategoryList(
+                    m.id, m.name, m.picture_name, m.category,
+                    m.author_id, m.created_on, m.last_updated,
+                    m.objective
+                ).to_dict() for m in lists],
+                'cursor': new_urlsafe_start_cursor,
+                'more': more,
+            })
 
     def post(self, category_id):
         name = self.payload.get('name')
         category = self.payload.get('category')
-        ids = self.payload.get('ids')
+        picture_name = self.payload.get('picture_name')
+        objective = self.payload.get('objective')
         if category_id is not None and category_id != '0':
             video = video_list_models.VideoCategory.get(long(category_id))
         else:
@@ -172,9 +183,19 @@ class VideoCategoryData(base.BaseHandler):
             video.author_id = self.user_id
         video.name = name
         video.category = category
-        video.ids = ids
+        video.objective = objective
+        video.picture_name = picture_name
         video.put()
         self.render_json(self.values)
+
+    def delete(self, category_id):
+        if category_id is not None and category_id != '0':
+            video_category = video_list_models.VideoCategory.get(
+                long(category_id), False)
+            if video_category is None:
+                raise self.PageNotFoundException
+            else:
+                video_category.delete()
 
 
 class VideoView(base.BaseHandler):
@@ -204,7 +225,14 @@ class VideoView(base.BaseHandler):
             })
             if video_id is not None and video_id != '0':
                 video = video_list_service.get_by_id(video_id)
+                category = video_list_models.VideoCategory.get(
+                    long(video.category.strip('"')))
                 self.values.update(video.to_dict())
+                self.values.update({
+                    'category_name': category.name,
+                    'category_id': category.id,
+                    'category': video.category.strip('"')
+                })
                 self.render_template("video_list/video.html")
             else:
                 raise self.PageNotFoundException(None)

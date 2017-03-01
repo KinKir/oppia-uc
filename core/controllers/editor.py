@@ -882,8 +882,8 @@ class ImageUploadHandler(EditorHandler):
             fs_domain.ExplorationFileSystem(exploration_id))
         if fs.isfile(filepath):
             raise self.InvalidInputException(
-                'A file with the name %s already exists. Please choose a '
-                'different name.' % filepath)
+                u'文件名 %s 已经存在. 请更换一个'
+                u'名称.' % filepath)
         fs.commit(self.user_id, filepath, raw)
 
         self.render_json({'filepath': filepath})

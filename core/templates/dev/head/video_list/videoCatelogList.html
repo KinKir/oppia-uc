@@ -19,33 +19,34 @@ I18N_SPLASH_PAGE_TITLE
 {% endblock navbar_breadcrumb %}
 
 {% block content %}
-<div class="oppia-dashboard-container" style="position: relative;z-index: 5;max-width: 900px;height:100%;" ng-controller="VideoCategoryList">
-    {% if can_create_explorations %}
+<div class="oppia-dashboard-container" style="position: relative;z-index: 5;max-width: 900px;height:100%;"
+     ng-controller="VideoCategoryList">
+   {#{% if can_create_explorations %}#}
     <button class="btn btn-success pull-right" ng-click="showCreateModal()">
         创建视频分类
     </button>
-    {% endif %}
+   {# {% endif %}#}
     <div style="clear:both"></div>
-     <div ng-if="videos.length === 0" class="oppia-dashboard-empty-text">
+    <div ng-if="videos.length === 0" class="oppia-dashboard-empty-text">
         <md-card layout="row"
                  class="oppia-page-card oppia-dashboard-intro-card"
                  style="margin-top: 0;">
-          <div>
-            <p>
-              没有视频！
-            </p>
-          </div>
-          <div class="oppia-dashboard-intro-picture">
-            <img src="/images/general/empty_dashboard.svg">
-          </div>
+            <div>
+                <p>
+                    没有视频！
+                </p>
+            </div>
+            <div class="oppia-dashboard-intro-picture">
+                <img src="/images/general/empty_dashboard.svg">
+            </div>
         </md-card>
-      </div>
+    </div>
 
     <md-card class="oppia-activity-summary-tile md-default-theme" style="width:200px;height:258px;float:left;"
              ng-repeat="video in videos track by video.id">
-        <a href="/video/<[video.id]>" target="_blank">
+        <a href="/video/list/<[video.id]>" target="_blank">
             <div class="title-section" style="background-color: <[video.thumbnail_bg_color]>;">
-                <img class="thumbnail-image" ng-src="<[video.thumbnail_icon_url]>" />
+                <img class="thumbnail-image" ng-src="/imagehandler/default/<[video.picture_name]>"/>
                 <h2 class="activity-title protractor-test-exp-summary-tile-title">
                     <span><[video.name || '未命名' | truncate:40]></span>
                 </h2>
@@ -54,27 +55,27 @@ I18N_SPLASH_PAGE_TITLE
         </a>
         <div ng-attr-section="'<['right-section']>">
             <div ng-if="exploration.status === 'private'" class="exp-private-text">
-
+<[objective]>
             </div>
-            {#
-            <ul ng-if="exploration.status !== 'private'"
+
+            <ul
                 layout="row"
                 layout-wrap
                 class="metrics"
                 layout-align="space-between center">
-                <li flex="50">
+                <li flex="25">
                   <span class="protractor-test-exp-summary-tile-rating">
-                    <span class="fa fa-star fa-lg"
-                          tooltip="<['I18N_LIBRARY_RATINGS_TOOLTIP' | translate]>"
+                    <span class="fa fa-pencil fa-lg"
+                          tooltip="编辑"
                           tooltip-placement="top">
                     </span>
                     <span>
-                      <[(getAverageRating(video.ratings) | number:1) || 'N/A']>
+                       &nbsp;
                     </span>
                   </span>
                 </li>
 
-                <li flex="50">
+                <li flex="25">
                   <span class="fa fa-eye fa-lg"
                         tooltip="<['I18N_LIBRARY_VIEWS_TOOLTIP' | translate]>"
                         tooltip-placement="top">
@@ -82,7 +83,7 @@ I18N_SPLASH_PAGE_TITLE
                     <[exploration.num_views]>
                 </li>
 
-                <li flex="50">
+                <li flex="25">
                   <span class="fa fa-clock-o fa-lg"
                         tooltip="<['I18N_LIBRARY_LAST_UPDATED' | translate]>"
                         tooltip-placement="top">
@@ -92,12 +93,12 @@ I18N_SPLASH_PAGE_TITLE
                   </span>
                 </li>
 
-                <li flex="50">
-                  <span class="fa fa-comments fa-lg"
+                <li flex="25">
+                  <span class="fa fa-remove fa-lg"
                         tooltip="<['I18N_PLAYER_FEEDBACK_TOOLTIP' | translate]>"
                         tooltip-placement="top">
                   </span>
-                    <[exploration.num_total_threads]>
+                    删除
                 </li>
                 <sharing-links ng-if="exploration.status !== 'private'"
                                ng-click="$event.stopPropagation()"
@@ -108,12 +109,12 @@ I18N_SPLASH_PAGE_TITLE
                                exploration-id="exploration.id">
                 </sharing-links>
             </ul>
-            #}
+
         </div>
 
     </md-card>
 
-    <script type="text/ng-template" id="modals/editorVideoCreate">
+    <script type="text/ng-template" flex="90" id="modals/editorVideoCreate">
         <div class="modal-header">
             <h3>上传视频</h3>
         </div>
@@ -124,15 +125,18 @@ I18N_SPLASH_PAGE_TITLE
                 <select2-dropdown width="100%" choices="CATEGORY_LIST_FOR_SELECT2" item="category"
                                   placeholder="请选择分类"></select2-dropdown>
             </p>
-            <p>内容:
-                <filepath-editor local-value="ids" ng-model="ids" schema="schema">
-                </filepath-editor>
+            <p>封面图片:
+                <object-editor obj-type="Filepath" value="picture_name" always-editable="true">
+                </object-editor>
             </p>
+            <p>简介:
+           <schema-based-editor local-value="objective" ng-model="objective" schema="schema">
+                </schema-based-editor>
         </div>
 
         <div class="modal-footer">
-            <button class="btn btn-success" ng-click="create(name, ids, category)"
-                    ng-disabled="!name || !ids|| !category">发布
+            <button class="btn btn-success" ng-click="create(name, picture_name, category, Objective)"
+                    ng-disabled="!name || !picture_name|| !category||!objective">发布
             </button>
             <button class="btn btn-default" ng-click="cancel()">取消</button>
         </div>
@@ -141,14 +145,13 @@ I18N_SPLASH_PAGE_TITLE
 {% endblock %}
 
 
-
 {% block footer_js %}
 {{ super() }}
 <script>
-    {{include_js_file('video_list/VideoList.js') }}
-    {{ include_js_file('video_list/VideoCategoryService.js')}}
-    {{ include_js_file('library/Library.js') }}
-    {{ include_js_file('library/LibraryFooter.js') }}
+  {{ include_js_file('video_list/VideoList.js') }}
+  {{ include_js_file('video_list/VideoCategoryService.js')}}
+  {{ include_js_file('library/Library.js')}}
+  {{ include_js_file('library/LibraryFooter.js')}}
 </script>
 {{ interaction_templates }}
 {{ interaction_validators_html }}

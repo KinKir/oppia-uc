@@ -19,33 +19,49 @@ I18N_SPLASH_PAGE_TITLE
 {% endblock navbar_breadcrumb %}
 
 {% block content %}
-<div class="oppia-dashboard-container" style="position: relative;z-index: 5;max-width: 900px;height:100%;" ng-controller="VideoList">
-    {% if can_create_explorations %}
+<div class="oppia-dashboard-container" style="position: relative;z-index: 5;max-width: 900px;height:100%;"
+     ng-controller="VideoList">
+     <ol class="breadcrumb">
+        <li><a href="/video/category">视频</a></li>
+        <li class="active">{{category_name}}</li>
+    </ol>
+    <div class="modal-body" stop-event="touchend">
+        <h1>{{category_name}}</h1>
+        <div class="row">
+            <div class="col-md-2" style="background: {{thumbnail_bg_color}}">
+                <img class="img-responsive"
+                     style="width:200px;"
+                     ng-src="{{thumbnail_icon_url}}"/>
+            </div>
+        </div>
+
+    </div>
+    {#{% if can_create_explorations %}#}
     <button class="btn btn-success pull-right" ng-click="showCreateModal()">
         上传视频
     </button>
-    {% endif %}
+    {#{% endif %}#}
     <div style="clear:both"></div>
-     <div ng-if="videos.length === 0" class="oppia-dashboard-empty-text">
+    <div ng-if="videos.length === 0" class="oppia-dashboard-empty-text">
         <md-card layout="row"
                  class="oppia-page-card oppia-dashboard-intro-card"
                  style="margin-top: 0;">
-          <div>
-            <p>
-              没有视频！
-            </p>
-          </div>
-          <div class="oppia-dashboard-intro-picture">
-            <img src="/images/general/empty_dashboard.svg">
-          </div>
+            <div>
+                <p>
+                    没有视频！
+                </p>
+            </div>
+            <div class="oppia-dashboard-intro-picture">
+                <img src="/images/general/empty_dashboard.svg">
+            </div>
         </md-card>
-      </div>
+    </div>
 
     <md-card class="oppia-activity-summary-tile md-default-theme" style="width:200px;height:258px;float:left;"
              ng-repeat="video in videos track by video.id">
         <a href="/video/<[video.id]>" target="_blank">
             <div class="title-section" style="background-color: <[video.thumbnail_bg_color]>;">
-                <img class="thumbnail-image" ng-src="<[video.thumbnail_icon_url]>" />
+                <img class="thumbnail-image" ng-src="<[video.thumbnail_icon_url]>"/>
                 <h2 class="activity-title protractor-test-exp-summary-tile-title">
                     <span><[video.name || '未命名' | truncate:40]></span>
                 </h2>
@@ -120,10 +136,6 @@ I18N_SPLASH_PAGE_TITLE
 
         <div class="modal-body" stop-event="touchend">
             <p>名称: <input type="text" class="form-control" ng-model="name" placeholder="输入视频名称"/></p>
-            <p class="clear">分类:
-                <select2-dropdown width="100%" choices="CATEGORY_LIST_FOR_SELECT2" item="category"
-                                  placeholder="请选择分类"></select2-dropdown>
-            </p>
             <p>内容:
                 <schema-based-editor local-value="ids" ng-model="ids" schema="schema">
                 </schema-based-editor>
@@ -132,7 +144,7 @@ I18N_SPLASH_PAGE_TITLE
 
         <div class="modal-footer">
             <button class="btn btn-success" ng-click="create(name, ids, category)"
-                    ng-disabled="!name || !ids|| !category">发布
+                    ng-disabled="!name || !ids">发布
             </button>
             <button class="btn btn-default" ng-click="cancel()">取消</button>
         </div>
@@ -141,14 +153,14 @@ I18N_SPLASH_PAGE_TITLE
 {% endblock %}
 
 
-
 {% block footer_js %}
 {{ super() }}
 <script>
-    {{include_js_file('video_list/VideoList.js') }}
-    {{ include_js_file('video_list/VideoListService.js')}}
-    {{ include_js_file('library/Library.js') }}
-    {{ include_js_file('library/LibraryFooter.js') }}
+  var categoryId = '{{category_id|js_string}}';
+  {{include_js_file('video_list/VideoList.js') }}
+  {{ include_js_file('video_list/VideoListService.js') }}
+  {{ include_js_file('library/Library.js')}}
+  {{include_js_file('library/LibraryFooter.js') }}
 </script>
 {{ interaction_templates }}
 {{ interaction_validators_html }}

@@ -441,7 +441,7 @@ class BaseHandler(webapp2.RequestHandler):
     def handle_exception(self, exception, unused_debug_mode):
         """Overwrites the default exception handler."""
         logging.info(''.join(traceback.format_exception(*sys.exc_info())))
-        logging.error('Exception raised: %s', exception)
+        logging.error(u'Exception raised: %s', exception)
 
         if isinstance(exception, self.PageNotFoundException):
             logging.error('Invalid URL requested: %s', self.request.uri)
