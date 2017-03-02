@@ -42,7 +42,7 @@ oppia.factory('videoListService', ['$http',
         });
       },
       getVideo: function(id, $scope) {
-        $http.get(_VIDEO_LIST_DATA_HANLDER_URL + id).then(function(response) {
+        return $http.get(_VIDEO_LIST_DATA_HANLDER_URL + id).then(function(response) {
           var data = response.data;
           $scope.name = data.name;
           $scope.id = data.id;

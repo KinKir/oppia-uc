@@ -66,6 +66,7 @@ class VideoListPage(base.BaseHandler):
                     interaction_templates),
                 'category_id': category_id,
                 'category_name': category.name,
+                'objective': category.objective,
                 'thumbnail_icon_url':
                     utils.get_thumbnail_icon_url_for_category(
                         category.category),
@@ -92,10 +93,12 @@ class VideoListData(base.BaseHandler):
                 video_list_service.get_all_video(
                     category_id,
                     urlsafe_start_cursor=urlsafe_start_cursor)
+            category = video_list_models.VideoCategory.get(long(category_id))
             self.render_json({
                 'results': [m.to_dict() for m in lists],
                 'cursor': new_urlsafe_start_cursor,
                 'more': more,
+                'category_objective': category.objective
             })
 
     def post(self, category_id, video_id):
@@ -155,7 +158,14 @@ class VideoCategoryData(base.BaseHandler):
                 long(category_id), False)
             if video_category is None:
                 raise self.PageNotFoundException
-            self.values.update(video_category.to_dict())
+            m = video_category
+            self.values.update(video_list_demain.VideoCategoryList(
+                m.id, m.name, m.picture_name, m.category,
+                m.author_id, m.created_on, m.last_updated,
+                m.objective
+            ).to_dict())
+            self.render_json(self.values)
+
         else:
             urlsafe_start_cursor = self.request.get('cursor')
             lists, new_urlsafe_start_cursor, more = \

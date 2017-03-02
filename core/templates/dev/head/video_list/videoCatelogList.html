@@ -55,7 +55,7 @@ I18N_SPLASH_PAGE_TITLE
         </a>
         <div ng-attr-section="'<['right-section']>">
             <div class="exp-private-text">
-                <[video.objective]>
+                <[video.objective | truncate:38]>
             </div>
 
             <ul
@@ -73,7 +73,7 @@ I18N_SPLASH_PAGE_TITLE
                     <[getLocaleAbbreviatedDatetimeString(video.last_updated)]>
                   </span>
                 </li>
-                <li flex="25">
+                <li flex="25" ng-click="showEditModal(video.id,$event)">
                   <span class="protractor-test-exp-summary-tile-rating">
                     <span class="fa fa-pencil fa-lg"
                           tooltip="编辑"
@@ -114,12 +114,12 @@ I18N_SPLASH_PAGE_TITLE
                 </object-editor>
             </p>
             <p>简介:
-                <schema-based-editor local-value="objective" ng-model="objective" schema="schema">
+                <schema-based-editor local-value="objective" schema="schema">
                 </schema-based-editor>
         </div>
 
         <div class="modal-footer">
-            <button class="btn btn-success" ng-click="create(name, picture_name, category, Objective)"
+            <button class="btn btn-success" ng-click="create(name, picture_name, category, objective)"
                     ng-disabled="!name || !picture_name|| !category||!objective">发布
             </button>
             <button class="btn btn-default" ng-click="cancel()">取消</button>

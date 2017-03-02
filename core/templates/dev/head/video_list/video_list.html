@@ -33,7 +33,7 @@ I18N_SPLASH_PAGE_TITLE
                      style="width:200px;"
                      ng-src="{{thumbnail_icon_url}}"/>
             </div>
-            <div>{{objective}}</div>
+            <div><[category_objective | truncate:200]></div>
         </div>
 
     </div>
@@ -145,7 +145,7 @@ I18N_SPLASH_PAGE_TITLE
 {% block footer_js %}
 {{ super() }}
 <script>
-  var categoryId = '{{category_id|js_string}}';
+  var categoryId = '{{category_id}}';
   {{include_js_file('video_list/VideoList.js') }}
   {{ include_js_file('video_list/VideoListService.js') }}
   {{ include_js_file('library/Library.js')}}

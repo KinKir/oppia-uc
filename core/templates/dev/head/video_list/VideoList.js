@@ -20,7 +20,7 @@
 
 // Translations of strings that are loaded in the front page. They are listed
 
-oppia.controller('VideoList', ['$scope', '$modal','$mdDialog', '$rootScope', '$window',
+oppia.controller('VideoList', ['$scope', '$modal', '$mdDialog', '$rootScope', '$window',
   'oppiaDatetimeFormatter', 'alertsService', 'FATAL_ERROR_CODES',
   'videoListService',
   function($scope, $modal, $mdDialog, $rootScope, $window,
@@ -30,6 +30,7 @@ oppia.controller('VideoList', ['$scope', '$modal','$mdDialog', '$rootScope', '$w
       $rootScope.loadingMessage = '加载中';
       videoListService.getVideoList().then(function(response) {
         $scope.videos = response.data.results;
+        $scope.category_objective = response.data.category_objective;
         $rootScope.loadingMessage = '';
       });
     };
@@ -190,65 +191,69 @@ oppia.controller('VideoCategoryList', ['$scope', '$modal', '$mdDialog',
     };
     $scope.showEditModal = function(objid) {
 
-      $modal.open({
-        templateUrl: 'modals/editorVideoCreate',
-        backdrop: true,
-        resolve: {},
-        controller: ['$scope', '$modalInstance', 'CATEGORY_LIST',
-          'ALL_CATEGORIES_ZH_MAP',
-          function($scope, $modalInstance, CATEGORY_LIST,
-                   ALL_CATEGORIES_ZH_MAP) {
-            $scope.schema = {
-              type: 'html',
-              ui_config: {
-                'hide_complex_extensions': true
-              }
-            };
-            $scope.CATEGORY_LIST_FOR_SELECT2 = [];
+      $rootScope.loadingMessage = '正在加载';
+      VideoCategoryService.get(objid).then(function(response) {
+        $rootScope.loadingMessage = '';
+        $modal.open({
+          templateUrl: 'modals/editorVideoCreate',
+          backdrop: true,
+          resolve: {},
+          controller: ['$scope', '$modalInstance', 'CATEGORY_LIST',
+            'ALL_CATEGORIES_ZH_MAP',
+            function($scope, $modalInstance, CATEGORY_LIST,
+                     ALL_CATEGORIES_ZH_MAP) {
+              $scope.schema = {
+                type: 'html',
+                ui_config: {
+                  'hide_complex_extensions': true
+                }
+              };
+              $scope.CATEGORY_LIST_FOR_SELECT2 = [];
 
-            for (var i = 0; i < CATEGORY_LIST.length; i++) {
-              $scope.CATEGORY_LIST_FOR_SELECT2.push({
-                id: CATEGORY_LIST[i],
-                text: ALL_CATEGORIES_ZH_MAP[CATEGORY_LIST[i]]
-              });
-            }
-            VideoCategoryService.get(objid).then(function(response) {
+              for (var i = 0; i < CATEGORY_LIST.length; i++) {
+                $scope.CATEGORY_LIST_FOR_SELECT2.push({
+                  id: CATEGORY_LIST[i],
+                  text: ALL_CATEGORIES_ZH_MAP[CATEGORY_LIST[i]]
+                });
+              }
               var data = response.data;
               $scope.name = data.name;
               $scope.id = data.id;
               $scope.picture_name = data.picture_name;
-              $scope.create_on = data.create_on;
+              $scope.created_on = data.created_on;
               $scope.category = data.category;
               $scope.objective = data.objective;
-            }, function() {
-              alertsService.addWarning('保存失败.');
-            });
-            $scope.create = function(name, pictureName,
-                                     category, objective) {
-              $modalInstance.close({
-                name: name,
-                picture_name: pictureName,
-                category: category,
-                objective: objective,
-                id: $scope.id
-              });
-            };
-            $scope.cancel = function() {
-              $modalInstance.dismiss('cancel');
-            };
-          }]
-      }).result.then(function(result) {
-        $rootScope.loadingMessage = '正在保存';
-        VideoCategoryService.save(result.id, result.name,
-          result.picture_name,
-          result.category, result.objective).then(function() {
-          $rootScope.loadingMessage = '';
-          $scope.loadData();
-          alertsService.addSuccessMessage('保存成功');
-        }, function() {
-          $rootScope.loadingMessage = '';
-          alertsService.addWarning('保存失败.');
+              $scope.a = {};
+              $scope.a.objective = data.objective;
+              $scope.create = function(name, pictureName,
+                                       category, objective) {
+                $modalInstance.close({
+                  name: name,
+                  picture_name: pictureName,
+                  category: category,
+                  objective: objective,
+                  id: $scope.id
+                });
+              };
+              $scope.cancel = function() {
+                $modalInstance.dismiss('cancel');
+              };
+            }]
+        }).result.then(function(result) {
+          $rootScope.loadingMessage = '正在保存';
+          VideoCategoryService.save(result.id, result.name,
+            result.picture_name,
+            result.category, result.objective).then(function() {
+            $rootScope.loadingMessage = '';
+            $scope.loadData();
+            alertsService.addSuccessMessage('保存成功');
+          }, function() {
+            $rootScope.loadingMessage = '';
+            alertsService.addWarning('保存失败.');
+          });
         });
+      }, function() {
+        alertsService.addWarning('获取数据失败.');
       });
     };
     $scope.deleteData = function(objid, ev) {
