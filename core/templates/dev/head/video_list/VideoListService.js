@@ -53,6 +53,9 @@ oppia.factory('videoListService', ['$http',
       },
       deleteData: function(id) {
         return $http['delete'](_VIDEO_LIST_DATA_HANLDER_URL + id);
+      },
+      att: function(ff){
+        return ff;
       }
     };
   }]);
