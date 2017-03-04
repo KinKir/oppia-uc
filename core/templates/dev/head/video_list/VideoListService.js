@@ -47,12 +47,12 @@ oppia.factory('videoListService', ['$http',
           $scope.name = data.name;
           $scope.id = data.id;
           $scope.ids = data.ids;
-          $scope.createdon = data.createdon;
+          $scope.created_on = data.created_on;
           $scope.category = data.category;
         });
       },
       deleteData: function(id) {
-        return $http.delete(_VIDEO_LIST_DATA_HANLDER_URL + id);
+        return $http['delete'](_VIDEO_LIST_DATA_HANLDER_URL + id);
       }
     };
   }]);
