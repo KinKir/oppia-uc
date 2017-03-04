@@ -47,7 +47,7 @@ oppia.factory('videoListService', ['$http',
           $scope.name = data.name;
           $scope.id = data.id;
           $scope.ids = data.ids;
-          $scope.create_on = data.create_on;
+          $scope.created_on = data.created_on;
           $scope.category = data.category;
         });
       },
