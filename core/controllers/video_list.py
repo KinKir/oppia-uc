@@ -94,12 +94,13 @@ class VideoListData(base.BaseHandler):
                     category_id,
                     urlsafe_start_cursor=urlsafe_start_cursor)
             category = video_list_models.VideoCategory.get(long(category_id))
-            self.render_json({
+            self.values.update({
                 'results': [m.to_dict() for m in lists],
                 'cursor': new_urlsafe_start_cursor,
                 'more': more,
                 'category_objective': category.objective
             })
+            self.render_json(self.values)
 
     def post(self, category_id, video_id):
         name = self.payload.get('name')
@@ -171,7 +172,7 @@ class VideoCategoryData(base.BaseHandler):
             lists, new_urlsafe_start_cursor, more = \
                 video_list_service.get_all_video_category(
                     urlsafe_start_cursor=urlsafe_start_cursor)
-            self.render_json({
+            self.values.update({
                 'results': [video_list_demain.VideoCategoryList(
                     m.id, m.name, m.picture_name, m.category,
                     m.author_id, m.created_on, m.last_updated,
@@ -180,6 +181,7 @@ class VideoCategoryData(base.BaseHandler):
                 'cursor': new_urlsafe_start_cursor,
                 'more': more,
             })
+            self.render_json(self.values)
 
     def post(self, category_id):
         name = self.payload.get('name')

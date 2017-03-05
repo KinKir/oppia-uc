@@ -34,6 +34,7 @@ from core.controllers import resources
 from core.controllers import uc
 from core.controllers import private_log
 from core.controllers import video_list
+from core.controllers import classroom
 from core.domain import user_services
 from core.platform import models
 from core.controllers import login
@@ -449,6 +450,14 @@ URLS = MAPREDUCE_HANDLERS + [
     get_redirect_route(
         r'/video/data/<category_id>/<video_id>',
         video_list.VideoListData, r'video_data'
+    ),
+    get_redirect_route(
+        r'/classroom/',
+        classroom.ClassroomPage, r'classroom'
+    ),
+    get_redirect_route(
+        r'/classroom/data/<classroom_id>',
+        classroom.ClassroomHandler, r'classroom_data'
     ),
     get_redirect_route(
         r'/login', login.LoginHandler, r'login_page'

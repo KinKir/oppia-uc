@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block maintitle %}
+I18N_SPLASH_PAGE_TITLE
+{% endblock maintitle %}
+
+{% block header_js %}
+{{ super() }}
+
+<style>
+    html, body {
+        background-color: #f2f2ee;
+    }
+</style>
+{{dependencies_html}}
+{% endblock %}
+
+{% block navbar_breadcrumb %}
+{% endblock navbar_breadcrumb %}
+
+{% block content %}
+<div class="oppia-dashboard-container" style="max-width: 900px"   ng-controller="Classroom">
+    <h3 class="pull-left"> 空闲教室</h3>
+    {% if can_create_explorations %}
+    <button class="btn btn-success pull-right" ng-click="create()">
+        创建空余教室
+    </button>
+    <div class="clear"></div>
+    {% endif %}
+    <br/>
+    <br/>
+    <div class="clearfix"></div>
+    <div ng-if="list.length === 0" class="oppia-dashboard-empty-text">
+        <md-card layout="row"
+                 class="oppia-page-card oppia-dashboard-intro-card"
+                 style="margin-top: 0;">
+            <div>
+                <p>
+                    没有数据！
+                </p>
+            </div>
+            <div class="oppia-dashboard-intro-picture">
+                <img src="/images/general/empty_dashboard.svg">
+            </div>
+        </md-card>
+    </div>
+
+    <div class="list-group">
+            <a class="list-group-item"   ng-repeat="item in list" ng-click = "edit(item.id)">
+                    <h4 class="list-group-item-heading"><span class="label label-primary"><[item.building]></span><[item.name]>
+                    <button class="btn btn-warning pull-right" type="submit" ng-if="currentUserIsAdmin"
+                            ng-click="deleteData(item.id,$event); $event.stopPropagation();" >删除</button>
+                    </h4>
+                    <h5><[item.day_of_week]>：<[item.sections]></h5>
+                     <p class="list-group-item-text">总座位数：<[item.seat_count]></p>
+            </a>
+    </div>
+</div>
+<script type="text/ng-template" id="modals/editorClassroomCreate">
+    <div class="modal-header">
+        <h3>编辑空闲教室</h3>
+    </div>
+
+    <div class="modal-body" stop-event="touchend">
+        <p>名称: <input type="text" class="form-control" ng-model="md.name" placeholder="输入名称"/></p>
+        <p>教学楼: <input type="text" class="form-control" ng-model="md.building" placeholder="输入教学楼"/></p>
+        <p>星期: <select2-dropdown choices="DayOfWeek"
+                              class="protractor-test-system-language-selector"
+                              item="md.day_of_week"
+                              allow-multiple-choices="false" width="100%"
+                              placeholder="选择星期">
+                 </select2-dropdown>
+        </p>
+        <p>空闲:
+            <select2-dropdown choices="ClassChoices"
+                              class="protractor-test-system-language-selector"
+                              item="md.sections"
+                              allow-multiple-choices="true" width="100%"
+                              placeholder="选择空闲时间">
+            </select2-dropdown>
+        </p>
+        <p>座位数: <input type="text" class="form-control" ng-model="md.seat_count" placeholder="输入座位数"/></p>
+        <p>坐标: <input type="text" class="form-control" ng-model="md.location" placeholder="输入坐标如:117.341132,36.234123"/></p>
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-success" ng-click="ok(md)"
+                ng-disabled="!md.name||!md.building ||!md.day_of_week || !md.sections || !md.seat_count || !md.location">保存
+        </button>
+        <button class="btn btn-default" ng-click="cancel()">取消</button>
+    </div>
+</script>
+{% endblock %}
+
+{% block footer %}
+{% include 'footer.html' %}
+{% endblock %}
+
+{% block footer_js %}
+{{ super() }}
+<script>
+  {{ include_js_file('classroom/Classroom.js')}}
+</script>
+{{ interaction_templates }}
+{{ interaction_validators_html }}
+{{ gadget_templates }}
+{% endblock footer_js %}

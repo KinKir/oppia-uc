@@ -38,4 +38,22 @@ class Classroom(base_models.BaseModel):
     day_of_week = ndb.IntegerProperty(required=True, choices=[
         1, 2, 3, 4, 5, 6, 7])
 
+    # 闲置时间，用数字表示，一天1-12节，用‘,’隔开
     sections = ndb.StringProperty(required=True)
+
+    # 座位数量
+    seat_count = ndb.IntegerProperty(required=True)
+
+    # 设置人
+    author_id = ndb.StringProperty(required=True)
+
+    @classmethod
+    def get_by_author(cls, author_id, page_size, urlsafe_start_cursor):
+        return cls._fetch_page_sorted_by_last_updated(
+            cls.query().filter(cls.author_id == author_id),
+            page_size, urlsafe_start_cursor)
+
+    @classmethod
+    def get_all(cls, page_size, urlsafe_start_cursor):
+        return cls._fetch_page_sorted_by_last_updated(
+            cls.query(), page_size, urlsafe_start_cursor)

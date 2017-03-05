@@ -22,15 +22,17 @@
 
 oppia.controller('VideoList', ['$scope', '$modal', '$mdDialog', '$rootScope', '$window',
   'oppiaDatetimeFormatter', 'alertsService', 'FATAL_ERROR_CODES',
-  'videoListService',
+  'videoListService', '$sce',
   function($scope, $modal, $mdDialog, $rootScope, $window,
            oppiaDatetimeFormatter, alertsService,
-           FATAL_ERROR_CODES, videoListService) {
+           FATAL_ERROR_CODES, videoListService, $sce) {
     $scope.loadData = function() {
       $rootScope.loadingMessage = '加载中';
       videoListService.getVideoList().then(function(response) {
         $scope.videos = response.data.results;
-        $scope.category_objective = response.data.category_objective;
+        $scope.currentUserIsAdmin = response.data.is_admin;
+        $scope.currentUserName = response.data.username;
+        $scope.category_objective = $sce.trustAsHtml(response.data.category_objective);
         $rootScope.loadingMessage = '';
       });
     };
@@ -85,6 +87,7 @@ oppia.controller('VideoList', ['$scope', '$modal', '$mdDialog', '$rootScope', '$
       });
     };
     $scope.deleteData = function(objid, ev) {
+      ev.stopPropagation();
       var confirm = $mdDialog.confirm({
         template: [
           '<md-dialog aria-label="<[dialog.label]>">',
@@ -131,6 +134,8 @@ oppia.controller('VideoCategoryList', ['$scope', '$modal', '$mdDialog',
       $rootScope.loadingMessage = '加载中';
       VideoCategoryService.getList().then(function(response) {
         $scope.videos = response.data.results;
+        $scope.currentUserName = response.data.username;
+        $scope.currentUserIsAdmin = response.data.is_admin;
         $rootScope.loadingMessage = '';
       });
     };

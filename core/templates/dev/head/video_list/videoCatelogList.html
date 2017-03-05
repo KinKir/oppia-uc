@@ -21,6 +21,7 @@ I18N_SPLASH_PAGE_TITLE
 {% block content %}
 <div class="oppia-dashboard-container" style="position: relative;z-index: 5;max-width: 900px;height:100%;"
      ng-controller="VideoCategoryList">
+    <h3 class="pull-left"> 视频课程</h3>
     {% if can_create_explorations %}
     <button class="btn btn-success pull-right" ng-click="showCreateModal()">
         创建视频分类
@@ -73,7 +74,7 @@ I18N_SPLASH_PAGE_TITLE
                     <[getLocaleAbbreviatedDatetimeString(video.last_updated)]>
                   </span>
                 </li>
-                <li flex="25" ng-click="showEditModal(video.id,$event)">
+                <li ng-if="currentUserIsAdmin||video.original_author_username===currentUserName" flex="25" ng-click="showEditModal(video.id,$event)">
                   <span class="protractor-test-exp-summary-tile-rating">
                     <span class="fa fa-pencil fa-lg"
                           tooltip="编辑"
@@ -85,7 +86,7 @@ I18N_SPLASH_PAGE_TITLE
                   </span>
                 </li>
 
-                <li flex="25" ng-click="deleteData(video.id,$event)">
+                <li flex="25" ng-if="currentUserIsAdmin||video.original_author_username===currentUserName" ng-click="deleteData(video.id,$event)">
                   <span class="fa fa-remove fa-lg"
                         tooltip="<['I18N_PLAYER_FEEDBACK_TOOLTIP' | translate]>"
                         tooltip-placement="top">

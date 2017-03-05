@@ -28,12 +28,13 @@ I18N_SPLASH_PAGE_TITLE
     <div class="modal-body" stop-event="touchend">
         <h1>{{category_name}}</h1>
         <div class="row">
-            <div class="col-md-2" style="background: {{thumbnail_bg_color}}">
+
+            <div class="panel panel-default"><div class="panel-body">
+                <div class="col-md-2" style="background: {{thumbnail_bg_color}};margin-right:10px;  ">
                 <img class="img-responsive"
                      style="width:200px;"
                      ng-src="{{thumbnail_icon_url}}"/>
-            </div>
-            <div><[category_objective | truncate:200]></div>
+            </div><div ng-bind-html="category_objective"></div></div></div>
         </div>
 
     </div>
@@ -87,7 +88,7 @@ I18N_SPLASH_PAGE_TITLE
                     <[getLocaleAbbreviatedDatetimeString(video.last_updated)]>
                   </span>
                 </li>
-                <li flex="25">
+                <li ng-if="currentUserIsAdmin||video.original_author_username===currentUserName" flex="25">
                   <span class="protractor-test-exp-summary-tile-rating">
                     <span class="fa fa-pencil fa-lg"
                           tooltip="编辑"
@@ -99,7 +100,7 @@ I18N_SPLASH_PAGE_TITLE
                   </span>
                 </li>
 
-                <li flex="25" ng-click="deleteData(video.id,$event)">
+                <li flex="25" ng-if="currentUserIsAdmin||video.original_author_username===currentUserName" ng-click="deleteData(video.id,$event)">
                   <span class="fa fa-remove fa-lg"
                         tooltip="<['I18N_PLAYER_FEEDBACK_TOOLTIP' | translate]>"
                         tooltip-placement="top">
