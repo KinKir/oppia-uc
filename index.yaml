@@ -10,6 +10,12 @@ indexes:
 # automatically uploaded to the admin console when you next deploy
 # your application using appcfg.py.
 
+- kind: Classroom
+  properties:
+  - name: day_of_week
+  - name: last_updated
+    direction: desc
+
 - kind: DeleteExpCopiesRealtimeModel
   properties:
   - name: realtime_layer
