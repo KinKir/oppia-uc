@@ -21,6 +21,7 @@
 import core.storage.base_model.gae_models as base_models
 # import core.storage.user.gae_models as user_models
 # import feconf
+import datetime
 
 from google.appengine.ext import ndb
 
@@ -57,3 +58,11 @@ class Classroom(base_models.BaseModel):
     def get_all(cls, page_size, urlsafe_start_cursor):
         return cls._fetch_page_sorted_by_last_updated(
             cls.query(), page_size, urlsafe_start_cursor)
+
+    @classmethod
+    def get_all_by_day(cls, page_size, urlsafe_start_cursor):
+        return cls._fetch_page_sorted_by_last_updated(
+            cls.query().filter(cls.day_of_week ==
+                               (datetime.datetime.now().weekday() + 1)),
+            page_size, urlsafe_start_cursor
+        )
