@@ -30,6 +30,12 @@ I18N_SPLASH_PAGE_TITLE
     <br/>
     <br/>
     <div class="clearfix"></div>
+    <label class="col-md-2 pull-left" >按照名称筛选:</label> <input type="text" class="form-control col-md-6 pull-left" style="width:50%" ng-model="searchname" placeholder="输入名称"/>
+     <button class="btn btn-primary pull-left" ng-click="loadData()">
+        查询
+    </button>
+    <br/>
+    <br/>
     <div ng-if="list.length === 0" class="oppia-dashboard-empty-text">
         <md-card layout="row"
                  class="oppia-page-card oppia-dashboard-intro-card"
@@ -44,12 +50,7 @@ I18N_SPLASH_PAGE_TITLE
             </div>
         </md-card>
     </div>
-<label class="col-md-2 pull-left" >按照名称筛选:</label> <input type="text" class="form-control col-md-6 pull-left" style="width:50%" ng-model="searchname" placeholder="输入名称"/>
-     <button class="btn btn-primary pull-left" ng-click="loadData()">
-        查询
-    </button>
-    <br/>
-    <br/>
+
     <div class="list-group" infinite-scroll="showMoreClassroom()" infinite-scroll-distance="1"
        infinite-scroll-disabled="endOfPageIsReached || searchResultsAreLoading">
             <a class="list-group-item"   ng-repeat="item in list" ng-click = "edit(item.id)">
