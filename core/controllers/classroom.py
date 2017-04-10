@@ -79,12 +79,12 @@ class ClassroomHandler(base.BaseHandler):
             if self.is_admin:
                 lists, new_urlsafe_start_cursor, more = \
                     classroom_models.Classroom. \
-                        get_all(page_size=20, \
+                        get_all(self.request.get('searchname'), page_size=20,
                                 urlsafe_start_cursor=urlsafe_start_cursor)
             else:
                 lists, new_urlsafe_start_cursor, more = \
                     classroom_models.Classroom. \
-                        get_all_by_day(page_size=20, \
+                        get_all_by_day(self.request.get('searchname'), page_size=20,
                                        urlsafe_start_cursor=urlsafe_start_cursor)
             self.values.update({
                 'results': [classroom_domain.Classroom(

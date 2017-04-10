@@ -55,14 +55,17 @@ class Classroom(base_models.BaseModel):
             page_size, urlsafe_start_cursor)
 
     @classmethod
-    def get_all(cls, page_size, urlsafe_start_cursor):
+    def get_all(cls, name, page_size, urlsafe_start_cursor):
+        qq = cls.query().filter(cls.name == name) if name else cls.query()
         return cls._fetch_page_sorted_by_last_updated(
-            cls.query(), page_size, urlsafe_start_cursor)
+            qq, page_size, urlsafe_start_cursor)
 
     @classmethod
-    def get_all_by_day(cls, page_size, urlsafe_start_cursor):
-        return cls._fetch_page_sorted_by_last_updated(
+    def get_all_by_day(cls, name, page_size, urlsafe_start_cursor):
+        qq = cls.query().filter(ndb.AND(cls.name == name, cls.day_of_week == (
+            datetime.datetime.now().weekday() + 1))) if name else \
             cls.query().filter(cls.day_of_week ==
-                               (datetime.datetime.now().weekday() + 1)),
-            page_size, urlsafe_start_cursor
-        )
+                               (datetime.datetime.now().weekday() + 1))
+        return cls._fetch_page_sorted_by_last_updated(qq,
+                                                      page_size, urlsafe_start_cursor
+                                                      )

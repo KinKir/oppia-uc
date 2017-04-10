@@ -6,11 +6,18 @@ oppia.controller('Classroom', ['$scope', '$modal', '$mdDialog', '$rootScope', '$
   function($scope, $modal, $mdDialog, $rootScope, $window, $http, oppiaDatetimeFormatter,
            alertsService, FATAL_ERROR_CODES) {
     var _CLASSROOM_DATA_HANLDER_URL = '/classroom/data/';
+    var _searchCursor = null;
+    $scope.searchname = '';
+    $scope.endOfPageIsReached = false;
     $scope.loadData = function() {
+      $scope.searchResultsAreLoading = true;
       $rootScope.loadingMessage = '加载中';
-      $http.get(_CLASSROOM_DATA_HANLDER_URL + '0').then(function(response) {
+      $http.get(_CLASSROOM_DATA_HANLDER_URL + '0' + '?searchname=' + encodeURIComponent($scope.searchname)).then(function(response) {
         $rootScope.loadingMessage = '';
         var data = response.data;
+        _searchCursor = data.cursor;
+        $scope.endOfPageIsReached = !data.more;
+        $scope.searchResultsAreLoading = false;
         $scope.currentUserIsAdmin = response.data.is_admin;
         $scope.list = data.results;
         for (var i = 0; i < $scope.list.length; i++) {
@@ -26,6 +33,33 @@ oppia.controller('Classroom', ['$scope', '$modal', '$mdDialog', '$rootScope', '$
       });
     };
     $scope.loadData();
+    $scope.showMoreClassroom = function() {
+      if (!$rootScope.loadingMessage && !$scope.endOfPageIsReached) {
+        $scope.searchResultsAreLoading = true;
+        $http.get(_CLASSROOM_DATA_HANLDER_URL + '0' + '?cursor=' +
+          _searchCursor + '&searchname='
+          + encodeURIComponent($scope.searchname)).then(function(response) {
+          $rootScope.loadingMessage = '';
+          var data = response.data;
+          _searchCursor = data.cursor;
+          $scope.endOfPageIsReached = !data.more;
+          $scope.searchResultsAreLoading = false;
+          $scope.currentUserIsAdmin = response.data.is_admin;
+          var ls = data.results;
+          for (var i = 0; i < ls.length; i++) {
+            var arrWeek = ['', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日'];
+            ls[i].day_of_week = arrWeek[parseInt(ls[i].day_of_week)];
+            ls[i].sections = eval('[' + ls[i].sections + ']');
+            var strSections = '';
+            for (var j = 0; j < ls[i].sections.length; j++) {
+              strSections += '第' + ls[i].sections[j] + '节' + ' ';
+            }
+            ls[i].sections = strSections;
+          }
+          $scope.list = $scope.list.concat(ls);
+        });
+      }
+    };
     var showDialog = function(data) {
       return $modal.open({
         templateUrl: 'modals/editorClassroomCreate',

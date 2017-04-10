@@ -44,8 +44,14 @@ I18N_SPLASH_PAGE_TITLE
             </div>
         </md-card>
     </div>
-
-    <div class="list-group">
+<label class="col-md-2 pull-left" >按照名称筛选:</label> <input type="text" class="form-control col-md-6 pull-left" style="width:50%" ng-model="searchname" placeholder="输入名称"/>
+     <button class="btn btn-primary pull-left" ng-click="loadData()">
+        查询
+    </button>
+    <br/>
+    <br/>
+    <div class="list-group" infinite-scroll="showMoreClassroom()" infinite-scroll-distance="1"
+       infinite-scroll-disabled="endOfPageIsReached || searchResultsAreLoading">
             <a class="list-group-item"   ng-repeat="item in list" ng-click = "edit(item.id)">
                     <h4 class="list-group-item-heading"><span class="label label-primary"><[item.building]></span><[item.name]>
                     <button class="btn btn-warning pull-right" type="submit" ng-if="currentUserIsAdmin"
