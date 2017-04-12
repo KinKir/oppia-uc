@@ -26,10 +26,14 @@ oppia.controller('VideoList', ['$scope', '$modal', '$mdDialog', '$rootScope', '$
   function($scope, $modal, $mdDialog, $rootScope, $window,
            oppiaDatetimeFormatter, alertsService,
            FATAL_ERROR_CODES, videoListService, $sce) {
+    var _cursor = null;
+    $scope.endOfPageIsReached = false;
     $scope.loadData = function() {
       $rootScope.loadingMessage = '加载中';
       videoListService.getVideoList().then(function(response) {
         $scope.videos = response.data.results;
+        _cursor = response.data.cursor;
+        $scope.endOfPageIsReached = !response.data.more;
         $scope.currentUserIsAdmin = response.data.is_admin;
         $scope.currentUserName = response.data.username;
         $scope.category_objective = $sce.trustAsHtml(response.data.category_objective);
@@ -41,6 +45,19 @@ oppia.controller('VideoList', ['$scope', '$modal', '$mdDialog', '$rootScope', '$
         millisSinceEpoch);
     };
     $scope.loadData();
+    $scope.showMore = function() {
+      if (!$rootScope.loadingMessage) {
+        videoListService.getVideoMore(_cursor).then(function(response) {
+          $scope.videos = $scope.videos.concat(response.data.results);
+          _cursor = response.data.cursor;
+          $scope.endOfPageIsReached = !response.data.more;
+          $scope.currentUserIsAdmin = response.data.is_admin;
+          $scope.currentUserName = response.data.username;
+          $scope.category_objective = $sce.trustAsHtml(response.data.category_objective);
+          $rootScope.loadingMessage = '';
+        });
+      }
+    }
     $scope.showCreateModal = function() {
       $modal.open({
         templateUrl: 'modals/editorVideoCreate',
@@ -130,10 +147,14 @@ oppia.controller('VideoCategoryList', ['$scope', '$modal', '$mdDialog',
   function($scope, $modal, $mdDialog, $rootScope, $window,
            oppiaDatetimeFormatter, alertsService,
            FATAL_ERROR_CODES, VideoCategoryService) {
+    var _cursor = null;
+    $scope.endOfPageIsReached = false;
     $scope.loadData = function() {
       $rootScope.loadingMessage = '加载中';
       VideoCategoryService.getList().then(function(response) {
         $scope.videos = response.data.results;
+        $scope.endOfPageIsReached = !response.data.more;
+        _cursor = response.data.cursor;
         $scope.currentUserName = response.data.username;
         $scope.currentUserIsAdmin = response.data.is_admin;
         $rootScope.loadingMessage = '';
@@ -144,6 +165,15 @@ oppia.controller('VideoCategoryList', ['$scope', '$modal', '$mdDialog',
         millisSinceEpoch);
     };
     $scope.loadData();
+    $scope.showMore = function() {
+      if (!$rootScope.loadingMessage) {
+        VideoCategoryService.getListMore(_cursor).then(function(response) {
+          $scope.videos = $scope.videos.concat(response.data.results);
+          $scope.endOfPageIsReached = !response.data.more;
+          _cursor = response.data.cursor;
+        })
+      }
+    };
     $scope.showCreateModal = function() {
       $modal.open({
         templateUrl: 'modals/editorVideoCreate',
@@ -294,4 +324,5 @@ oppia.controller('VideoCategoryList', ['$scope', '$modal', '$mdDialog',
       }, function() {
       });
     };
-  }]);
+  }
+]);

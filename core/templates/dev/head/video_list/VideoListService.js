@@ -26,6 +26,11 @@ oppia.factory('videoListService', ['$http',
       getVideoList: function() {
         return $http.get(_VIDEO_LIST_DATA_HANLDER_URL + '0');
       },
+      getVideoMore: function(cursor) {
+        return $http.get(_VIDEO_LIST_DATA_HANLDER_URL + '0' + '?cursor=' +
+          cursor
+        );
+      },
       createVideo: function(name, ids, category) {
         return $http.post(_VIDEO_LIST_DATA_HANLDER_URL + '0', {
           name: name,
@@ -54,7 +59,7 @@ oppia.factory('videoListService', ['$http',
       deleteData: function(id) {
         return $http['delete'](_VIDEO_LIST_DATA_HANLDER_URL + id);
       },
-      att: function(ff){
+      att: function(ff) {
         return ff;
       }
     };

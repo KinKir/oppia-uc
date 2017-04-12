@@ -42,39 +42,41 @@ I18N_SPLASH_PAGE_TITLE
             </div>
         </md-card>
     </div>
+    <div class="" infinite-scroll="showMore()" infinite-scroll-distance="1"
+         infinite-scroll-disabled="endOfPageIsReached ">
+        <md-card class="oppia-activity-summary-tile md-default-theme" style="width:200px;height:258px;float:left;"
+                 ng-repeat="video in videos track by video.id">
+            <a href="/video/list/<[video.id]>" target="_blank">
+                <div class="title-section" style="background-color: <[video.thumbnail_bg_color]>;">
+                    <img class="thumbnail-image" ng-src="/imagehandler/default/<[video.picture_name]>"/>
+                    <h2 class="activity-title protractor-test-exp-summary-tile-title">
+                        <span><[video.name || '未命名' | truncate:40]></span>
+                    </h2>
+                </div>
+                <div class="title-section-mask"></div>
+            </a>
+            <div ng-attr-section="'<['right-section']>">
+                <div class="exp-private-text">
+                    <[video.objective | truncate:38]>
+                </div>
 
-    <md-card class="oppia-activity-summary-tile md-default-theme" style="width:200px;height:258px;float:left;"
-             ng-repeat="video in videos track by video.id">
-        <a href="/video/list/<[video.id]>" target="_blank">
-            <div class="title-section" style="background-color: <[video.thumbnail_bg_color]>;">
-                <img class="thumbnail-image" ng-src="/imagehandler/default/<[video.picture_name]>"/>
-                <h2 class="activity-title protractor-test-exp-summary-tile-title">
-                    <span><[video.name || '未命名' | truncate:40]></span>
-                </h2>
-            </div>
-            <div class="title-section-mask"></div>
-        </a>
-        <div ng-attr-section="'<['right-section']>">
-            <div class="exp-private-text">
-                <[video.objective | truncate:38]>
-            </div>
+                <ul
+                        layout="row"
+                        layout-wrap
+                        class="metrics"
+                        layout-align="space-between center">
 
-            <ul
-                    layout="row"
-                    layout-wrap
-                    class="metrics"
-                    layout-align="space-between center">
-
-                <li flex="50">
+                    <li flex="50">
                   <span class="fa fa-clock-o fa-lg"
                         tooltip="<['I18N_LIBRARY_LAST_UPDATED' | translate]>"
                         tooltip-placement="top">
                   </span>
-                    <span>
+                        <span>
                     <[getLocaleAbbreviatedDatetimeString(video.last_updated)]>
                   </span>
-                </li>
-                <li ng-if="currentUserIsAdmin||video.original_author_username===currentUserName" flex="25" ng-click="showEditModal(video.id,$event)">
+                    </li>
+                    <li ng-if="currentUserIsAdmin||video.original_author_username===currentUserName" flex="25"
+                        ng-click="showEditModal(video.id,$event)">
                   <span class="protractor-test-exp-summary-tile-rating">
                     <span class="fa fa-pencil fa-lg"
                           tooltip="编辑"
@@ -84,21 +86,22 @@ I18N_SPLASH_PAGE_TITLE
                        编辑
                     </span>
                   </span>
-                </li>
+                    </li>
 
-                <li flex="25" ng-if="currentUserIsAdmin||video.original_author_username===currentUserName" ng-click="deleteData(video.id,$event)">
+                    <li flex="25" ng-if="currentUserIsAdmin||video.original_author_username===currentUserName"
+                        ng-click="deleteData(video.id,$event)">
                   <span class="fa fa-remove fa-lg"
                         tooltip="<['I18N_PLAYER_FEEDBACK_TOOLTIP' | translate]>"
                         tooltip-placement="top">
                   </span>
-                    删除
-                </li>
-            </ul>
+                        删除
+                    </li>
+                </ul>
 
-        </div>
+            </div>
 
-    </md-card>
-
+        </md-card>
+    </div>
     <script type="text/ng-template" flex="90" id="modals/editorVideoCreate">
         <div class="modal-header">
             <h3>上传视频</h3>
@@ -133,10 +136,10 @@ I18N_SPLASH_PAGE_TITLE
 {% block footer_js %}
 {{ super() }}
 <script>
-  {{include_js_file('video_list/VideoList.js')}}
+  {{ include_js_file('video_list/VideoList.js') }}
   {{include_js_file('video_list/VideoCategoryService.js')}}
-  {{include_js_file('library/Library.js')}}
-  {{include_js_file('library/LibraryFooter.js')}}
+  {{ include_js_file('library/Library.js') }}
+  {{ include_js_file('library/LibraryFooter.js')}}
 </script>
 {{ interaction_templates }}
 {{ interaction_validators_html }}
