@@ -50,7 +50,7 @@ oppia.factory('VideoCategoryService', ['$http',
         return $http.get(_VIDEO_LIST_DATA_HANLDER_URL + id);
       },
       deleteData: function(id) {
-        return $http.delete(_VIDEO_LIST_DATA_HANLDER_URL + id);
+        return $http['delete'](_VIDEO_LIST_DATA_HANLDER_URL + id);
       }
     };
   }]);
