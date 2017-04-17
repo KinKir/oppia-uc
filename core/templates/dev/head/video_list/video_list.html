@@ -85,9 +85,9 @@ I18N_SPLASH_PAGE_TITLE
                         tooltip="<['I18N_LIBRARY_LAST_UPDATED' | translate]>"
                         tooltip-placement="top">
                   </span>
-                    <span>
+                    {#<span>
                     <[getLocaleAbbreviatedDatetimeString(video.last_updated)]>
-                  </span>
+                  </span>#}
                 </li>
                 <li ng-if="currentUserIsAdmin||video.original_author_username===currentUserName" flex="25">
                   <span class="protractor-test-exp-summary-tile-rating">
