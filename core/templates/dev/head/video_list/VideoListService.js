@@ -46,15 +46,8 @@ oppia.factory('videoListService', ['$http',
           category: category
         });
       },
-      getVideo: function(id, $scope) {
-        return $http.get(_VIDEO_LIST_DATA_HANLDER_URL + id).then(function(response) {
-          var data = response.data;
-          $scope.name = data.name;
-          $scope.id = data.id;
-          $scope.ids = data.ids;
-          $scope.created_on = data.created_on;
-          $scope.category = data.category;
-        });
+      getVideo: function(id) {
+        return $http.get(_VIDEO_LIST_DATA_HANLDER_URL + id);
       },
       deleteData: function(id) {
         return $http['delete'](_VIDEO_LIST_DATA_HANLDER_URL + id);

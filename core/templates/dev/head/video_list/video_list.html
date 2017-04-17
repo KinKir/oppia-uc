@@ -89,7 +89,7 @@ I18N_SPLASH_PAGE_TITLE
                     <[getLocaleAbbreviatedDatetimeString(video.last_updated)]>
                   </span>#}
                 </li>
-                <li ng-if="currentUserIsAdmin||video.original_author_username===currentUserName" flex="25">
+                <li ng-if="currentUserIsAdmin||video.original_author_username===currentUserName" flex="25" ng-click="showEditModal(video.id,$event)">
                   <span class="protractor-test-exp-summary-tile-rating">
                     <span class="fa fa-pencil fa-lg"
                           tooltip="编辑"
@@ -128,7 +128,7 @@ I18N_SPLASH_PAGE_TITLE
         <div class="modal-body" stop-event="touchend">
             <p>名称: <input type="text" class="form-control" ng-model="name" placeholder="输入视频名称"/></p>
             <p>内容:
-                <schema-based-editor local-value="ids" ng-model="ids" schema="schema">
+                <schema-based-editor local-value="ids" schema="schema">
                 </schema-based-editor>
             </p>
         </div>

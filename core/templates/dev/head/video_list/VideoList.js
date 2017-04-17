@@ -57,7 +57,53 @@ oppia.controller('VideoList', ['$scope', '$modal', '$mdDialog', '$rootScope', '$
           $rootScope.loadingMessage = '';
         });
       }
-    }
+    };
+    $scope.showEditModal = function(objid) {
+      videoListService.getVideo(objid).then(function(response) {
+        $modal.open({
+          templateUrl: 'modals/editorVideoCreate',
+          backdrop: true,
+          resolve: {},
+          controller: ['$scope', '$modalInstance', 'CATEGORY_LIST',
+            'ALL_CATEGORIES_ZH_MAP',
+            function($scope, $modalInstance, CATEGORY_LIST,
+                     ALL_CATEGORIES_ZH_MAP) {
+              $scope.schema = {
+                type: 'html'
+              };
+              $scope.name = response.data.name;
+              $scope.ids = response.data.ids;
+              $scope.id = response.data.id;
+              $scope.create = function(name, ids) {
+                $modalInstance.close({
+                  id: $scope.id,
+                  name: name,
+                  ids: ids,
+                  category: categoryId
+                });
+              };
+              $scope.cancel = function() {
+                $modalInstance.dismiss('cancel');
+              };
+            }]
+        }).result.then(function(result) {
+          $rootScope.loadingMessage = '正在保存';
+          videoListService.saveEditVideo(result.id, result.name,
+            result.ids,
+            result.category).then(function() {
+            $rootScope.loadingMessage = '';
+            alertsService.addSuccessMessage('保存成功');
+            $scope.loadData();
+          }, function() {
+            $rootScope.loadingMessage = '';
+            alertsService.addWarning('保存失败.');
+          });
+        });
+      }, function() {
+        $rootScope.loadingMessage = '';
+        alertsService.addWarning('信息不存在.');
+      });
+    };
     $scope.showCreateModal = function() {
       $modal.open({
         templateUrl: 'modals/editorVideoCreate',
@@ -70,14 +116,6 @@ oppia.controller('VideoList', ['$scope', '$modal', '$mdDialog', '$rootScope', '$
             $scope.schema = {
               type: 'html'
             };
-            $scope.CATEGORY_LIST_FOR_SELECT2 = [];
-
-            for (var i = 0; i < CATEGORY_LIST.length; i++) {
-              $scope.CATEGORY_LIST_FOR_SELECT2.push({
-                id: CATEGORY_LIST[i],
-                text: ALL_CATEGORIES_ZH_MAP[CATEGORY_LIST[i]]
-              });
-            }
             $scope.create = function(name, ids) {
               $modalInstance.close({
                 name: name,
@@ -137,7 +175,8 @@ oppia.controller('VideoList', ['$scope', '$modal', '$mdDialog', '$rootScope', '$
       }, function() {
       });
     };
-  }]);
+  }
+]);
 
 oppia.controller('VideoCategoryList', ['$scope', '$modal', '$mdDialog',
   '$rootScope', '$window',
