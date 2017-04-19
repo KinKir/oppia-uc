@@ -47,7 +47,7 @@ I18N_SPLASH_PAGE_TITLE
         <md-card class="oppia-activity-summary-tile md-default-theme" style="width:200px;height:258px;float:left;"
                  ng-repeat="video in videos track by video.id">
             <a href="/video/list/<[video.id]>" target="_blank">
-                <div class="title-section" style="background-color: <[video.thumbnail_bg_color]>;">
+                <div class="title-section" ng-style="{'background-color': video.thumbnail_bg_color}">
                     <img class="thumbnail-image" ng-src="/imagehandler/default/<[video.picture_name]>"/>
                     <h2 class="activity-title protractor-test-exp-summary-tile-title">
                         <span><[video.name || '未命名' | truncate:40]></span>
