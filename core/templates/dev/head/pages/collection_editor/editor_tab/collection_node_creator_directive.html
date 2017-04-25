@@ -1,0 +1,12 @@
+<script type="text/ng-template" id="collectionEditor/newNodeCreator">
+  <h2>添加课程</h2>
+  <form class="form-inline" ng-submit="createNewExploration()">
+    <input class="form-control" ng-model="newExplorationTitle" type="text" placeholder="新建课程标题">
+    <button class="btn btn-success" type="submit" ng-disabled="!newExplorationTitle">新建课程</button>
+  </form>
+  or
+  <form ng-submit="addExploration()">
+    <input ng-model="newExplorationId" type="text" placeholder="课程ID">
+    <button type="submit" ng-disabled="!newExplorationId">添加已存在课程</button>
+  </form>
+</script>

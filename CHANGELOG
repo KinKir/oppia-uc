@@ -2,6 +2,591 @@ This file contains a summary of changes to the Oppia code base. For a full chang
 
     https://github.com/oppia/oppia/commits/master
 
+
+v2.4.2 (22 Apr 2017)
+--------------------
+Collection player:
+* Fix #3327: Changed text in collection player card from 'highlight' to 'hover over' (#3335)
+* Fix open in new tab bug for Firefox (#3348)
+* Only show 'return to collection' when there are no other recommendations to show, so that the learner is not confused about what to do next. (#3312)
+* Fix #2985: Introduce collection learner view mobile version (#3197)
+* Convert GLOBALS to AJAX for collection editor permissions (#3126)
+* Fix #3131: collection footer and sharing directive added to collection player (#3216)
+
+Editor:
+* Fix #3028: Add confirmation modal dialog for clearing image and regions (#3339)
+* Fix #1774: Changed color combination required for visibility of reminder bubble in editor. (#3277)
+* Fix #3093: Popover of Userhelp button remains constant when the user creates the exploration for the first time. (#3267)
+* Add dependencies to collection editor (#3261)
+* Fix #3094: Fix license terms link in image interaction (#3236)
+* Fix #2813: Customization arg model is bypassed for interactions that have no arg to customize. (#3176)
+* Fix #3101: Discard-draft Tooltip (#3205)
+* Fix #3099: Clarify error message for Item Selection and Multiple Choice interaction (#3184)
+* Fixes #3051: Image regions can be resized by clicking and dragging (#3144)
+* Fix #3122: Number Fields Bring Up Numeric Mobile Keyboards (#3167)
+* Fix #2039: Allow editors to preview summary tiles (#3069)
+
+I18N:
+* Fix part of #3132: Add i18n keys to About and Profile pages; minor Hindi translations for the search bar (#3299)
+* Fix part of #3132: Add missing i18n keys and Hindi translations for creator dashboard (#3235)
+* Fix part of #3132: Add missing translation keys to preferences page (#3231)
+* Fix #2734: Add i18n keys to preferences (#3219)
+
+Creator Dashboard:
+* Fix #2160: Introduce first version of tests involving deleting explorations for creator dashboard (#3196)
+* Fix #3318: Style fixes for collection card in creator dashboard (#3330)
+* Fix overflowing of names in the subscription card. (#3270)
+
+Machine Learning system:
+* Fix #3283: Fix the interactionRulesService error in trainUnresolvedAnswerModal. (#3325)
+* Fix #3282: Fixes the validate() function for LDAStringClassifier (#3322)
+* Fix #3297: Renaming Classifier Registry method (#3298)
+* Fix #3045: Introduce end to end test for classifyHandler (#3255)
+* Fix #2986: Add helper functions to classifier_services.py (#3070)
+* Updated tests with assertRaisesRegexp and test to test type of elements in LDAStringClassifier
+* Added tests to LDAStringClassifier and added comments in classifier_domain_tests
+* Fix #3180: Fix the "interactionRulesService" not found error in teachOppiaModal. (#3181)
+* Fix #3169: Fix the alignment of the submit button in teachOppiaModal (#3171)
+
+Splash, About, Donation pages:
+* Fix #3319: Oppia video at the donation page no longer shows "Related videos" after the video finishes (#3321)
+* Update donation page statistics. (#3313)
+* Introduce a promo bar (#3262)
+* Fix #3097: Make splash page buttons non-constant width to accommodate different languages. (#3191)
+* Fix #2400: Oppia-donation card margin corrections (#3214)
+* Add a check that user contributions for logged in users exist on the home page redirect check (#3213)
+
+Code health:
+* Fix #3064: Refactor CSS into corresponding directives (#3352)
+* Refactoring: removed 'role' variable from GET request used in editor.py in delete method (#3275)
+* Fix part of #2863: Create ParamChange object factory (#3302)
+* Fix part of #2394: Added docstrings in summary_services.py (#3263)
+* Fix part of #2863: Create trigger object (#3273)
+* Fix part of #2863: Create outcome object factory (#3260)
+* Fix part of #2863: Create front-end domain object for Rules (#3229)
+* Fix part of #2394: add docstrings for core/platform/models.py (#3226)
+* Fix part of #2863: Create front-end content object factory (#3224)
+* Fix #2394: Add useful docstrings to core/storage/job/gae_models.py  (#3195)
+* Fix #3192: shifted back css of oppia-sidebar-menu-open back to oppia.css (#3211)
+* Fix part of #2863: Create front-end fallback domain object (#3207)
+* Fix part of #2863: Create front-end domain object for Interactions (#3049)
+* Fix part of #2394: Added docstrings in cron.py (#3182)
+* Fixes part of #3064: pull the directive specific css in corresponding files from oppia.css (#3077)
+
+Infrastructure:
+* Fix #3199: Refactor constants loading to avoid synchronous XMLHttpRequest (#3323)
+* Fix #1852: Transition to ESLint (#3264)
+* Add installation of peer dependency: jasmine-core. (#3266)
+* Upgrade protractor, karma and karma-jasmine (#3251)
+* Fix #3047: Collection contents migration (#3209)
+* Fix #3232: Generate source maps into separate files (#3233)
+* Add e2e test to visit the links in the about dropdown (#3223)
+* Add e2e tests for suggestion acceptance on explorations (#3202)
+* Fix #3162: set expiration explicitly for files in the build directory. (#3203)
+* Remove remaining extraneous js files from base.html #3137
+* Fix #2828: Add IE9 support for sidebar. (#3178)
+
+Other UI fixes:
+* Fix #2018: make toast z-index lower than navbar z-index (#3320)
+* Fix #2870: Limit exploration cards to screen width to maintain centering. (#3250)
+
+Misc:
+* Fix #2936: Limit the length of goal description in explorations. (#3274)
+* Fix #3293: Introduction of a static maintenance page (#3308)
+* Fix #3135: Switch from Static Image Resources By Using Existing Font Awesome Icons (#3193)
+* Fixes: footer padding on mobile, #3121 (#3186)
+* Localisation updates from https://translatewiki.net.
+
+
+v2.4.1 (12 Mar 2017)
+--------------------
+Interactions:
+* Fix #3027: Update Add Vertex functionality in GraphInput, when vertex is added mode is changed to "MOVE". (#3115)
+* Fix #3102: Update Guppy to 260da66 to enable better compatibility with non-US keyboards (#3103)
+* Fix #2964: remove reset icon and add undo reset functionality in pencil code editor (#3055)
+
+Accessibility:
+* Add span text with special class  for several icon buttons and links; fix focus styles issue for seach bar; no focus style fix required for language select element
+* Update icon button text width to address spacing issue in Chrome; Add ARIA role to About, Profile, and exploration Author profile to offer screenreaders some indication that these are menus; Update delete icon on select input to have icon button text; Remove aria-label from item selection to allow for clearer labels
+* Add aria-label to user menu so that it is properly read as user menu instead of as user avatar; add role to author profile dropup menu so that it is recognized as a menu; update icon accessibility span class name to be more descriptive and add more to the comment above the style in oppia.css
+* Fix #2955: add alt tag equal to value of getCategory() (#3023)
+
+UI tweaks:
+* Fix #2814: Add new items button visibility in the SetInput interaction on mobile (#2951)
+* Fix #3120: Buttons on About page have text overflow on mobile. (#3123)
+* Fix #3037: changed the height of the dropdown save button and width of the discard draft button. (#3100)
+* Fix #3063: change the default confirmation box in "discard draft" to modal (#3068)
+* Remove word-break so that lesson titles don't break unnecessarily across lines. Reverts part of #2971. (#3130)
+* Fix #3129: Make navbar text items visible again by changing to rem. (#3150)
+* Fix #3066: fixed summary tiles to show the full objective. (#3128)
+* Fixes #3136 alignment of oppia meaning text in about page after doing required changes (#3153)
+
+Code health:
+* Convert state dictionary data in FeedbackTab to State objects (#3125)
+* Add docstrings for core.domain.param_domain.py (#3078)
+* remove image uploader directive from base.html (#3090)
+* Remove more js files from base.html (#3087)
+* Fixes #1695: Way to automatically provide backend constants to the frontend. (#3033)
+* Fix #1858 Added source-maps for better debugging (#3086)
+
+Other:
+* Fix #3094: Change the license terms URL link to go to foundation tab of about page. (#3105)
+* Fix part of #3073: Add exploration link to feedback email. (#3108)
+* Change http to https in some places in setup.sh, particularly for downloading node. (#3133)
+* Add analytics tracking for card-transition and completion in the player. (#3088)
+* Fix #2987: add a "correct" field to each answer group (#3084)
+* Fix #2966: modified the the redirection rules when the user goes to root url (#3034)
+
+
+v2.4.0 (18 Feb 2017)
+--------------------
+Collection Player
+* Fix #3031: track user progress and minor UI changes to match original mocks (#3054)
+* Fix bugs and improve UI
+
+Subscribers
+* Fix part of #2287: Display subscribers and subscriptions and send emails on publishing. (#3036)
+
+Creator Dashboard
+* Standardize truncation of objectives and display of titles on summary tiles. (#3067)
+
+Accessibility
+* Standardize focus styles across site
+
+Other
+* Fix #2990: Implement workaround to make MathExpressionInput usable on mobile devices. (#3039)
+* Fix #2989: Check if all files end with exactly one newline character. (#3005)
+* Added docstring to "core.domain.exp_services" (#2924)
+* Add Classifier model id (#2961)
+
+
+v2.3.9 (14 Feb 2017)
+--------------------
+Collection Learner View
+* Fix #2526: Path version of the collection learner view (PR #2979)
+
+UI Tweaks
+* Fix #2874: Show the exploration name in the mobile view (PR #2888)
+* Fix #2894: Align the footer properly for exploration player in mobile view (PR #2897)
+* Fix #2893: Modify buttons on Teach page to make width uniform (PR #2898)
+* Fix #2817: Move Call to action buttion in Teach Page and fixes on about page bar on small screens
+* Fix #2816: Add call to action buttons to the Foundation page (PR #2903)
+* Fix #2817, Move Call to action buttion in Teach Page and fixes on about page bar on small screens (PR #2911)
+* Fix alphabetical ordering of authors (PR #2912)
+* Fix #2821: Fixed vertical alignment of headers (PR #2909)
+* Fix #2914: Improve spacing of buttons on Teach and About pages
+* Fix #2868: Fix social icons positioning in hamburger menu (PR #2932 and PR #2949)
+* Fix #2551: Add full objective in the library tiles as tooltip (PR #2934)
+* Remove links from collection page objectives in table and capitalize first letter of first word in objective
+* Fix #2944: Changed z-index on splash button container so browse button is clickable. (PR #2970)
+* Fix button text size on splash page (PR #2928)
+* Merge branch 'develop' into translatewiki
+* Fix #2620 : Fix exploration card height and deadzone (PR #2971)
+* Fix #2918: Fix collection tile in creator dashboard. (PR #2973)
+* Fix #2975 Adds full objective in the library tiles as popovers
+
+Site Reliability/Assessibility
+* Add -L for curl redirect (PR #3021)
+* Fix #3010: Replace nodelist.forEach use with for loop for better compatability. (PR #3019)
+* Fix #3003: Use Angular's debouncer for Library search. (PR #3006)
+* Fix #2830: update styles in footer sharing links to allow them to show in IE (PR #2917)
+* Add h1 on collection page and add ARIA role to footer tag (PR #2959)
+* Refactor capitalizing the exploration objectives on the collection page to remove javascript from the html.
+* Fix #2922: Hide hamburger menu >768px, add function to handle navbar overflow (PR #2927)
+* Fixes #2956: Images in explorations have descriptive alt attributes (PR #2972)
+* Fix part of #2862: Add alt attributes to images (PR #2957)
+* Fix #2954: add appropriate lang attribute to site pages (PR #3004)
+* Fix #2919: Fix the loading of the editor page. (PR #2958)
+
+Emails
+* Fix part of #2557:  Refactoring of email preferences and add functionality to incorporate user's preferences of feedback / suggestions  (PR #2892)
+* FIx #2768: Implement email receiving functionality for feedback messages. (PR #3029)
+* Rename userExplorationEmailsHandler service to UserEmailPreferencesService (PR #3040)
+
+Frontend Refactor
+* Fix #2722: Split exploration save and publish button to directive (PR #2896)
+* Fix part of #2863: Create AnswerGroup domain object (PR #2883)
+* Add dependencies to collection editor html (PR #2996)
+
+Subscriptions
+* Fix part of #2287: Email preferences for subscriptions
+* Fix part of #2287: Add handlers for subscription and unsubscription (PR #2886)
+* Fix part of #2287: Add subscribe and unsubscribe button to profile of authors
+
+Machine Learning
+* Fix #2726: Create domain & storage classes for classifier model & tests (PR #2846)
+* Fix #2728: Add AlgorithmRegistry and test class. (PR #2926)
+* Fix #2950: Moved classifier methods and test from reader to classifier_services (PR #2974)
+
+Dev tools/code health
+* Add travis retry all tests except for backend and linting (PR #2890)
+* Add Docstrings in exploration/gae_models.py (PR #2889)
+* Fix #2455: Add lockfile functionality to fix inconsistent directory permissions in Vagrant (PR #2749)
+* Update release info output to fit format of changelog (PR #2908)
+* Fix #2857: Added excluded_dirs in Lint pattern matching (PR #2905)
+* Fix #2064: Add a test for keys present in source code and not in en.json (PR #2933)
+* Fix #2394: Add docstring to core/storage/user/gae_models.py (PR #2962)
+* Docstrings added in the file core/storage/email/gae_models.py (PR #2900)
+* Fix part of #2394: Update docstrings in core.storage.collection.gae_models (PR #2982)
+
+Other
+* Update translations from translatewiki
+* Fix translatewiki attirbution in credits (PR #2916)
+* Fix #2662: Upgrade math-expressions to 370a77. (PR #2984)
+* Update guppy to the version f6e0bbf in order to prevent a startsWith() error in IE. (PR #3041)
+
+
+v2.3.8 (10 Jan 2017)
+--------------------
+Learner view:
+* Fix tutor card icon not clickable in learner view (PR #2824)
+* Fix #2832: Add space between footer and summary explorations container (PR #2833)
+* Fix #2842: do not submit an answer or clear the help card if there is already a destination card defined. (PR #2843)
+* Fix #2800: Style the author profile pop-up like about dropdown (PR #2864)
+* Fix #2680: Ensure that the the help card can be seen (PR #2835)
+* Fix #2588: Make LATEX smaller in learner view (PR #2854)
+
+Splash and donations pages:
+* Add call to action links on English default splash page (PR #2818)
+* Fix #2855: Fix showing help text when javascript is not enabled (PR #2856)
+* Fix #2128: Add alt tags to about page (PR #2858)
+* Fix #2877: splash page banner should not be able to scroll horizontally. (PR #2879)
+* Add 'Get Started' link to the sidebar. (PR #2836)
+* Fix #2815:add third button for credit card payment (PR #2881)
+* Fix #2128: Add alt tags to donate, library, and splash pages (PR #2882)
+
+Dashboard:
+* Fix #2764: Enable right clickability for all explorations in the dashboard (PR #2823)
+* Remove the 'total number of feedback threads' statistic from the dashboard. (PR #2837)
+* Fix #2548: Make sorting in the dashboard more intuitive. (PR #2838)
+
+Other pages:
+* Fix #2716: Show only simple editor tools on medium screens (PR #2850)
+* Fix #2789: Remove white panel behind exploration cards in profile page. Remove 'Portfolio' text. (PR #2810)
+* Fix #2026: Add panel to show collection owner and permissions (PR #2865)
+* Fix #2801: Change collection style in library and remove shadows from carousel scrolling. (PR #2876)
+
+I18N:
+* Update various translations
+
+Emails:
+* Initial work on email muting (PR #2851)
+* Initial work on email subscription preferences (PR #2849, #2878, #2886)
+
+Code health:
+* Fix #2248: Add e2e tests for feedback on explorations (PR #2753)
+* Fix #2251: Add e2e tests for parameters (PR #2834)
+* Add tests to make sure that test email is not sent to query recipients. (#2848)
+* Update docstrings in user_services.py (PR #2622)
+* Remove unused images in assets/common (PR #2847)
+* Fix #2727: Refactor classifier so a BaseClassificationAlgorithm class can be used as a base for classification algorithms (PR #2743)
+* Fix #2722: Split exploration editor into several files (PR #2844)
+
+
+v2.3.7 (4 Dec 2016)
+-------------------
+Learner view:
+* Fix #2686: make autofocus behave correctly in the player view (PR #2805)
+* Do not wrap mathematical formulae that are less than 500px wide (PR #2772)
+* Fix some janky animations in the learner view (PR #2809)
+* Fix #1924: rename the button at the end of an exploration from 'return to library' to 'go to library' (PR #2771)
+
+Editor:
+* Fix #2626: in the exploration editor, gray out the screen immediately after a draft is discarded (PR #2663)
+* Move exploration save/publish functionality to a new explorationSaveService (PR #2718)
+* Reword the 'share' invitation after a creator publishes an exploration.
+
+Library page:
+* Remove thumbnail images that show up in exploration summary tiles on the search page (PR #2756)
+* Increase the debounce time for executing a search query.
+
+Other pages:
+* Update the copy across the site (PR #2793)
+* Fix #2735: standardize the backgrounds for the collection player, exploration player and various static pages (PRs #2758, #2763, #2782)
+* Fix #2788: Make all the background colors consistent throughout the site (PR #2794)
+* Remove functionality for opening the sidebar on swipe (PR #2769)
+* Fix a bug where the navbar overflowed off the right side of the screen (PR #2795)
+* Fix an incorrect navbar breakpoint (PR #2795)
+* Fix #2787: eliminate blue outlines on focused buttons (PR #2797)
+* Fix the color of collection descriptions in the creator dashboard (PR #2765)
+* Fix part of #2665: split up directives in FormBuilder.js into separate files (PR #2666)
+
+Interactions:
+* Add a benchmark test for the string classifier (PR #2697)
+* Fix #2754: make the math expression input field clearer (PR #2785)
+* Fix #2755: allow the math expression input field to accept fractions.
+* Add a 'submit' button to the NumericInput interaction.
+
+I18N:
+* Add Turkish translations.
+
+Emails:
+* Fix #2269: complete the functionality for sending emails to all users returned via a query (PR #2717)
+* Fix #2790: add functionality for testing a bulk email prior to sending it out (PR #2799)
+
+Dev tools:
+* Update node.js to v6.9.1.
+* Update guppy to v1.1.0 (PR #2786)
+* Fix #2611: update protractor to v4.0.11 (PR #2777)
+* Add e2e tests for collections
+* Remove the flaky performance test from the regular Travis build (PR #2757)
+* Fix an issue where Travis was broken because it could not detect the location of the Java executable (PR #2796)
+* Fix #2773: remove some flakiness in the interactions e2e test.
+* Fix a YouTube console error in the e2e tests (PR #2742)
+
+Code health:
+* Add docstrings to email_manager.py (PR #2720)
+* Add docstrings to html_cleaner.py (PR #2779)
+
+
+v2.3.6 (14 Nov 2016)
+--------------------
+Learner view:
+* Update learner view design by adjusting spacing at top of cards, augmenting card shadows, updating background images, and removing the share icons at the end.
+* Hide continue button when pagging back through the cards
+* Add Math component while suggesting changes
+* Fixed footer in learner view
+* Update the backgrounds of both players to use a solid blue background
+* Change font color from white to green at end of exploration
+* Fix color of progress dots in learner view
+* Fix tutor card position when viewport is narrow
+* Fix jittering help card at a certain size
+* Fix formatting error in item selection interaction display of learner answers
+* Add automatic line breaking for LaTeX expressions
+
+Editor:
+* Update the warning labels for changing the objective to be more clear
+* Upgrade math-expressions library and interpret the creator-defined string as LaTeX instead of text
+* Fix a bug where customization arg attributes are saved in the wrong order, leading to the item selection input interaction not recognizing HTML snippets with images
+* Add focusing functionality to the rich-text editor
+
+Collections:
+* Add option to go to collection view after finishing an exploration
+* Use collection-summary-tile for collections on small screens
+* Ensure explorations of a single state are properly recorded when completed
+* Remove 'Collection >' breadcrumb from collection player navbar
+
+Library page:
+* Make library carousel title links more obvious and remove "View All" button
+* Add protractor tests for visiting library pages
+* Change the mouse cursor to a pointer when the scroll button appears in the library
+
+Other pages:
+* Add a "Get Started" page.
+* Fix splash content alignment
+* Hide site feedback message text on smaller devices
+* Allow right clicking on dashboard tiles
+* Display a success toast when a new featured exploration is added
+
+I18N:
+* Fix Indonesian translation
+
+Emails:
+* Add functionality for sending emails to existing users in bulk.
+
+Dev tools:
+* Determine Vagrant env by checking existence of a file and env var
+* Fix flakiness when accepting alerts in Protractor tests
+
+Code health:
+* Refactor learner view
+* Minimize calls to is_admin, static site_name and feedback_url
+* Remove 'ALTERNATE' tag on translations
+* Refactor ID generation procedure into a separate service.
+* Separate the top navigation bar into its own directive
+* Split up the admin page controller
+* Update stripFormatting filter to preserve bold and italics
+* Improve docstrings for gae_models.py
+* Add docstrings for core.domain.stats_domain
+* Add docstrings for core.domain.stats_jobs_continuous
+* Add docstrings to gae_models.py
+
+
+v2.3.5 (17 Oct 2016)
+--------------------
+Infrastructure and tests:
+* Upgrade protractor to v4.0.9
+* Add protractor tests to visit static pages and for logged-in flow
+* Fix .load() method breakage due to jQuery upgrade
+* Use one-time bindings for admin page
+* Remove mail validation checks from mailgun email API
+* Add docstrings to collection_services.py
+
+I18N:
+* Add Portuguese (Brazil) translation
+
+UI fixes:
+* Make notifications right-clickable
+* Fix fallbacks triggering at the wrong time
+* Don't allow 'featured' label to break into 2 lines
+* Fix About page display on mobile
+
+
+v2.3.4 (10 Oct 2016)
+-------------------
+Embedded explorations:
+* Have a dedicated URL for iframed explorations.
+* Make the embedding script minimal.
+
+Creator Dashboard:
+* Display top unresolved answers and new feedback for dashboard explorations in a dropdown.
+* Make collection tiles in dashboard similar as in library.
+
+Emails and notifications:
+* Add a MR job for executing queries.
+* Fix bugs relating to emails.
+
+Player and editor:
+* Add functionality to report explorations.
+* Add collection recommendation for logged out users.
+* Strip formatting when text is pasted into the RTE.
+* Add check for objective length before publishing an exploration.
+* Show multiple rules for an answer group.
+* Fix placeholder for math input.
+
+Code health:
+* Major refactor of frontend code.
+* Update docstrings.
+* Delete duplicate angular filters.
+* Add e2e test for visiting moderator page.
+* Make 'ddescribe' and 'iit' forbidden strings.
+* Add an argument to show verbose log for backend tests.
+
+Infrastructure:
+* Upgrade jQuery to v3.0.0. Update AngularJS to v1.5.8.
+* Install requests package in third_party so that it is available to the deployed application.
+
+Library, collections and other pages:
+* Sort explorations in Top Rated and Recently Published pages.
+* Remove View all button and link for featured explorations.
+* Modified UI for adding a new exploration in collection.
+* Improve collection node list UI.
+* Remove splash page A/B tests.
+* Embed the Oppia blog on the main site.
+
+
+v2.3.3 (9 Sep 2016)
+-------------------
+Splash, About and Donation pages:
+* Update the Donation page.
+* Change splash pages used in experiments.
+* Fix #2400: Change margins and box-shadow on About and Donation page.
+* Fix broken url link to image on donation thanks page.
+* Use static URLs for the images on the Donate and Thanks pages.
+* Fix #2371: Prevent 404 errors when loading images in activity creation modal.
+
+Speed:
+* Cache images served via ImageHandler
+* Add pre-rendering to splash pages.
+* Externalize first party js modules.
+* Handle extension resources
+* Fix #2413: ignore copying python files when generating build directory
+* Fix #2380: remove js inlining from objects/templates
+
+Emails:
+* Fix #2259: Implement mailgun api for sending emails.
+* Fix #2349: Add service for sending feedback email to thread participants.
+
+Dashboard:
+* Add sorting to the creator dashboard.
+* Fix #2244: Fix activity tiles alignment.
+
+Mobile:
+* Fix #2044: User can now open and close the sidebar by swiping right and left.
+* Fix #1799: The explorations are now centered for a non-mobile device.
+
+Library:
+* Fix #2163: handle error due to invalid search cursor being used when searching in the library.
+* Align the tops of the exploration and collection cards on the library page.
+
+Editor, player and interactions:
+* Fix save diff modal not loading sometimes.
+* Modify code REPL rules to do less normalization for snippets.
+* Fix #2311: Add word-wrap for exploration card content.
+* Remove title, goal, and category alertService alerts.
+* Refactor interaction $scope.$parent.submitAnswer.
+* Extract non-inline interaction code from div['.conversation-skin-inline-interaction'].
+
+Misc:
+* Add tests to collection linearizer service
+* Fix #1800: remove unnecessary margins and update responsive breakpoint in Notifications page.
+* Fix #2354: put languages in alphabetical order in language dropdown.
+
+
+v2.3.2 (7 Aug 2016)
+-------------------
+Splash, About and Donation pages:
+* Add donation page.
+* Add video to donation page.
+* Update About, Teach and Contact pages.
+* Add different splash pages for splash page experiments.
+* Change Forum link to Donate.
+* Fix #2277: Make credit columns equal length in credits.
+
+Creator Dashboard:
+* Show number of unresolved answers and open feedback in creator dashboard.
+* Display relative (weekly) change in average ratings statistics.
+* Add realtime layer for UserStats continuous job.
+* Make current UI of creator dashboard responsive.
+* Fix #2222: Make width of tiles add up to the width of the top bar.
+
+Performance:
+* Fix #2048: Add performance tests for various Oppia pages.
+* Add cache slugs to cache static assets.
+* Combine multiple font requests into one.
+* Add pre-rendering.
+* Fix #2293: tests for cache slugs.
+* Fix #2063: convert continuous jobs into one-off jobs.
+* Add a new main_taskqueue.py file for taskqueue handlers.
+
+i18n:
+* Fix #2179: Add Vietnamese translation.
+* Fix #2301: Added hindi translation.
+* Fix #2229: Add test to match en.json and qqq.json.
+* Fix #2274: Remove blank line in language selector on home page.
+
+Editor:
+* Fix #1863: Suppress warnings if all answers handled in item selection input.
+* Don't show the creation modal in the 'create activity' flow if it's not needed.
+* Fix #2017: Update publish button to show number of changes that are made.
+* Fix #1862: Creator no longer has to remove pre-existing text in content editor.
+* Fix #2094: Change 'Done' button to 'Save' and color it green in state title editor.
+* Fix #2176: Add minimum length to the objective of exploration.
+* Fix #1966: Remove the option for links to open in same window in RTE.
+* Fix #2337: Show feedback in the fallback editor.
+* Style the placeholder for multiple-choice input.
+
+Emails:
+* Fix #2211: send suggestion email to owner of exploration.
+* Fix #2258: Do not send feedback messages if user has already seen to them.
+* Add noreply email for notification emails.
+
+Admin page:
+* Fix #2197: Refresh admin page keeps it at same location.
+* Fix #2195: Add auto-scroll to show output in jobs tab.
+* Fix #2196: Add alternating colors to jobs list on admin page
+* Hide the 'Activities' tab in the production environment.
+
+Collections:
+* Fix #1990: Add ability to edit language code and tags in collection editor.
+* Fix #2116: Remove return to collection button.
+
+Development workflow:
+* Fix #2232: Do not show unnecessary feconf version change info in the release info generated by the release info script.
+* Update chromedriver to fix an e2e test bug.
+* Add more logging to the Python linter.
+* Fix #2271: Add documentation about minification flag and check for bad pattern before committed.
+* Fixes for the deploy script.
+
+Misc:
+* Remove PAGE_NAME_FOR_CSRF when generating CSRF token.
+* Alphabetize and limit GLOBALS to 80 chars in html.
+* Add diagnostic one-off job to highlight ItemSelectionInput interactions whose answer groups need to be fixed.
+* Normalize whitespace, and capitalization in strings in code interaction.
+* Add analytics events.
+* Fix #2247: Update README image.
+
+
 v2.3.1 (3 Jul 2016)
 -------------------
 Creator dashboard and notifications:

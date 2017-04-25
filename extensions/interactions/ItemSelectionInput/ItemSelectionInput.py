@@ -58,11 +58,12 @@ class ItemSelectionInput(base.BaseInteraction):
                 'type': 'html',
                 'ui_config': {
                     'hide_complex_extensions': True,
+                    'placeholder': 'Sample item answer',
                 },
             },
             'ui_config': {
                 'add_element_text': '添加选项',
             }
         },
-        'default_value': ['选择'],
+        'default_value': [''],
     }]

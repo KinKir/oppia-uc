@@ -18,11 +18,11 @@
 
 import datetime
 import imghdr
-import json
 import logging
 
 import jinja2
 
+from constants import constants
 from core.controllers import base
 from core.domain import config_domain
 from core.domain import dependency_registry
@@ -53,6 +53,7 @@ current_user_services = models.Registry.import_current_user_services()
 # state name and the destination of the default rule should first be
 # changed to the desired new state name.
 NEW_STATE_TEMPLATE = {
+    'classifier_model_id': None,
     'content': [{
         'type': 'text',
         'value': ''
@@ -150,9 +151,7 @@ def require_editor(handler):
 
 class EditorHandler(base.BaseHandler):
     """Base class for all handlers for the editor page."""
-
-    # The page name to use as a key for generating CSRF tokens.
-    PAGE_NAME_FOR_CSRF = 'editor'
+    pass
 
 
 class ExplorationPage(EditorHandler):
@@ -162,9 +161,10 @@ class ExplorationPage(EditorHandler):
 
     def get(self, exploration_id):
         """Handles GET requests."""
-        if exploration_id in feconf.DISABLED_EXPLORATION_IDS:
+        if exploration_id in constants.DISABLED_EXPLORATION_IDS:
             self.render_template(
-                'error/disabled_exploration.html', iframe_restriction=None)
+                'pages/error/disabled_exploration.html',
+                iframe_restriction=None)
             return
 
         exploration = exp_services.get_exploration_by_id(
@@ -194,9 +194,6 @@ class ExplorationPage(EditorHandler):
         interaction_templates = (
             rte_component_registry.Registry.get_html_for_all_components() +
             interaction_registry.Registry.get_interaction_html(
-                interaction_ids))
-        interaction_validators_html = (
-            interaction_registry.Registry.get_validators_html(
                 interaction_ids))
 
         gadget_types = gadget_registry.Registry.get_all_gadget_types()
@@ -237,8 +234,6 @@ class ExplorationPage(EditorHandler):
             'gadget_templates': jinja2.utils.Markup(gadget_templates),
             'interaction_templates': jinja2.utils.Markup(
                 interaction_templates),
-            'interaction_validators_html': jinja2.utils.Markup(
-                interaction_validators_html),
             'meta_description': feconf.CREATE_PAGE_DESCRIPTION,
             'nav_mode': feconf.NAV_MODE_CREATE,
             'value_generators_js': jinja2.utils.Markup(
@@ -255,13 +250,14 @@ class ExplorationPage(EditorHandler):
             'TAG_REGEX': feconf.TAG_REGEX,
         })
 
-        self.render_template('exploration_editor/exploration_editor.html')
+        self.render_template(
+            'pages/exploration_editor/exploration_editor.html')
 
 
 class ExplorationHandler(EditorHandler):
     """Page with editor data for a single exploration."""
 
-    PAGE_NAME_FOR_CSRF = 'editor'
+    GET_HANDLER_ERROR_RETURN_TYPE = feconf.HANDLER_TYPE_JSON
 
     def _get_exploration_data(
             self, exploration_id, apply_draft=False, version=None):
@@ -292,6 +288,9 @@ class ExplorationHandler(EditorHandler):
                 exploration_id, exp_user_data.draft_change_list_exp_version)
             if exp_user_data and exp_user_data.draft_change_list_exp_version
             else None)
+        exploration_email_preferences = (
+            user_services.get_email_preferences_for_exploration(
+                self.user_id, exploration_id))
         editor_dict = {
             'category': exploration.category,
             'exploration_id': exploration_id,
@@ -311,7 +310,8 @@ class ExplorationHandler(EditorHandler):
             'title': exploration.title,
             'version': exploration.version,
             'is_version_of_draft_valid': is_version_of_draft_valid,
-            'draft_changes': draft_changes
+            'draft_changes': draft_changes,
+            'email_preferences': exploration_email_preferences.to_dict()
         }
 
         return editor_dict
@@ -340,7 +340,6 @@ class ExplorationHandler(EditorHandler):
 
         commit_message = self.payload.get('commit_message')
         change_list = self.payload.get('change_list')
-
         try:
             exp_services.update_exploration(
                 self.user_id, exploration_id, change_list, commit_message)
@@ -353,32 +352,21 @@ class ExplorationHandler(EditorHandler):
     @require_editor
     def delete(self, exploration_id):
         """Deletes the given exploration."""
-        role = self.request.get('role')
-        if not role:
-            role = None
 
-        if role == rights_manager.ROLE_ADMIN:
-            if not self.is_admin:
-                logging.error(
-                    '%s tried to delete an exploration, but is not an admin.'
-                    % self.user_id)
-                raise self.UnauthorizedUserException(
-                    'User %s does not have permissions to delete exploration '
-                    '%s' % (self.user_id, exploration_id))
-        elif role == rights_manager.ROLE_MODERATOR:
-            if not self.is_moderator:
-                logging.error(
-                    '%s tried to delete an exploration, but is not a '
-                    'moderator.' % self.user_id)
-                raise self.UnauthorizedUserException(
-                    'User %s does not have permissions to delete exploration '
-                    '%s' % (self.user_id, exploration_id))
-        elif role is not None:
-            raise self.InvalidInputException('Invalid role: %s' % role)
+        role_description = ''
+        if self.is_admin:
+            role_description = 'admin'
+        elif self.is_moderator:
+            role_description = 'moderator'
 
-        logging.info(
-            '%s %s tried to delete exploration %s' %
-            (role, self.user_id, exploration_id))
+        log_debug_string = ''
+        if role_description == '':
+            log_debug_string = '%s tried to delete exploration %s' % (
+                self.user_id, exploration_id)
+        else:
+            log_debug_string = '(%s) %s tried to delete exploration %s' % (
+                role_description, self.user_id, exploration_id)
+        logging.debug(log_debug_string)
 
         exploration = exp_services.get_exploration_by_id(exploration_id)
         can_delete = rights_manager.Actor(self.user_id).can_delete(
@@ -393,15 +381,18 @@ class ExplorationHandler(EditorHandler):
         exp_services.delete_exploration(
             self.user_id, exploration_id, force_deletion=is_exploration_cloned)
 
-        logging.info(
-            '%s %s deleted exploration %s' %
-            (role, self.user_id, exploration_id))
+        log_info_string = ''
+        if role_description == '':
+            log_info_string = '%s deleted exploration %s' % (
+                self.user_id, exploration_id)
+        else:
+            log_info_string = '(%s) %s deleted exploration %s' % (
+                role_description, self.user_id, exploration_id)
+        logging.info(log_info_string)
 
 
 class ExplorationRightsHandler(EditorHandler):
     """Handles management of exploration editing rights."""
-
-    PAGE_NAME_FOR_CSRF = 'editor'
 
     @require_editor
     def post(self, exploration_id):
@@ -496,8 +487,6 @@ class ExplorationRightsHandler(EditorHandler):
 class ExplorationModeratorRightsHandler(EditorHandler):
     """Handles management of exploration rights by moderators."""
 
-    PAGE_NAME_FOR_CSRF = 'editor'
-
     @base.require_moderator
     def post(self, exploration_id):
         """Updates the publication status of the given exploration, and sends
@@ -555,10 +544,44 @@ class ExplorationModeratorRightsHandler(EditorHandler):
         })
 
 
+class UserExplorationEmailsHandler(EditorHandler):
+    """Handles management of user email notification preferences for this
+    exploration.
+    """
+
+    def put(self, exploration_id):
+        """Updates the email notification preferences for the given exploration.
+
+        Args:
+            exploration_id: str. The exploration id.
+
+        Raises:
+            InvalidInputException: Invalid message type.
+        """
+
+        mute = self.payload.get('mute')
+        message_type = self.payload.get('message_type')
+
+        if message_type == feconf.MESSAGE_TYPE_FEEDBACK:
+            user_services.set_email_preferences_for_exploration(
+                self.user_id, exploration_id, mute_feedback_notifications=mute)
+        elif message_type == feconf.MESSAGE_TYPE_SUGGESTION:
+            user_services.set_email_preferences_for_exploration(
+                self.user_id, exploration_id,
+                mute_suggestion_notifications=mute)
+        else:
+            raise self.InvalidInputException(
+                'Invalid message type.')
+
+        exploration_email_preferences = (
+            user_services.get_email_preferences_for_exploration(
+                self.user_id, exploration_id))
+        self.render_json({
+            'email_preferences': exploration_email_preferences.to_dict()
+        })
+
 class ResolvedAnswersHandler(EditorHandler):
     """Allows learners' answers for a state to be marked as resolved."""
-
-    PAGE_NAME_FOR_CSRF = 'editor'
 
     @require_editor
     def post(self, exploration_id, state_name):
@@ -582,6 +605,8 @@ class UntrainedAnswersHandler(EditorHandler):
     explicitly trained to respond to be an exploration author.
     """
     NUMBER_OF_TOP_ANSWERS_PER_RULE = 50
+
+    GET_HANDLER_ERROR_RETURN_TYPE = feconf.HANDLER_TYPE_JSON
 
     def get(self, exploration_id, escaped_state_name):
         """Handles GET requests."""
@@ -618,7 +643,7 @@ class UntrainedAnswersHandler(EditorHandler):
         answers = stats_services.get_top_state_rule_answers(
             exploration_id, state_name, [
                 exp_domain.DEFAULT_RULESPEC_STR,
-                exp_domain.CLASSIFIER_RULESPEC_STR])[
+                exp_domain.RULE_TYPE_CLASSIFIER])[
                     :self.NUMBER_OF_TOP_ANSWERS_PER_RULE]
 
         interaction = state.interaction
@@ -638,7 +663,7 @@ class UntrainedAnswersHandler(EditorHandler):
                 for answer_group in interaction.answer_groups:
                     for rule_spec in answer_group.rule_specs:
                         if (rule_spec.rule_type ==
-                                exp_domain.CLASSIFIER_RULESPEC_STR):
+                                exp_domain.RULE_TYPE_CLASSIFIER):
                             trained_answers.update(
                                 interaction_instance.normalize_answer(trained)
                                 for trained
@@ -669,6 +694,9 @@ class ExplorationDownloadHandler(EditorHandler):
     """Downloads an exploration as a zip file, or dict of YAML strings
     representing states.
     """
+
+    GET_HANDLER_ERROR_RETURN_TYPE = feconf.HANDLER_TYPE_JSON
+
     def get(self, exploration_id):
         """Handles GET requests."""
         try:
@@ -709,11 +737,11 @@ class StateYamlHandler(EditorHandler):
     layer.
     """
 
-    def get(self):
-        """Handles GET requests."""
+    def post(self):
+        """Handles POST requests."""
         try:
-            state_dict = json.loads(self.request.get('stringified_state'))
-            width = json.loads(self.request.get('stringified_width'))
+            state_dict = self.payload.get('state_dict')
+            width = self.payload.get('width')
         except Exception:
             raise self.PageNotFoundException
 
@@ -724,6 +752,8 @@ class StateYamlHandler(EditorHandler):
 
 class ExplorationResourcesHandler(EditorHandler):
     """Manages assets associated with an exploration."""
+
+    GET_HANDLER_ERROR_RETURN_TYPE = feconf.HANDLER_TYPE_JSON
 
     # @require_editor
     def get(self, exploration_id):
@@ -737,6 +767,8 @@ class ExplorationResourcesHandler(EditorHandler):
 
 class ExplorationSnapshotsHandler(EditorHandler):
     """Returns the exploration snapshot history."""
+
+    GET_HANDLER_ERROR_RETURN_TYPE = feconf.HANDLER_TYPE_JSON
 
     def get(self, exploration_id):
         """Handles GET requests."""
@@ -790,6 +822,8 @@ class ExplorationRevertHandler(EditorHandler):
 class ExplorationStatisticsHandler(EditorHandler):
     """Returns statistics for an exploration."""
 
+    GET_HANDLER_ERROR_RETURN_TYPE = feconf.HANDLER_TYPE_JSON
+
     def get(self, exploration_id, exploration_version):
         """Handles GET requests."""
         try:
@@ -803,6 +837,8 @@ class ExplorationStatisticsHandler(EditorHandler):
 
 class ExplorationStatsVersionsHandler(EditorHandler):
     """Returns statistics versions for an exploration."""
+
+    GET_HANDLER_ERROR_RETURN_TYPE = feconf.HANDLER_TYPE_JSON
 
     def get(self, exploration_id):
         """Handles GET requests."""
@@ -818,6 +854,8 @@ class ExplorationStatsVersionsHandler(EditorHandler):
 
 class StateRulesStatsHandler(EditorHandler):
     """Returns detailed learner answer statistics for a state."""
+
+    GET_HANDLER_ERROR_RETURN_TYPE = feconf.HANDLER_TYPE_JSON
 
     def get(self, exploration_id, escaped_state_name):
         """Handles GET requests."""

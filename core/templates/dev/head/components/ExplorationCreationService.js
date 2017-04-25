@@ -37,8 +37,7 @@ oppia.factory('ExplorationCreationService', [
         alertsService.clearWarnings();
         $rootScope.loadingMessage = '正在创建课程...';
 
-        $http.post('/contributehandler/create_new', {}, {
-          requestIsForCreateExploration: true
+        $http.post('/contributehandler/create_new', {
         }).then(function(response) {
           siteAnalyticsService.registerCreateNewExplorationEvent(
             response.data.explorationId);

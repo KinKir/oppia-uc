@@ -117,7 +117,8 @@ class CollectionDomainUnitTests(test_utils.GenericTestBase):
             'Adjacent whitespace in tags should be collapsed')
 
         self.collection.tags = ['abc', 'abc']
-        self._assert_validation_error('Some tags duplicate each other')
+        self._assert_validation_error(
+            'Expected tags to be unique, but found duplicates')
 
     def test_schema_version_validation(self):
         self.collection.schema_version = 'some_schema_version'
@@ -459,6 +460,68 @@ class ExplorationGraphUnitTests(test_utils.GenericTestBase):
             collection.get_next_exploration_ids(
                 ['exp_id_0', 'exp_id_1', 'exp_id_2', 'exp_id_3']), [])
 
+    def test_next_explorations_in_sequence(self):
+
+        collection = collection_domain.Collection.create_default_collection(
+            'collection_id')
+        exploration_id = 'exp_id_0'
+        collection.add_node(exploration_id)
+
+        # Completing the only exploration of the collection should lead to no
+        # available explorations thereafter.
+        self.assertEqual(
+            collection.get_next_exploration_ids_in_sequence(exploration_id), [])
+
+        # If the current exploration has no acquired skills, a list of all
+        # explorations with no prerequisite skills should be returned.
+        collection.add_node('exp_id_1')
+        collection.add_node('exp_id_2')
+        self.assertEqual(
+            collection.get_next_exploration_ids_in_sequence(exploration_id),
+            ['exp_id_1', 'exp_id_2'])
+
+        # If only one exploration in the collection has a prerequisite skill
+        # that is included in the user's learned skills, only that exploration
+        # should be returned.
+        collection_node0 = collection.get_node('exp_id_0')
+        collection_node1 = collection.get_node('exp_id_1')
+
+        collection_node0.update_acquired_skills(['skill1a'])
+        collection_node1.update_prerequisite_skills(['skill1a'])
+        self.assertEqual(
+            collection.get_next_exploration_ids_in_sequence(exploration_id),
+            ['exp_id_1'])
+
+        # Given a chain of explorations in a collections where each
+        # exploration's acquired skills are the following exploration's
+        # prerequisite skills, each exploration should return the following
+        # exploration as a recommendation.  The last exploration should
+        # return an empty list.
+        collection.add_node('exp_id_3')
+
+        collection_node2 = collection.get_node('exp_id_2')
+        collection_node3 = collection.get_node('exp_id_3')
+
+        collection_node1.update_acquired_skills(['skill2a'])
+        collection_node2.update_acquired_skills(['skill3a'])
+
+        collection_node0.update_prerequisite_skills([])
+        collection_node2.update_prerequisite_skills(['skill2a'])
+        collection_node3.update_prerequisite_skills(['skill3a'])
+
+        self.assertEqual(
+            collection.get_next_exploration_ids_in_sequence('exp_id_0'),
+            ['exp_id_1'])
+        self.assertEqual(
+            collection.get_next_exploration_ids_in_sequence('exp_id_1'),
+            ['exp_id_2'])
+        self.assertEqual(
+            collection.get_next_exploration_ids_in_sequence('exp_id_2'),
+            ['exp_id_3'])
+        self.assertEqual(
+            collection.get_next_exploration_ids_in_sequence('exp_id_3'),
+            [])
+
     def test_next_explorations_with_invalid_exploration_ids(self):
         collection = collection_domain.Collection.create_default_collection(
             'collection_id')
@@ -510,6 +573,47 @@ class YamlCreationUnitTests(test_utils.GenericTestBase):
             collection_domain.Collection.from_yaml('collection3', None)
 
 
+class SchemaMigrationMethodsUnitTests(test_utils.GenericTestBase):
+    """Tests the presence of appropriate schema migration methods in the
+    Collection domain object class.
+    """
+
+    def test_correct_collection_contents_schema_conversion_methods_exist(self):
+        """Test that the right collection_contents schema conversion methods
+        exist.
+        """
+        current_collection_schema_version = (
+            feconf.CURRENT_COLLECTION_SCHEMA_VERSION)
+        for version_num in range(1, current_collection_schema_version):
+            self.assertTrue(hasattr(
+                collection_domain.Collection,
+                '_convert_collection_contents_v%s_dict_to_v%s_dict' % (
+                    version_num, version_num + 1)))
+
+        self.assertFalse(hasattr(
+            collection_domain.Collection,
+            '_convert_collection_contents_v%s_dict_to_v%s_dict' % (
+                current_collection_schema_version,
+                current_collection_schema_version + 1)))
+
+    def test_correct_collection_schema_conversion_methods_exist(self):
+        """Test that the right collection schema conversion methods exist."""
+        current_collection_schema_version = (
+            feconf.CURRENT_COLLECTION_SCHEMA_VERSION)
+
+        for version_num in range(1, current_collection_schema_version):
+            self.assertTrue(hasattr(
+                collection_domain.Collection,
+                '_convert_v%s_dict_to_v%s_dict' % (
+                    version_num, version_num + 1)))
+
+        self.assertFalse(hasattr(
+            collection_domain.Collection,
+            '_convert_v%s_dict_to_v%s_dict' % (
+                current_collection_schema_version,
+                current_collection_schema_version + 1)))
+
+
 class SchemaMigrationUnitTests(test_utils.GenericTestBase):
     """Test migration methods for yaml content."""
 
@@ -537,9 +641,23 @@ schema_version: 2
 tags: []
 title: A title
 """)
+    YAML_CONTENT_V3 = ("""category: A category
+language_code: en
+nodes:
+- acquired_skills:
+  - Skill1
+  - Skill2
+  exploration_id: Exp1
+  prerequisite_skills: []
+objective: ''
+schema_version: 3
+tags: []
+title: A title
+""")
 
     _LATEST_YAML_CONTENT = YAML_CONTENT_V1
     _LATEST_YAML_CONTENT = YAML_CONTENT_V2
+    _LATEST_YAML_CONTENT = YAML_CONTENT_V3
 
     def test_load_from_v1(self):
         """Test direct loading from a v1 yaml file."""
@@ -555,4 +673,12 @@ title: A title
             'Exp1', 'user@example.com', end_state_name='End')
         collection = collection_domain.Collection.from_yaml(
             'cid', self.YAML_CONTENT_V2)
+        self.assertEqual(collection.to_yaml(), self._LATEST_YAML_CONTENT)
+
+    def test_load_from_v3(self):
+        """Test direct loading from a v3 yaml file."""
+        self.save_new_valid_exploration(
+            'Exp1', 'user@example.com', end_state_name='End')
+        collection = collection_domain.Collection.from_yaml(
+            'cid', self.YAML_CONTENT_V3)
         self.assertEqual(collection.to_yaml(), self._LATEST_YAML_CONTENT)

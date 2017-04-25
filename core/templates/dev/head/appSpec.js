@@ -27,9 +27,7 @@ describe('Validators service', function() {
     }));
 
     it('should correctly validate entity names', function() {
-      GLOBALS = {
-        INVALID_NAME_CHARS: 'xyz'
-      };
+      GLOBALS.INVALID_NAME_CHARS = 'xyz';
 
       expect(vs.isValidEntityName('b')).toBe(true);
       expect(vs.isValidEntityName('b   ')).toBe(true);
@@ -44,9 +42,7 @@ describe('Validators service', function() {
     });
 
     it('should correctly validate exploration titles', function() {
-      GLOBALS = {
-        INVALID_NAME_CHARS: '#'
-      };
+      GLOBALS.INVALID_NAME_CHARS = '#';
 
       expect(vs.isValidExplorationTitle('b')).toBe(true);
       expect(vs.isValidExplorationTitle('abc def')).toBe(true);
@@ -82,13 +78,14 @@ describe('HTML escaper', function() {
     }));
 
     it('should correctly translate between escaped and unescaped strings',
-        function() {
-      var strs = ['abc', 'a&b<html>', '&&&&&'];
-      for (var i = 0; i < strs.length; i++) {
-        expect(ohe.escapedStrToUnescapedStr(
-          ohe.unescapedStrToEscapedStr(strs[i]))).toEqual(strs[i]);
+      function() {
+        var strs = ['abc', 'a&b<html>', '&&&&&'];
+        for (var i = 0; i < strs.length; i++) {
+          expect(ohe.escapedStrToUnescapedStr(
+            ohe.unescapedStrToEscapedStr(strs[i]))).toEqual(strs[i]);
+        }
       }
-    });
+    );
 
     it('should correctly escape and unescape JSON', function() {
       var objs = [{
@@ -116,7 +113,7 @@ describe('Datetime Formatter', function() {
 
       // Mock Date() to give a time of NOW_MILLIS in GMT. (Unfortunately, there
       // doesn't seem to be a good way to set the timezone locale directly.)
-      spyOn(window, 'Date').andCallFake(function() {
+      spyOn(window, 'Date').and.callFake(function() {
         return new OldDate(NOW_MILLIS);
       });
     }));
@@ -169,11 +166,11 @@ describe('Code Normalization', function() {
     expect(cns.getNormalizedCode(
       '# This is a comment.\n' +
       '  # This is a comment with some spaces before it.\n' +
-      'def x():         # And a comment with some code before it.\n' +
-      '  y = \'#String with hashes#\''
+      'def x():   # And a comment with some code before it.\n' +
+      '  y = \'#string with hashes#\''
     )).toBe(
-      'def x():         # And a comment with some code before it.\n' +
-      '    y = \'#String with hashes#\''
+      'def x(): # And a comment with some code before it.\n' +
+      '    y = \'#string with hashes#\''
     );
   });
 
@@ -223,5 +220,33 @@ describe('Code Normalization', function() {
       '    bcd\n' +
       'cde'
     );
+  });
+
+  it('should normalize multiple spaces within a line', function() {
+    expect(cns.getNormalizedCode(
+      'abcdefg\n' +
+      '    hij    klm\n' +
+      '    ab "cde fgh"\n'
+    )).toBe(
+      'abcdefg\n' +
+      '    hij klm\n' +
+      '    ab "cde fgh"'
+    );
+  });
+});
+
+describe('Constants Generating', function() {
+  beforeEach(module('oppia'));
+
+  var $injector = null;
+  beforeEach(inject(function(_$injector_) {
+    $injector = _$injector_.get('$injector');
+  }));
+
+  it('should transform all key value pairs to angular constants', function() {
+    for (var constantName in constants) {
+      expect($injector.has(constantName)).toBe(true);
+      expect($injector.get(constantName)).toBe(constants[constantName]);
+    }
   });
 });

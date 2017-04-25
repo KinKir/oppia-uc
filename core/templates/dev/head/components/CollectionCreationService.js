@@ -40,8 +40,8 @@ oppia.factory('CollectionCreationService', [
         alertsService.clearWarnings();
 
         $rootScope.loadingMessage = '正在创建';
-        $http.post('/collection_editor_handler/create_new', {}).then(
-          function(response) {
+        $http.post('/collection_editor_handler/create_new', {})
+          .then(function(response) {
             siteAnalyticsService.registerCreateNewCollectionEvent(
               response.data.collectionId);
             $timeout(function() {

@@ -29,7 +29,7 @@ oppia.directive('filepathEditor', [
       restrict: 'E',
       scope: true,
       template: '<div ng-include="getTemplateUrl()"></div>',
-      controller: function($scope) {
+      controller: ['$scope', function($scope) {
         // Reset the component each time the value changes (e.g. if this is part
         // of an editable list).
         $scope.$watch('$parent.value', function(newValue) {
@@ -82,6 +82,15 @@ oppia.directive('filepathEditor', [
         $scope.onFileChanged = function(file, filename) {
           if (!file || !file.size || !file.type.match('image.*')) {
             $scope.uploadWarning = '请选择图片文件.';
+            $scope.resetImageUploader();
+            $scope.$apply();
+            return;
+          }
+
+          var imageNotSupported = (!file.type.match('image.jpeg') && !file.type.match('image.gif') && !file.type.match('image.jpg') && !file.type.match('image.png'));
+
+          if (imageNotSupported) {
+            $scope.uploadWarning = 'This image format is not supported.';
             $scope.resetImageUploader();
             $scope.$apply();
             return;
@@ -167,7 +176,7 @@ oppia.directive('filepathEditor', [
           $scope.filepathsLoaded = true;
           $scope.filepaths = [];
         }
-      }
+      }]
     };
   }
 ]);

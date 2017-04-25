@@ -25,9 +25,9 @@ describe('Exploration context service', function() {
 
     beforeEach(function() {
       module(function($provide) {
-        $provide.value('$window', {
-          location: {
-            pathname: '/explore/123'
+        $provide.value('currentLocationService', {
+          getPathname: function() {
+            return '/explore/123';
           }
         });
       });
@@ -53,9 +53,9 @@ describe('Exploration context service', function() {
 
     beforeEach(function() {
       module(function($provide) {
-        $provide.value('$window', {
-          location: {
-            pathname: '/create/123'
+        $provide.value('currentLocationService', {
+          getPathname: function() {
+            return '/create/123';
           }
         });
       });
@@ -79,9 +79,9 @@ describe('Exploration context service', function() {
 
     beforeEach(function() {
       module(function($provide) {
-        $provide.value('$window', {
-          location: {
-            pathname: '/about'
+        $provide.value('currentLocationService', {
+          getPathname: function() {
+            return '/about';
           }
         });
       });
@@ -92,13 +92,15 @@ describe('Exploration context service', function() {
     }));
 
     it('should throw an error when trying to retrieve the exploration id',
-        function() {
-      expect(ecs.getExplorationId).toThrow();
-    });
+      function() {
+        expect(ecs.getExplorationId).toThrow();
+      }
+    );
 
     it('should retrieve other as page context',
-        function() {
-      expect(ecs.getPageContext()).toBe('other');
-    });
+      function() {
+        expect(ecs.getPageContext()).toBe('other');
+      }
+    );
   });
 });

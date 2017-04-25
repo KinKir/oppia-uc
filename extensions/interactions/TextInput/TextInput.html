@@ -1,3 +1,6 @@
+<script src="{{cache_slug}}/extensions/interactions/TextInput/TextInput.js"></script>
+<script src="{{cache_slug}}/extensions/interactions/TextInput/validator.js"></script>
+
 <script type="text/ng-template" id="interaction/TextInput">
   <!-- This outer div is needed, otherwise the textarea will overlap the footer of the page. -->
   <div class="text-input-container">
@@ -5,8 +8,8 @@
       <schema-based-editor schema="schema" local-value="answer" label-for-focus-target="labelForFocusTarget">
       </schema-based-editor>
 
-      <button ng-click="submitAnswer(answer)" class="btn btn-default" style="margin-top: 15px;">
-       提交 
+      <button ng-click="submitAnswer(answer)" class="btn btn-default" style="margin-top: 0;">
+       提交
       </button>
     </form>
   </div>

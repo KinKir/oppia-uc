@@ -273,7 +273,7 @@ class Collection(object):
         function will need to be added to this class to convert from the
         current schema version to the new one. This function should be called
         in both from_yaml in this class and
-        collection_services._migrate_collection_to_latest_schema.
+        collection_services._migrate_collection_contents_to_latest_schema.
         feconf.CURRENT_COLLECTION_SCHEMA_VERSION should be incremented and the
         new value should be saved in the collection after the migration
         process, ensuring it represents the latest schema version.
@@ -349,6 +349,15 @@ class Collection(object):
         return collection_dict
 
     @classmethod
+    def _convert_v2_dict_to_v3_dict(cls, collection_dict):
+        """Converts a v2 collection dict into a v3 collection dict.
+
+        Does nothing since the changes are handled while loading the collection.
+        """
+        collection_dict['schema_version'] = 3
+        return collection_dict
+
+    @classmethod
     def _migrate_to_latest_yaml_version(cls, yaml_content):
         try:
             collection_dict = utils.dict_from_yaml(yaml_content)
@@ -367,9 +376,13 @@ class Collection(object):
                 'Sorry, we can only process v1 to v%s collection YAML files at '
                 'present.' % feconf.CURRENT_COLLECTION_SCHEMA_VERSION)
 
-        if collection_schema_version == 1:
-            collection_dict = cls._convert_v1_dict_to_v2_dict(collection_dict)
-            collection_schema_version = 2
+        while (collection_schema_version <
+               feconf.CURRENT_COLLECTION_SCHEMA_VERSION):
+            conversion_fn = getattr(
+                cls, '_convert_v%s_dict_to_v%s_dict' % (
+                    collection_schema_version, collection_schema_version + 1))
+            collection_dict = conversion_fn(collection_dict)
+            collection_schema_version += 1
 
         return collection_dict
 
@@ -379,6 +392,48 @@ class Collection(object):
 
         collection_dict['id'] = collection_id
         return Collection.from_dict(collection_dict)
+
+    @classmethod
+    def _convert_collection_contents_v1_dict_to_v2_dict(
+            cls, collection_contents):
+        """Converts from version 1 to 2. Does nothing since this migration only
+        changes the language code.
+        """
+        return collection_contents
+
+    @classmethod
+    def _convert_collection_contents_v2_dict_to_v3_dict(
+            cls, collection_contents):
+        """Converts from version 2 to 3. Does nothing since the changes are
+        handled while loading the collection.
+        """
+        return collection_contents
+
+    @classmethod
+    def update_collection_contents_from_model(
+            cls, versioned_collection_contents, current_version):
+        """Converts the states blob contained in the given
+        versioned_collection_contents dict from current_version to
+        current_version + 1.
+
+        Note that the versioned_collection_contents being passed in is modified
+        in-place.
+        """
+        if (versioned_collection_contents['schema_version'] + 1 >
+                feconf.CURRENT_COLLECTION_SCHEMA_VERSION):
+            raise Exception('Collection is version %d but current collection'
+                            ' schema version is %d' % (
+                                versioned_collection_contents['schema_version'],
+                                feconf.CURRENT_COLLECTION_SCHEMA_VERSION))
+
+        versioned_collection_contents['schema_version'] = (
+            current_version + 1)
+
+        conversion_fn = getattr(
+            cls, '_convert_collection_contents_v%s_dict_to_v%s_dict' % (
+                current_version, current_version + 1))
+        versioned_collection_contents['collection_contents'] = conversion_fn(
+            versioned_collection_contents['collection_contents'])
 
     @property
     def skills(self):
@@ -434,6 +489,59 @@ class Collection(object):
             if prereq_skills <= acquired_skills:
                 next_exp_ids.append(node.exploration_id)
         return next_exp_ids
+
+    def get_next_exploration_ids_in_sequence(self, current_exploration):
+        """Returns a list of exploration IDs that a logged-out user should
+        complete next based on the prerequisite skills they must have attained
+        by the time they completed the current exploration.  This recursively
+        compiles a list of 'learned skills' then, depending on the
+        'learned skills' and the current exploration's acquired skills,
+        returns either a list of exploration ids that have either just
+        unlocked or the user is qualified to explore.  If neither of these
+        lists can be generated a blank list is returned instead."""
+        skills_learned_by_exp_id = {}
+
+        def _recursively_find_learned_skills(node):
+            """Given a node, returns the skills that the user must have
+            acquired by the time they've completed it."""
+            if node.exploration_id in skills_learned_by_exp_id:
+                return skills_learned_by_exp_id[node.exploration_id]
+
+            skills_learned = set(node.acquired_skills)
+            for other_node in self.nodes:
+                if other_node.exploration_id not in skills_learned_by_exp_id:
+                    for skill in node.prerequisite_skills:
+                        if skill in other_node.acquired_skills:
+                            skills_learned = skills_learned.union(
+                                _recursively_find_learned_skills(other_node))
+
+            skills_learned_by_exp_id[node.exploration_id] = skills_learned
+            return skills_learned
+
+        explorations_just_unlocked = []
+        explorations_qualified_for = []
+
+        collection_node = self.get_node(current_exploration)
+        collected_skills = _recursively_find_learned_skills(collection_node)
+
+        for node in self.nodes:
+            if node.exploration_id in skills_learned_by_exp_id:
+                continue
+
+            if set(node.prerequisite_skills).issubset(set(collected_skills)):
+                if (any([
+                        skill in collection_node.acquired_skills
+                        for skill in node.prerequisite_skills])):
+                    explorations_just_unlocked.append(node.exploration_id)
+                else:
+                    explorations_qualified_for.append(node.exploration_id)
+
+        if explorations_just_unlocked:
+            return explorations_just_unlocked
+        elif explorations_qualified_for:
+            return explorations_qualified_for
+        else:
+            return []
 
     @classmethod
     def is_demo_collection_id(cls, collection_id):
@@ -531,6 +639,11 @@ class Collection(object):
         if not isinstance(self.tags, list):
             raise utils.ValidationError(
                 'Expected tags to be a list, received %s' % self.tags)
+
+        if len(set(self.tags)) < len(self.tags):
+            raise utils.ValidationError(
+                'Expected tags to be unique, but found duplicates')
+
         for tag in self.tags:
             if not isinstance(tag, basestring):
                 raise utils.ValidationError(
@@ -554,8 +667,6 @@ class Collection(object):
                 raise utils.ValidationError(
                     'Adjacent whitespace in tags should be collapsed, '
                     'received \'%s\'' % tag)
-        if len(set(self.tags)) != len(self.tags):
-            raise utils.ValidationError('Some tags duplicate each other')
 
         if not isinstance(self.schema_version, int):
             raise utils.ValidationError(
@@ -672,3 +783,17 @@ class CollectionSummary(object):
             'collection_model_created_on': self.collection_model_created_on,
             'collection_model_last_updated': self.collection_model_last_updated
         }
+
+    def is_editable_by(self, user_id=None):
+        """Checks if a given user may edit the collection.
+
+        Args:
+            user_id: str. User id of the user.
+
+        Returns:
+            bool. Whether the given user may edit the collection.
+        """
+        return user_id is not None and (
+            user_id in self.editor_ids
+            or user_id in self.owner_ids
+            or self.community_owned)

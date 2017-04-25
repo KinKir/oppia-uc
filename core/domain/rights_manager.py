@@ -42,9 +42,9 @@ CMD_CHANGE_PRIVATE_VIEWABILITY = 'change_private_viewability'
 CMD_RELEASE_OWNERSHIP = 'release_ownership'
 CMD_UPDATE_FIRST_PUBLISHED_MSEC = 'update_first_published_msec'
 
-ACTIVITY_STATUS_PRIVATE = 'private'
-ACTIVITY_STATUS_PUBLIC = 'public'
-ACTIVITY_STATUS_PUBLICIZED = 'publicized'
+ACTIVITY_STATUS_PRIVATE = feconf.ACTIVITY_STATUS_PRIVATE
+ACTIVITY_STATUS_PUBLIC = feconf.ACTIVITY_STATUS_PUBLIC
+ACTIVITY_STATUS_PUBLICIZED = feconf.ACTIVITY_STATUS_PUBLICIZED
 
 ROLE_OWNER = 'owner'
 ROLE_EDITOR = 'editor'
@@ -294,6 +294,13 @@ def get_collection_rights(collection_id, strict=True):
         model, feconf.ACTIVITY_TYPE_COLLECTION)
 
 
+def get_collection_owner_names(collection_id):
+    """Retrieves the owners for this collection from the datastore."""
+    collection_rights = get_collection_rights(collection_id)
+    return user_services.get_human_readable_user_ids(
+        collection_rights.owner_ids)
+
+
 def is_collection_private(collection_id):
     collection_rights = get_collection_rights(collection_id)
     return collection_rights.status == ACTIVITY_STATUS_PRIVATE
@@ -325,13 +332,24 @@ class Actor(object):
     def __init__(self, user_id):
         # Note that this may be None.
         self.user_id = user_id
+        # Value of None is a placeholder. This property gets initialized
+        # when the first call to `is_admin()` is made.
+        self._is_admin = None
+        # Value of None is a placeholder. This property gets initialized
+        # when the first call to `is_moderator()` is made.
+        self._is_moderator = None
 
     def is_admin(self):
-        return self.user_id in config_domain.ADMIN_IDS.value
+        if self._is_admin is None:
+            self._is_admin = self.user_id in config_domain.ADMIN_IDS.value
+        return self._is_admin
 
     def is_moderator(self):
-        return (self.is_admin() or
+        if self._is_moderator is None:
+            self._is_moderator = (
+                self.is_admin() or
                 self.user_id in config_domain.MODERATOR_IDS.value)
+        return self._is_moderator
 
     def _is_owner(self, rights_object):
         return (
@@ -359,7 +377,7 @@ class Actor(object):
 
     def _can_edit(self, rights_object):
         return (
-            self._has_editing_rights(rights_object) or (
+            self._has_editing_rights(rights_object) or self.is_admin() or (
                 self.is_moderator() and (
                     rights_object.status != ACTIVITY_STATUS_PRIVATE)
             )

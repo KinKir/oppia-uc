@@ -1,0 +1,41 @@
+<script src="{{ASSET_DIR_PREFIX}}/assets/constants.js"></script>
+
+<!-- jquery.js, angular.js and jquery-ui.js are removed from bundled js because
+they need to be at the header. Including bundled js at the header will block
+rendering.-->
+<script src="/third_party/static/jquery-3.0.0/jquery.min.js"></script>
+<script src="/third_party/static/jqueryui-1.10.3/jquery-ui.min.js"></script>
+<script src="/third_party/static/angularjs-1.5.8/angular.min.js"></script>
+<script src="/third_party/static/jquery-ui-touch-punch-0.3.1/jquery.ui.touch-punch-improved.js"></script>
+<!-- See http://docs.mathjax.org/en/latest/start.html#mathjax-cdn -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    skipStartupTypeset: true,
+    messageStyle: 'none',
+    'HTML-CSS': {
+      linebreaks: {
+        automatic: true,
+        width: '500px'
+      },
+      scale: 91,
+      showMathMenu: false
+    }
+  });
+  MathJax.Hub.Configured();
+</script>
+<script src="/third_party/static/MathJax-2.6.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<!-- Piwik -->
+<script type="text/javascript">
+  var _paq = _paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//202.194.15.221:8001/";
+    _paq.push(['setTrackerUrl', u+'piwik.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<!-- End Piwik Code -->

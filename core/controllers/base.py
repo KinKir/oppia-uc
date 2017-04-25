@@ -31,10 +31,8 @@ import jinja2
 import webapp2
 from google.appengine.api import users
 
-from core import counters
 from core.domain import config_domain
 from core.domain import config_services
-from core.domain import obj_services
 from core.domain import rights_manager
 from core.domain import rte_component_registry
 from core.domain import user_services
@@ -52,8 +50,6 @@ DEFAULT_CSRF_SECRET = 'oppia csrf secret'
 CSRF_SECRET = config_domain.ConfigProperty(
     'oppia_csrf_secret', {'type': 'unicode'},
     'Text used to encrypt CSRF tokens.', DEFAULT_CSRF_SECRET)
-SITE_NAME = config_domain.ConfigProperty(
-    'site_name', {'type': 'unicode'}, 'The site name', 'SITE_NAME')
 
 BEFORE_END_HEAD_TAG_HOOK = config_domain.ConfigProperty(
     'before_end_head_tag_hook', {
@@ -63,10 +59,6 @@ BEFORE_END_HEAD_TAG_HOOK = config_domain.ConfigProperty(
         },
     },
     'Code to insert just before the closing </head> tag in all pages.', '')
-
-SITE_FEEDBACK_FORM_URL = config_domain.ConfigProperty(
-    'site_feedback_form_url', {'type': 'unicode'},
-    'Site feedback form URL (leave blank if there is no such form)', '')
 
 
 def require_user(handler):
@@ -164,21 +156,13 @@ class BaseHandler(webapp2.RequestHandler):
     # processing them. Can be overridden by subclasses if this check is
     # not necessary.
     REQUIRE_PAYLOAD_CSRF_CHECK = True
-    # Specific page name to use as a key for generating CSRF tokens. This name
-    # must be overwritten by subclasses. This represents both the source
-    # page name and the destination page name.
-    # TODO(sll): A weakness of the current approach is that the source and
-    # destination page names have to be the same. Consider fixing this.
-    PAGE_NAME_FOR_CSRF = ''
-    # Whether the page includes a button for creating explorations. If this is
-    # set to True, a CSRF token for that button will be generated. This is
-    # needed because "create exploration" requests can come from multiple
-    # pages.
-    PAGE_HAS_CREATE_EXP_REQUEST = False
     # Whether to redirect requests corresponding to a logged-in user who has
     # not completed signup in to the signup page. This ensures that logged-in
     # users have agreed to the latest terms.
     REDIRECT_UNFINISHED_SIGNUPS = True
+
+    # What format the get method returns when exception raised, json or html
+    GET_HANDLER_ERROR_RETURN_TYPE = feconf.HANDLER_TYPE_HTML
 
     @webapp2.cached_property
     def jinja2_env(self):
@@ -222,9 +206,18 @@ class BaseHandler(webapp2.RequestHandler):
                     user_settings.profile_picture_data_url)
                 if user_settings.last_started_state_editor_tutorial:
                     self.has_seen_editor_tutorial = True
+                # In order to avoid too many datastore writes, we do not bother
+                # recording a log-in if the current time is sufficiently close
+                # to the last log-in time.
+                if (user_settings.last_logged_in is None or
+                        not utils.are_datetimes_close(
+                            datetime.datetime.utcnow(),
+                            user_settings.last_logged_in)):
+                    user_services.record_user_logged_in(self.user_id)
 
-        self.is_moderator = rights_manager.Actor(self.user_id).is_moderator()
-        self.is_admin = rights_manager.Actor(self.user_id).is_admin()
+        rights_mgr_user = rights_manager.Actor(self.user_id)
+        self.is_moderator = rights_mgr_user.is_moderator()
+        self.is_admin = rights_mgr_user.is_admin()
         self.is_super_admin = (
             current_user_services.is_current_user_super_admin())
         self.can_create_explorations = (
@@ -260,10 +253,6 @@ class BaseHandler(webapp2.RequestHandler):
 
         if self.payload is not None and self.REQUIRE_PAYLOAD_CSRF_CHECK:
             try:
-                if not self.PAGE_NAME_FOR_CSRF:
-                    raise Exception('No CSRF page name specified for this '
-                                    'handler.')
-
                 csrf_token = self.request.get('csrf_token')
                 if not csrf_token:
                     raise Exception(
@@ -271,7 +260,7 @@ class BaseHandler(webapp2.RequestHandler):
                         'Please report this bug.')
 
                 is_csrf_token_valid = CsrfTokenManager.is_csrf_token_valid(
-                    self.user_id, self.PAGE_NAME_FOR_CSRF, csrf_token)
+                    self.user_id, csrf_token)
 
                 if not is_csrf_token_valid:
                     raise self.UnauthorizedUserException(
@@ -279,8 +268,8 @@ class BaseHandler(webapp2.RequestHandler):
                         'changes cannot be saved. Please refresh the page.')
             except Exception as e:
                 logging.error(
-                    '%s: page name %s, payload %s',
-                    e, self.PAGE_NAME_FOR_CSRF, self.payload)
+                    '%s: payload %s',
+                    e, self.payload)
 
                 return self.handle_exception(e, self.app.debug)
 
@@ -313,18 +302,10 @@ class BaseHandler(webapp2.RequestHandler):
         json_output = json.dumps(values, cls=utils.JSONEncoderForHTML)
         self.response.write('%s%s' % (feconf.XSSI_PREFIX, json_output))
 
-        # Calculate the processing time of this request.
-        duration = datetime.datetime.utcnow() - self.start_time
-        processing_time = duration.seconds + duration.microseconds / 1E6
-
-        counters.JSON_RESPONSE_TIME_SECS.inc(increment=processing_time)
-        counters.JSON_RESPONSE_COUNT.inc()
-
     def render_template(
-            self, filename, values=None, iframe_restriction='DENY',
+            self, filename, iframe_restriction='DENY',
             redirect_url_on_logout=None):
-        if values is None:
-            values = self.values
+        values = self.values
 
         scheme, netloc, path, _, _ = urlparse.urlsplit(self.request.uri)
 
@@ -332,10 +313,14 @@ class BaseHandler(webapp2.RequestHandler):
             'ALL_CATEGORIES': feconf.ALL_CATEGORIES,
             'ALL_CATEGORIES_ZH_MAP': feconf.CATEGORIES_TO_ZH,
             'ALL_LANGUAGE_CODES': feconf.ALL_LANGUAGE_CODES,
+            'ASSET_DIR_PREFIX': utils.get_asset_dir_prefix(),
             'BEFORE_END_HEAD_TAG_HOOK': jinja2.utils.Markup(
                 BEFORE_END_HEAD_TAG_HOOK.value),
             'CAN_SEND_ANALYTICS_EVENTS': feconf.CAN_SEND_ANALYTICS_EVENTS,
+            'CATEGORIES_TO_COLORS': feconf.CATEGORIES_TO_COLORS,
             'DEFAULT_LANGUAGE_CODE': feconf.ALL_LANGUAGE_CODES[0]['code'],
+            'DEFAULT_CATEGORY_ICON': feconf.DEFAULT_THUMBNAIL_ICON,
+            'DEFAULT_COLOR': feconf.DEFAULT_COLOR,
             'DEV_MODE': feconf.DEV_MODE,
             'MINIFICATION': feconf.IS_MINIFIED,
             'DOMAIN_URL': '%s://%s' % (scheme, netloc),
@@ -345,22 +330,36 @@ class BaseHandler(webapp2.RequestHandler):
                 rights_manager.ACTIVITY_STATUS_PUBLIC),
             'ACTIVITY_STATUS_PUBLICIZED': (
                 rights_manager.ACTIVITY_STATUS_PUBLICIZED),
-            'FULL_URL': '%s://%s/%s' % (scheme, netloc, path),
+            # The 'path' variable starts with a forward slash.
+            'FULL_URL': '%s://%s%s' % (scheme, netloc, path),
             'INVALID_NAME_CHARS': feconf.INVALID_NAME_CHARS,
-            # TODO(sll): Consider including the obj_editor html directly as
-            # part of the base HTML template?
-            'OBJECT_EDITORS_JS': jinja2.utils.Markup(
-                obj_services.get_all_object_editor_js_templates()),
             'RTE_COMPONENT_SPECS': (
                 rte_component_registry.Registry.get_all_specs()),
-            'SITE_FEEDBACK_FORM_URL': SITE_FEEDBACK_FORM_URL.value,
-            'SITE_NAME': SITE_NAME.value,
+            'SITE_FEEDBACK_FORM_URL': feconf.SITE_FEEDBACK_FORM_URL,
+            'SITE_NAME': feconf.SITE_NAME,
+
             'SUPPORTED_SITE_LANGUAGES': feconf.SUPPORTED_SITE_LANGUAGES,
             'SYSTEM_USERNAMES': feconf.SYSTEM_USERNAMES,
+            'TEMPLATE_DIR_PREFIX': utils.get_template_dir_prefix(),
+            'can_create_collections': (
+                self.username and self.username in
+                config_domain.WHITELISTED_COLLECTION_EDITOR_USERNAMES.value
+            ),
+            'username': self.username,
             'user_is_logged_in': user_services.has_fully_registered(
                 self.user_id),
             'preferred_site_language_code': self.preferred_site_language_code,
             'bbs': feconf.BBS_URL
+        })
+        if feconf.ENABLE_PROMO_BAR:
+            promo_bar_enabled = config_domain.PROMO_BAR_ENABLED.value
+            promo_bar_message = config_domain.PROMO_BAR_MESSAGE.value
+        else:
+            promo_bar_enabled = False
+            promo_bar_message = ''
+        values.update({
+            'promo_bar_enabled': promo_bar_enabled,
+            'promo_bar_message': promo_bar_message,
         })
 
         if 'meta_name' not in values:
@@ -371,9 +370,18 @@ class BaseHandler(webapp2.RequestHandler):
                 'Oppia is a free, open-source learning platform. Join the '
                 'community to create or try an exploration today!')
 
+        # nav_mode is used as part of the GLOBALS object in the frontend, but
+        # not every backend handler declares a nav_mode. Thus, the following
+        # code is a failsafe to ensure that the nav_mode key is added to all
+        # page requests.
+        if 'nav_mode' not in values:
+            values['nav_mode'] = ''
+
         if redirect_url_on_logout is None:
             redirect_url_on_logout = self.request.uri
+
         if self.user_id:
+            values['login_url'] = None
             values['logout_url'] = (
                 current_user_services.create_logout_url(
                     redirect_url_on_logout))
@@ -383,23 +391,16 @@ class BaseHandler(webapp2.RequestHandler):
                 else self.request.uri)
             values['login_url'] = (
                 current_user_services.create_login_url(target_url))
+            values['logout_url'] = None
 
         # Create a new csrf token for inclusion in HTML responses. This assumes
         # that tokens generated in one handler will be sent back to a handler
         # with the same page name.
         values['csrf_token'] = ''
-        values['csrf_token_create_exploration'] = ''
-        values['csrf_token_i18n'] = (
-            CsrfTokenManager.create_csrf_token(
-                self.user_id, feconf.CSRF_PAGE_NAME_I18N))
 
-        if self.REQUIRE_PAYLOAD_CSRF_CHECK and self.PAGE_NAME_FOR_CSRF:
+        if self.REQUIRE_PAYLOAD_CSRF_CHECK:
             values['csrf_token'] = CsrfTokenManager.create_csrf_token(
-                self.user_id, self.PAGE_NAME_FOR_CSRF)
-        if self.PAGE_HAS_CREATE_EXP_REQUEST:
-            values['csrf_token_create_exploration'] = (
-                CsrfTokenManager.create_csrf_token(
-                    self.user_id, feconf.CSRF_PAGE_NAME_CREATE_EXPLORATION))
+                self.user_id)
 
         self.response.cache_control.no_cache = True
         self.response.cache_control.must_revalidate = True
@@ -416,27 +417,28 @@ class BaseHandler(webapp2.RequestHandler):
 
         self.response.expires = 'Mon, 01 Jan 1990 00:00:00 GMT'
         self.response.pragma = 'no-cache'
-        self.response.write(self.jinja2_env.get_template(
-            filename).render(**values))
 
-        # Calculate the processing time of this request.
-        duration = datetime.datetime.utcnow() - self.start_time
-        processing_time = duration.seconds + duration.microseconds / 1E6
-
-        counters.HTML_RESPONSE_TIME_SECS.inc(increment=processing_time)
-        counters.HTML_RESPONSE_COUNT.inc()
+        self.response.write(
+            self.jinja2_env.get_template(filename).render(**values))
 
     def _render_exception(self, error_code, values):
         assert error_code in [400, 401, 404, 500]
         values['code'] = error_code
 
         # This checks if the response should be JSON or HTML.
-        if self.payload is not None:
+        # For GET requests, there is no payload, so we check against
+        # GET_HANDLER_ERROR_RETURN_TYPE.
+        # Otherwise, we check whether self.payload exists.
+        if (self.payload is not None or
+                self.GET_HANDLER_ERROR_RETURN_TYPE == feconf.HANDLER_TYPE_JSON):
             self.render_json(values)
         else:
             self.values.update(values)
-            self.render_template(
-                'error/error.html', iframe_restriction=None)
+            if 'iframed' in self.values and self.values['iframed']:
+                self.render_template(
+                    'pages/error/error_iframed.html', iframe_restriction=None)
+            else:
+                self.render_template('pages/error/error.html')
 
     def handle_exception(self, exception, unused_debug_mode):
         """Overwrites the default exception handler."""
@@ -517,7 +519,7 @@ class CsrfTokenManager(object):
             base64.urlsafe_b64encode(os.urandom(20)))
 
     @classmethod
-    def _create_token(cls, user_id, page_name, issued_on):
+    def _create_token(cls, user_id, issued_on):
         """Creates a digest (string representation) of a token."""
         cls.init_csrf_secret()
 
@@ -533,8 +535,6 @@ class CsrfTokenManager(object):
         digester = hmac.new(str(CSRF_SECRET.value))
         digester.update(str(user_id))
         digester.update(':')
-        digester.update(str(page_name))
-        digester.update(':')
         digester.update(str(issued_on))
 
         digest = digester.digest()
@@ -547,13 +547,11 @@ class CsrfTokenManager(object):
         return time.time()
 
     @classmethod
-    def create_csrf_token(cls, user_id, page_name):
-        if not page_name:
-            raise Exception('Cannot create CSRF token if page name is empty.')
-        return cls._create_token(user_id, page_name, cls._get_current_time())
+    def create_csrf_token(cls, user_id):
+        return cls._create_token(user_id, cls._get_current_time())
 
     @classmethod
-    def is_csrf_token_valid(cls, user_id, page_name, token):
+    def is_csrf_token_valid(cls, user_id, token):
         """Validate a given CSRF token with the CSRF secret in memcache."""
         try:
             parts = token.split('/')
@@ -565,7 +563,7 @@ class CsrfTokenManager(object):
             if age > cls._CSRF_TOKEN_AGE_SECS:
                 return False
 
-            authentic_token = cls._create_token(user_id, page_name, issued_on)
+            authentic_token = cls._create_token(user_id, issued_on)
             if authentic_token == token:
                 return True
 

@@ -10,13 +10,13 @@
           <div class="oppia-click-to-start-editing protractor-test-open-trigger-editor"
                ng-if="isEditable" ng-click="openTriggerEditor()">
             <i ng-if="isEditable"
-               class="material-icons oppia-editor-edit-icon pull-right" 
+               class="material-icons oppia-editor-edit-icon pull-right"
                title="Edit Fallback Condition">&#xE254;
             </i>
           </div>
 
-          一旦学习者输入 <[trigger.customization_args.num_submits.value]>
-          尝试<span ng-if="trigger.customization_args.num_submits.value !== 1">次</span>:
+          一旦学习者输入 <[trigger.customizationArgs.num_submits.value]>
+          尝试<span ng-if="trigger.customizationArgs.num_submits.value !== 1">次</span>:
         </div>
       </div>
     </div>
@@ -29,9 +29,9 @@
         <div class="oppia-rule-details-header">
           一旦学习者输入
           <schema-based-editor schema="INT_FORM_SCHEMA"
-                               local-value="trigger.customization_args.num_submits.value">
+                               local-value="trigger.customizationArgs.num_submits.value">
           </schema-based-editor>
-          尝试<span ng-if="trigger.customization_args.num_submits.value !== 1">次</span>:
+          尝试<span ng-if="trigger.customizationArgs.num_submits.value !== 1">次</span>:
         </div>
       </form>
 
@@ -59,7 +59,8 @@
     <outcome-editor is-editable="isEditable"
                     on-save-dest="getOnSaveFn()"
                     on-save-feedback="getOnSaveFn()"
-                    outcome="outcome">
+                    outcome="outcome"
+                    display-feedback="displayFeedback">
     </outcome-editor>
   </div>
 </script>

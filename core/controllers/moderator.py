@@ -19,23 +19,22 @@ from core.domain import activity_domain
 from core.domain import activity_services
 from core.domain import email_manager
 from core.domain import summary_services
+import feconf
 
 
 class ModeratorPage(base.BaseHandler):
     """The moderator page."""
 
-    PAGE_NAME_FOR_CSRF = 'moderator_page'
-
     @base.require_moderator
     def get(self):
         """Handles GET requests."""
-        self.render_template('moderator/moderator.html')
+        self.render_template('pages/moderator/moderator.html')
 
 
 class FeaturedActivitiesHandler(base.BaseHandler):
     """The moderator page handler for featured activities."""
 
-    PAGE_NAME_FOR_CSRF = 'moderator_page'
+    GET_HANDLER_ERROR_RETURN_TYPE = feconf.HANDLER_TYPE_JSON
 
     @base.require_moderator
     def get(self):
@@ -71,6 +70,8 @@ class FeaturedActivitiesHandler(base.BaseHandler):
 
 class EmailDraftHandler(base.BaseHandler):
     """Provide default email templates for moderator emails."""
+
+    GET_HANDLER_ERROR_RETURN_TYPE = feconf.HANDLER_TYPE_JSON
 
     @base.require_moderator
     def get(self, action):

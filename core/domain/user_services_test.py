@@ -22,6 +22,7 @@ from core.domain import collection_services
 from core.domain import event_services
 from core.domain import exp_services
 from core.domain import rights_manager
+from core.domain import user_jobs_continuous
 from core.domain import user_jobs_continuous_test
 from core.domain import user_services
 from core.tests import test_utils
@@ -142,7 +143,8 @@ class UserServicesUnitTests(test_utils.GenericTestBase):
     def test_fetch_gravatar_success(self):
         user_email = 'user@example.com'
         expected_gravatar_filepath = os.path.join(
-            'static', 'images', 'avatar', 'gravatar_example.png')
+            self.get_static_asset_filepath(), 'assets', 'images', 'avatar',
+            'gravatar_example.png')
         with open(expected_gravatar_filepath, 'r') as f:
             gravatar = f.read()
         with self.urlfetch_mock(content=gravatar):
@@ -197,7 +199,8 @@ class UserServicesUnitTests(test_utils.GenericTestBase):
 
     def test_default_identicon_data_url(self):
         identicon_filepath = os.path.join(
-            'static', 'images', 'avatar', 'user_blue_72px.png')
+            self.get_static_asset_filepath(), 'assets', 'images', 'avatar',
+            'user_blue_72px.png')
         identicon_data_url = utils.convert_png_to_data_url(
             identicon_filepath)
         self.assertEqual(
@@ -215,12 +218,12 @@ class UserServicesUnitTests(test_utils.GenericTestBase):
         # the value returned by get_email_preferences() should be True.
         email_preferences = user_services.get_email_preferences(user_id)
         self.assertEquals(
-            email_preferences['can_receive_editor_role_email'],
+            email_preferences.can_receive_editor_role_email,
             feconf.DEFAULT_EDITOR_ROLE_EMAIL_PREFERENCE)
 
         email_preferences = user_services.get_email_preferences(user_id)
         self.assertEquals(
-            email_preferences['can_receive_feedback_message_email'],
+            email_preferences.can_receive_feedback_message_email,
             feconf.DEFAULT_FEEDBACK_MESSAGE_EMAIL_PREFERENCE)
 
         # The user retrieves their email preferences. This initializes
@@ -228,26 +231,90 @@ class UserServicesUnitTests(test_utils.GenericTestBase):
         user_services.update_email_preferences(
             user_id, feconf.DEFAULT_EMAIL_UPDATES_PREFERENCE,
             feconf.DEFAULT_EDITOR_ROLE_EMAIL_PREFERENCE,
-            feconf.DEFAULT_FEEDBACK_MESSAGE_EMAIL_PREFERENCE)
+            feconf.DEFAULT_FEEDBACK_MESSAGE_EMAIL_PREFERENCE,
+            feconf.DEFAULT_SUBSCRIPTION_EMAIL_PREFERENCE)
 
         email_preferences = user_services.get_email_preferences(user_id)
         self.assertEquals(
-            email_preferences['can_receive_editor_role_email'],
+            email_preferences.can_receive_editor_role_email,
             feconf.DEFAULT_EDITOR_ROLE_EMAIL_PREFERENCE)
         self.assertEquals(
-            email_preferences['can_receive_feedback_message_email'],
+            email_preferences.can_receive_feedback_message_email,
             feconf.DEFAULT_FEEDBACK_MESSAGE_EMAIL_PREFERENCE)
 
         # The user sets their membership email preference to False.
         user_services.update_email_preferences(
-            user_id, feconf.DEFAULT_EMAIL_UPDATES_PREFERENCE, False,
+            user_id, feconf.DEFAULT_EMAIL_UPDATES_PREFERENCE, False, False,
             False)
 
         email_preferences = user_services.get_email_preferences(user_id)
+
+        self.assertFalse(email_preferences.can_receive_editor_role_email)
+        self.assertFalse(email_preferences.can_receive_feedback_message_email)
+        self.assertFalse(email_preferences.can_receive_subscription_email)
+
+    def test_set_and_get_user_email_preferences_for_exploration(self):
+        user_id = 'someUser'
+        exploration_id = 'someExploration'
+        username = 'username'
+        user_email = 'user@example.com'
+
+        user_services.get_or_create_user(user_id, user_email)
+        user_services.set_username(user_id, username)
+
+        # When ExplorationUserDataModel is yet to be created, the value
+        # of mute_feedback_notifications and mute_suggestion_notifications
+        # should match the default values.
+        exploration_user_model = (
+            user_services.user_models.ExplorationUserDataModel.get(
+                user_id, exploration_id))
+        self.assertIsNone(exploration_user_model)
+        email_preferences = user_services.get_email_preferences_for_exploration(
+            user_id, exploration_id)
         self.assertEquals(
-            email_preferences['can_receive_editor_role_email'], False)
+            email_preferences.mute_feedback_notifications,
+            feconf.DEFAULT_FEEDBACK_NOTIFICATIONS_MUTED_PREFERENCE)
         self.assertEquals(
-            email_preferences['can_receive_feedback_message_email'], False)
+            email_preferences.mute_suggestion_notifications,
+            feconf.DEFAULT_SUGGESTION_NOTIFICATIONS_MUTED_PREFERENCE)
+
+        # This initializes a ExplorationUserDataModel instance with
+        # the default mute values.
+        user_services.set_email_preferences_for_exploration(
+            user_id, exploration_id,
+            feconf.DEFAULT_FEEDBACK_NOTIFICATIONS_MUTED_PREFERENCE,
+            feconf.DEFAULT_SUGGESTION_NOTIFICATIONS_MUTED_PREFERENCE)
+
+        email_preferences = user_services.get_email_preferences_for_exploration(
+            user_id, exploration_id)
+        self.assertEquals(
+            email_preferences.mute_feedback_notifications,
+            feconf.DEFAULT_FEEDBACK_NOTIFICATIONS_MUTED_PREFERENCE)
+        self.assertEquals(
+            email_preferences.mute_suggestion_notifications,
+            feconf.DEFAULT_SUGGESTION_NOTIFICATIONS_MUTED_PREFERENCE)
+
+        # This sets only mute_suggestion_notifications property to True.
+        # mute_feedback_notifications should remain same as before.
+        user_services.set_email_preferences_for_exploration(
+            user_id, exploration_id, mute_suggestion_notifications=True)
+
+        email_preferences = user_services.get_email_preferences_for_exploration(
+            user_id, exploration_id)
+        self.assertEquals(
+            email_preferences.mute_feedback_notifications,
+            feconf.DEFAULT_FEEDBACK_NOTIFICATIONS_MUTED_PREFERENCE)
+        self.assertTrue(email_preferences.mute_suggestion_notifications)
+
+        # This sets only mute_feedback_notifications property to True.
+        # mute_suggestion_notifications should remain same as before.
+        user_services.set_email_preferences_for_exploration(
+            user_id, exploration_id, mute_feedback_notifications=True)
+
+        email_preferences = user_services.get_email_preferences_for_exploration(
+            user_id, exploration_id)
+        self.assertTrue(email_preferences.mute_feedback_notifications)
+        self.assertTrue(email_preferences.mute_suggestion_notifications)
 
     def test_get_current_date_as_string(self):
         custom_datetimes = [
@@ -563,16 +630,22 @@ class UserDashboardStatsTests(test_utils.GenericTestBase):
             self.EXP_ID, 1, init_state_name, self.USER_SESSION_ID, {},
             feconf.PLAY_TYPE_NORMAL)
         self.assertEquals(
-            user_services.get_user_dashboard_stats(self.owner_id), {
+            user_jobs_continuous.UserStatsAggregator.get_dashboard_stats(
+                self.owner_id),
+            {
                 'total_plays': 0,
+                'num_ratings': 0,
                 'average_ratings': None
             })
         (user_jobs_continuous_test.ModifiedUserStatsAggregator
          .start_computation())
         self.process_and_flush_pending_tasks()
         self.assertEquals(
-            user_services.get_user_dashboard_stats(self.owner_id), {
+            user_jobs_continuous.UserStatsAggregator.get_dashboard_stats(
+                self.owner_id),
+            {
                 'total_plays': 1,
+                'num_ratings': 0,
                 'average_ratings': None
             })
 
@@ -585,6 +658,8 @@ class UserDashboardStatsTests(test_utils.GenericTestBase):
             feconf.PLAY_TYPE_NORMAL)
         self.assertEquals(
             user_services.get_weekly_dashboard_stats(self.owner_id), None)
+        self.assertEquals(
+            user_services.get_last_week_dashboard_stats(self.owner_id), None)
 
         with self.swap(user_services,
                        'get_current_date_as_string',
@@ -595,6 +670,7 @@ class UserDashboardStatsTests(test_utils.GenericTestBase):
             user_services.get_weekly_dashboard_stats(self.owner_id), [{
                 self.CURRENT_DATE_AS_STRING: {
                     'total_plays': 0,
+                    'num_ratings': 0,
                     'average_ratings': None
                 }
             }])
@@ -608,6 +684,8 @@ class UserDashboardStatsTests(test_utils.GenericTestBase):
             feconf.PLAY_TYPE_NORMAL)
         self.assertEquals(
             user_services.get_weekly_dashboard_stats(self.owner_id), None)
+        self.assertEquals(
+            user_services.get_last_week_dashboard_stats(self.owner_id), None)
 
         (user_jobs_continuous_test.ModifiedUserStatsAggregator
          .start_computation())
@@ -615,6 +693,8 @@ class UserDashboardStatsTests(test_utils.GenericTestBase):
 
         self.assertEquals(
             user_services.get_weekly_dashboard_stats(self.owner_id), None)
+        self.assertEquals(
+            user_services.get_last_week_dashboard_stats(self.owner_id), None)
 
         with self.swap(user_services,
                        'get_current_date_as_string',
@@ -625,6 +705,7 @@ class UserDashboardStatsTests(test_utils.GenericTestBase):
             user_services.get_weekly_dashboard_stats(self.owner_id), [{
                 self.CURRENT_DATE_AS_STRING: {
                     'total_plays': 1,
+                    'num_ratings': 0,
                     'average_ratings': None
                 }
             }])
@@ -679,3 +760,200 @@ class SubjectInterestsUnitTests(test_utils.GenericTestBase):
         user_services.update_subject_interests(self.user_id, [])
         user_services.update_subject_interests(
             self.user_id, ['singleword', 'has spaces'])
+
+
+class LastLoginIntegrationTest(test_utils.GenericTestBase):
+
+    def setUp(self):
+        """Create exploration with two versions"""
+        super(LastLoginIntegrationTest, self).setUp()
+        self.signup(self.VIEWER_EMAIL, self.VIEWER_USERNAME)
+        self.viewer_id = self.get_user_id_from_email(self.VIEWER_EMAIL)
+
+    def test_legacy_user(self):
+        """Test the case of a user who existed in the system before the
+        last-login check was introduced.
+        """
+        # Set up a 'previous-generation' user.
+        user_settings = user_services.get_user_settings(self.viewer_id)
+        user_settings.last_logged_in = None
+        user_services._save_user_settings(user_settings)  # pylint: disable=protected-access
+
+        self.assertIsNone(
+            user_services.get_user_settings(self.viewer_id).last_logged_in)
+        # After logging in and requesting a URL, the last_logged_in property is
+        # set.
+        self.login(self.VIEWER_EMAIL)
+        self.testapp.get(feconf.LIBRARY_INDEX_URL)
+        self.assertIsNotNone(
+            user_services.get_user_settings(self.viewer_id).last_logged_in)
+        self.logout()
+
+    def test_last_logged_in_only_updated_if_enough_time_has_elapsed(self):
+        # The last logged-in time has already been set when the user
+        # registered.
+        previous_last_logged_in_datetime = (
+            user_services.get_user_settings(self.viewer_id).last_logged_in)
+        self.assertIsNotNone(previous_last_logged_in_datetime)
+
+        original_datetime_type = datetime.datetime
+        current_datetime = datetime.datetime.utcnow()
+
+        # Without explicitly defining the type of the patched datetimes, NDB
+        # validation checks for datetime.datetime instances fail.
+        class PatchedDatetimeType(type):
+            def __instancecheck__(cls, other):
+                return isinstance(other, original_datetime_type)
+
+        class PatchedDatetime11Hours(datetime.datetime):
+            __metaclass__ = PatchedDatetimeType
+
+            @classmethod
+            def utcnow(cls):
+                return current_datetime + datetime.timedelta(hours=11)
+
+        class PatchedDatetime13Hours(datetime.datetime):
+            __metaclass__ = PatchedDatetimeType
+
+            @classmethod
+            def utcnow(cls):
+                return current_datetime + datetime.timedelta(hours=13)
+
+        with self.swap(datetime, 'datetime', PatchedDatetime11Hours):
+            self.login(self.VIEWER_EMAIL)
+            self.testapp.get(feconf.LIBRARY_INDEX_URL)
+            self.assertEqual(
+                user_services.get_user_settings(self.viewer_id).last_logged_in,
+                previous_last_logged_in_datetime)
+            self.logout()
+
+        with self.swap(datetime, 'datetime', PatchedDatetime13Hours):
+            self.login(self.VIEWER_EMAIL)
+            self.testapp.get(feconf.LIBRARY_INDEX_URL)
+            self.assertGreater(
+                user_services.get_user_settings(self.viewer_id).last_logged_in,
+                previous_last_logged_in_datetime)
+            self.logout()
+
+
+class LastExplorationEditedIntegrationTests(test_utils.GenericTestBase):
+    EXP_ID = 'exp'
+
+    def setUp(self):
+        """Create users for creating and editing exploration."""
+        super(LastExplorationEditedIntegrationTests, self).setUp()
+        self.signup(self.OWNER_EMAIL, self.OWNER_USERNAME)
+        self.owner_id = self.get_user_id_from_email(self.OWNER_EMAIL)
+        self.signup(self.EDITOR_EMAIL, self.EDITOR_USERNAME)
+        self.editor_id = self.get_user_id_from_email(self.EDITOR_EMAIL)
+
+        self.save_new_valid_exploration(
+            self.EXP_ID, self.owner_id, end_state_name='End')
+
+    def test_legacy_user(self):
+        """Test the case of a user who are editing exploration for first time
+        after the last edited time check was introduced.
+        """
+        # Set up a 'previous-generation' user.
+        user_settings = user_services.get_user_settings(self.editor_id)
+        user_settings.last_edited_an_exploration = None
+        user_services._save_user_settings(user_settings)  # pylint: disable=protected-access
+
+        editor_settings = user_services.get_user_settings(self.editor_id)
+        self.assertIsNone(editor_settings.last_edited_an_exploration)
+
+        exp_services.update_exploration(self.editor_id, self.EXP_ID, [{
+            'cmd': 'edit_exploration_property',
+            'property_name': 'objective',
+            'new_value': 'the objective'
+        }], 'Test edit')
+
+        editor_settings = user_services.get_user_settings(self.editor_id)
+        self.assertIsNotNone(editor_settings.last_edited_an_exploration)
+
+    def test_last_exp_edit_time_gets_updated(self):
+        exp_services.update_exploration(self.editor_id, self.EXP_ID, [{
+            'cmd': 'edit_exploration_property',
+            'property_name': 'objective',
+            'new_value': 'the objective'
+        }], 'Test edit')
+
+        # Decrease last exploration edited time by 13 hours.
+        user_settings = user_services.get_user_settings(self.editor_id)
+        user_settings.last_edited_an_exploration = (
+            user_settings.last_edited_an_exploration -
+            datetime.timedelta(hours=13))
+        user_services._save_user_settings(user_settings) # pylint: disable=protected-access
+
+        editor_settings = user_services.get_user_settings(self.editor_id)
+        previous_last_edited_an_exploration = (
+            editor_settings.last_edited_an_exploration)
+        self.assertIsNotNone(previous_last_edited_an_exploration)
+
+        # The editor edits the exploration 13 hours after it was created.
+        exp_services.update_exploration(self.editor_id, self.EXP_ID, [{
+            'cmd': 'edit_exploration_property',
+            'property_name': 'objective',
+            'new_value': 'new objective'
+        }], 'Test edit 2')
+
+        # Make sure last exploration edited time gets updated.
+        editor_settings = user_services.get_user_settings(self.editor_id)
+        self.assertGreater(
+            (editor_settings.last_edited_an_exploration),
+            previous_last_edited_an_exploration)
+
+
+class LastExplorationCreatedIntegrationTests(test_utils.GenericTestBase):
+    EXP_ID_A = 'exp_a'
+    EXP_ID_B = 'exp_b'
+
+    def setUp(self):
+        """Create user for creating exploration."""
+        super(LastExplorationCreatedIntegrationTests, self).setUp()
+        self.signup(self.OWNER_EMAIL, self.OWNER_USERNAME)
+        self.owner_id = self.get_user_id_from_email(self.OWNER_EMAIL)
+
+    def test_legacy_user(self):
+        """Test the case of a user who are creating exploration for first time
+        after the last edited time check was introduced.
+        """
+        # Set up a 'previous-generation' user.
+        user_settings = user_services.get_user_settings(self.owner_id)
+        user_settings.last_created_an_exploration = None
+        user_services._save_user_settings(user_settings)  # pylint: disable=protected-access
+
+        owner_settings = user_services.get_user_settings(self.owner_id)
+        self.assertIsNone(owner_settings.last_created_an_exploration)
+
+        self.save_new_valid_exploration(
+            self.EXP_ID_A, self.owner_id, end_state_name='End')
+
+        owner_settings = user_services.get_user_settings(self.owner_id)
+        self.assertIsNotNone(owner_settings.last_created_an_exploration)
+
+    def test_last_exp_edit_time_gets_updated(self):
+        self.save_new_valid_exploration(
+            self.EXP_ID_A, self.owner_id, end_state_name='End')
+
+        # Decrease last exploration created time by 13 hours.
+        user_settings = user_services.get_user_settings(self.owner_id)
+        user_settings.last_created_an_exploration = (
+            user_settings.last_created_an_exploration -
+            datetime.timedelta(hours=13))
+        user_services._save_user_settings(user_settings) # pylint: disable=protected-access
+
+        owner_settings = user_services.get_user_settings(self.owner_id)
+        previous_last_created_an_exploration = (
+            owner_settings.last_created_an_exploration)
+        self.assertIsNotNone(previous_last_created_an_exploration)
+
+        # The creator creates another exploration 13 hours later.
+        self.save_new_valid_exploration(
+            self.EXP_ID_B, self.owner_id, end_state_name='End')
+
+        # Make sure that last exploration created time gets updated.
+        owner_settings = user_services.get_user_settings(self.owner_id)
+        self.assertGreater(
+            (owner_settings.last_created_an_exploration),
+            previous_last_created_an_exploration)

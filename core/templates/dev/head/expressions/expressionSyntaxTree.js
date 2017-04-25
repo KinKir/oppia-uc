@@ -350,7 +350,7 @@ oppia.factory('expressionSyntaxTreeService', [
       },
       // Note that removing quotation marks from this key causes issues with
       // minification (when running the deployment scripts).
-      // jscs:disable disallowQuotedKeysInObjects
+      /* eslint-disable quote-props */
       'if': {
         eval: function(args) {
           // TODO(kashida): Make this short-circuit.
@@ -393,9 +393,10 @@ oppia.factory('expressionSyntaxTreeService', [
         eval: function(args) {
           verifyNumArgs(args, 2);
           var numericArgs = _coerceAllArgsToNumber(args);
-          return Math.floor(Math.log(numericArgs[0]) /
-            Math.log(numericArgs[1]) *
-            100000000000000) / 100000000000000;
+          var preciseAns = Math.log(numericArgs[0]) / Math.log(numericArgs[1]);
+          // We round answers to 9 decimal places, so that we don't run into
+          // issues like log(9, 3) = 2.0000000000004.
+          return Math.round(preciseAns * Math.pow(10, 9)) / Math.pow(10, 9);
         },
         getType: function(args) {
           verifyNumArgs(args, 2);
@@ -415,7 +416,7 @@ oppia.factory('expressionSyntaxTreeService', [
           return PARAMETER_TYPES.REAL;
         }
       }
-      // jscs:enable disallowQuotedKeysInObjects
+      /* eslint-enable quote-props */
     };
 
     return {

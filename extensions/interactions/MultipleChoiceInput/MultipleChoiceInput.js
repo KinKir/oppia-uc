@@ -24,7 +24,9 @@ oppia.directive('oppiaInteractiveMultipleChoiceInput', [
   function(oppiaHtmlEscaper, multipleChoiceInputRulesService) {
     return {
       restrict: 'E',
-      scope: {},
+      scope: {
+        onSubmit: '&'
+      },
       templateUrl: 'interaction/MultipleChoiceInput',
       controller: ['$scope', '$attrs', function($scope, $attrs) {
         $scope.choices = oppiaHtmlEscaper.escapedJsonToObj(
@@ -33,7 +35,10 @@ oppia.directive('oppiaInteractiveMultipleChoiceInput', [
 
         $scope.submitAnswer = function(answer) {
           answer = parseInt(answer, 10);
-          $scope.$parent.submitAnswer(answer, multipleChoiceInputRulesService);
+          $scope.onSubmit({
+            answer: answer,
+            rulesService: multipleChoiceInputRulesService
+          });
         };
       }]
     };
@@ -61,13 +66,14 @@ oppia.directive('oppiaShortResponseMultipleChoiceInput', [
       restrict: 'E',
       scope: {},
       templateUrl: 'shortResponse/MultipleChoiceInput',
-      controller: ['$scope', '$attrs', '$filter',
-          function($scope, $attrs, $filter) {
-        var _answer = oppiaHtmlEscaper.escapedJsonToObj($attrs.answer);
-        var _choices = oppiaHtmlEscaper.escapedJsonToObj($attrs.choices);
-        var response = $filter('convertToPlainText')(_choices[_answer]);
-        $scope.response = $filter('truncateAtFirstLine')(response);
-      }]
+      controller: [
+        '$scope', '$attrs', '$filter',
+        function($scope, $attrs, $filter) {
+          var _answer = oppiaHtmlEscaper.escapedJsonToObj($attrs.answer);
+          var _choices = oppiaHtmlEscaper.escapedJsonToObj($attrs.choices);
+          var response = $filter('convertToPlainText')(_choices[_answer]);
+          $scope.response = $filter('truncateAtFirstLine')(response);
+        }]
     };
   }
 ]);

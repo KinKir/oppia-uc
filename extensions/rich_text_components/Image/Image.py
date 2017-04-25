@@ -50,6 +50,14 @@ class Image(base.BaseRichTextComponent):
         'description': '提示文字',
         'schema': {
             'type': 'unicode',
+            'validators': [{
+                'id': 'is_nonempty',
+            }],
+            'ui_config': {
+                'placeholder': (
+                    'Description of Image (Example : George Handel, '
+                    '18th century baroque composer)'),
+            },
         },
         'default_value': '',
     }]

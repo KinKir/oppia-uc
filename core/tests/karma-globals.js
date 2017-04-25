@@ -19,7 +19,15 @@
 var GLOBALS = {
   INTERACTION_SPECS: {},
   GADGET_SPECS: {},
-  PANEL_SPECS: {}
+  PANEL_SPECS: {},
+  SUPPORTED_SITE_LANGUAGES: [{
+    id: 'id',
+    text: 'Bahasa Indonesia'
+  }, {
+    id: 'en',
+    text: 'English'
+  }],
+  ASSET_DIR_PREFIX: ''
 };
 
 /* This function overwrites the translationProvider for a dummy function

@@ -16,15 +16,12 @@
 
 import os
 
-from core.controllers import reader
-from core.domain import classifier_services
 from core.domain import exp_domain
 from core.domain import exp_services
-from core.domain import rights_manager
 from core.domain import param_domain
+from core.domain import rights_manager
 from core.tests import test_utils
 import feconf
-import utils
 
 
 class ReaderPermissionsTest(test_utils.GenericTestBase):
@@ -109,67 +106,52 @@ class ReaderPermissionsTest(test_utils.GenericTestBase):
         self.assertEqual(response.status_int, 200)
 
 
-class ReaderClassifyTests(test_utils.GenericTestBase):
-    """Test reader.classify using the sample explorations.
-
-    Since the end to end tests cover correct classification, and frontend tests
-    test hard rules, ReaderClassifyTests is only checking that the string
-    classifier is actually called.
-    """
+class ClassifyHandlerTest(test_utils.GenericTestBase):
+    """Test the handler for classification."""
 
     def setUp(self):
-        super(ReaderClassifyTests, self).setUp()
-        self._init_classify_inputs('16')
+        """Before the test, create an exploration_dict."""
+        super(ClassifyHandlerTest, self).setUp()
+        self.enable_string_classifier = self.swap(
+            feconf, 'ENABLE_STRING_CLASSIFIER', True)
 
-    def _init_classify_inputs(self, exploration_id):
-        test_exp_filepath = os.path.join(
-            feconf.TESTS_DATA_DIR, 'string_classifier_test.yaml')
-        yaml_content = utils.get_file_contents(test_exp_filepath)
-        assets_list = []
-        exp_services.save_new_exploration_from_yaml_and_assets(
-            feconf.SYSTEM_COMMITTER_ID, yaml_content, exploration_id,
-            assets_list)
+        # Reading YAML exploration into a dictionary.
+        yaml_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                 '../tests/data/string_classifier_test.yaml')
+        with open(yaml_path, 'r') as yaml_file:
+            self.yaml_content = yaml_file.read()
 
-        self.exp_id = exploration_id
-        self.exp_state = (
-            exp_services.get_exploration_by_id(exploration_id).states['Home'])
+        self.login(self.VIEWER_EMAIL)
+        self.signup(self.VIEWER_EMAIL, self.VIEWER_USERNAME)
 
-    def _is_string_classifier_called(self, answer):
-        string_classifier_predict = (
-            classifier_services.StringClassifier.predict_label_for_doc)
-        predict_counter = test_utils.CallCounter(
-            string_classifier_predict)
+        # Load demo exploration.
+        self.exp_id = '0'
+        self.title = 'Testing String Classifier'
+        self.category = 'Test'
+        exp_services.delete_demo(self.exp_id)
+        exp_services.load_demo(self.exp_id)
 
-        with self.swap(
-            classifier_services.StringClassifier,
-            'predict_label_for_doc', predict_counter):
+        # Creating the exploration domain object.
+        self.exploration = exp_domain.Exploration.from_untitled_yaml(
+            self.exp_id,
+            self.title,
+            self.category,
+            self.yaml_content)
 
-            response = reader.classify(self.exp_state, answer)
+    def test_classification_handler(self):
+        """Test the classification handler for a right answer."""
 
-        answer_group_index = response['answer_group_index']
-        rule_spec_index = response['rule_spec_index']
-        answer_groups = self.exp_state.interaction.answer_groups
-        if answer_group_index == len(answer_groups):
-            return 'default'
-
-        answer_group = answer_groups[answer_group_index]
-        return (answer_group.get_classifier_rule_index() == rule_spec_index and
-                predict_counter.times_called == 1)
-
-    def test_string_classifier_classification(self):
-        """All these responses trigger the string classifier."""
-        with self.swap(feconf, 'ENABLE_STRING_CLASSIFIER', True):
-            self.assertTrue(
-                self._is_string_classifier_called(
-                    'it\'s a permutation of 3 elements'))
-            self.assertTrue(
-                self._is_string_classifier_called(
-                    'There are 3 options for the first ball, and 2 for the '
-                    'remaining two. So 3*2=6.'))
-            self.assertTrue(
-                self._is_string_classifier_called('abc acb bac bca cbb cba'))
-            self.assertTrue(
-                self._is_string_classifier_called('dunno, just guessed'))
+        with self.enable_string_classifier:
+            # Testing the handler for a correct answer.
+            old_state_dict = self.exploration.states['Home'].to_dict()
+            answer = 'Permutations'
+            params = {}
+            res = self.post_json('/explorehandler/classify/%s' % self.exp_id,
+                                 {'params' : params,
+                                  'old_state' : old_state_dict,
+                                  'answer' : answer})
+            self.assertEqual(res['outcome']['feedback'][0],
+                             '<p>Detected permutation.</p>')
 
 
 class FeedbackIntegrationTest(test_utils.GenericTestBase):
@@ -362,3 +344,113 @@ class RatingsIntegrationTests(test_utils.GenericTestBase):
             ratings['overall_ratings'],
             {'1': 0, '2': 0, '3': 0, '4': 2, '5': 0})
         self.logout()
+
+
+class FlagExplorationHandlerTests(test_utils.GenericTestBase):
+    """Backend integration tests for flagging an exploration."""
+
+    EXP_ID = '0'
+    REPORT_TEXT = 'AD'
+
+    def setUp(self):
+        super(FlagExplorationHandlerTests, self).setUp()
+
+        # Register users.
+        self.signup(self.EDITOR_EMAIL, self.EDITOR_USERNAME)
+        self.signup(self.NEW_USER_EMAIL, self.NEW_USER_USERNAME)
+        self.signup(self.MODERATOR_EMAIL, self.MODERATOR_USERNAME)
+
+        self.editor_id = self.get_user_id_from_email(self.EDITOR_EMAIL)
+        self.new_user_id = self.get_user_id_from_email(self.NEW_USER_EMAIL)
+        self.moderator_id = self.get_user_id_from_email(self.MODERATOR_EMAIL)
+        self.set_moderators([self.MODERATOR_USERNAME])
+
+        # Load exploration 0.
+        exp_services.load_demo(self.EXP_ID)
+
+        # Login and create exploration.
+        self.login(self.EDITOR_EMAIL)
+
+        # Create exploration.
+        self.save_new_valid_exploration(
+            self.EXP_ID, self.editor_id,
+            title='Welcome to Oppia!',
+            category='This is just a spam category',
+            objective='Test a spam exploration.')
+        self.can_send_emails_ctx = self.swap(
+            feconf, 'CAN_SEND_EMAILS', True)
+        rights_manager.publish_exploration(self.editor_id, self.EXP_ID)
+        self.logout()
+
+    def test_that_emails_are_sent(self):
+        """Check that emails are sent to moderaters when a logged-in
+        user reports.
+        """
+
+        # Login and flag exploration.
+        self.login(self.NEW_USER_EMAIL)
+
+        response = self.testapp.get('/explore/%s' % self.EXP_ID)
+        csrf_token = self.get_csrf_token_from_response(response)
+
+        self.post_json(
+            '%s/%s' % (feconf.FLAG_EXPLORATION_URL_PREFIX, self.EXP_ID), {
+                'report_text': self.REPORT_TEXT,
+            }, csrf_token)
+
+        self.logout()
+
+        expected_email_html_body = (
+            'Hello Moderator,<br>'
+            'newuser has flagged exploration '
+            '"Welcome to Oppia!"'
+            ' on the following grounds: <br>'
+            'AD .<br>'
+            'You can modify the exploration by clicking '
+            '<a href="https://www.oppia.org/create/0">'
+            'here</a>.<br>'
+            '<br>'
+            'Thanks!<br>'
+            '- The Oppia Team<br>'
+            '<br>'
+            'You can change your email preferences via the '
+            '<a href="https://www.example.com">Preferences</a> page.')
+
+        expected_email_text_body = (
+            'Hello Moderator,\n'
+            'newuser has flagged exploration '
+            '"Welcome to Oppia!"'
+            ' on the following grounds: \n'
+            'AD .\n'
+            'You can modify the exploration by clicking here.\n'
+            '\n'
+            'Thanks!\n'
+            '- The Oppia Team\n'
+            '\n'
+            'You can change your email preferences via the Preferences page.')
+
+        with self.can_send_emails_ctx:
+            self.process_and_flush_pending_tasks()
+
+            messages = self.mail_stub.get_sent_messages(to=self.MODERATOR_EMAIL)
+            self.assertEqual(len(messages), 1)
+            self.assertEqual(
+                messages[0].html.decode(),
+                expected_email_html_body)
+            self.assertEqual(
+                messages[0].body.decode(),
+                expected_email_text_body)
+
+    def test_non_logged_in_users_cannot_report(self):
+        """Check that non-logged in users cannot report."""
+
+        self.login(self.NEW_USER_EMAIL)
+        csrf_token = self.get_csrf_token_from_response(
+            self.testapp.get('/explore/%s' % self.EXP_ID))
+        self.logout()
+
+        # Create report for exploration.
+        self.post_json(
+            '%s/%s' % (feconf.FLAG_EXPLORATION_URL_PREFIX, self.EXP_ID), {
+                'report_text': self.REPORT_TEXT,
+            }, csrf_token, expected_status_int=401, expect_errors=True)

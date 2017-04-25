@@ -43,11 +43,12 @@ class MultipleChoiceInput(base.BaseInteraction):
                 'type': 'html',
                 'ui_config': {
                     'hide_complex_extensions': True,
+                    'placeholder': 'Enter an option for the learner to select',
                 },
             },
             'ui_config': {
                 'add_element_text': '添加选项',
             }
         },
-        'default_value': ['多选'],
+        'default_value': [''],
     }]

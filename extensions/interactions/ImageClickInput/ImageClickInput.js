@@ -27,7 +27,9 @@ oppia.directive('oppiaInteractiveImageClickInput', [
            imageClickInputRulesService) {
     return {
       restrict: 'E',
-      scope: {},
+      scope: {
+        onSubmit: '&'
+      },
       templateUrl: 'interaction/ImageClickInput',
       controller: [
         '$scope', '$element', '$attrs', function($scope, $element, $attrs) {
@@ -82,10 +84,13 @@ oppia.directive('oppiaInteractiveImageClickInput', [
             }
           };
           $scope.onClickImage = function() {
-            $scope.$parent.submitAnswer({
-              clickPosition: [$scope.mouseX, $scope.mouseY],
-              clickedRegions: $scope.currentlyHoveredRegions
-            }, imageClickInputRulesService);
+            $scope.onSubmit({
+              answer: {
+                clickPosition: [$scope.mouseX, $scope.mouseY],
+                clickedRegions: $scope.currentlyHoveredRegions
+              },
+              rulesService: imageClickInputRulesService
+            });
           };
         }
       ]
@@ -99,14 +104,14 @@ oppia.directive('oppiaResponseImageClickInput', [function() {
     scope: {},
     templateUrl: 'response/ImageClickInput',
     controller: [
-        '$scope', '$attrs', 'oppiaHtmlEscaper',
-        function($scope, $attrs, oppiaHtmlEscaper) {
-      var _answer = oppiaHtmlEscaper.escapedJsonToObj($attrs.answer);
+      '$scope', '$attrs', 'oppiaHtmlEscaper',
+      function($scope, $attrs, oppiaHtmlEscaper) {
+        var _answer = oppiaHtmlEscaper.escapedJsonToObj($attrs.answer);
 
-      $scope.clickRegionLabel = '(点击 ' + (
-        _answer.clickedRegions.length > 0 ?
-        '\'' + _answer.clickedRegions[0] + '\'' : 'image') + ')';
-    }]
+        $scope.clickRegionLabel = '(点击 ' + (
+          _answer.clickedRegions.length > 0 ?
+          '\'' + _answer.clickedRegions[0] + '\'' : 'image') + ')';
+      }]
   };
 }]);
 

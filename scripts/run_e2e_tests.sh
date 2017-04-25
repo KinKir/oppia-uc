@@ -27,6 +27,8 @@
 #   --sharding=true/false Disables/Enables parallelization of protractor tests.
 #   --sharding-instances=# Sets the number of parallel browsers to open while
 #         sharding.
+#   --prod_env Run the tests in prod mode. Static resources are served from
+#         build directory and use cache slugs.
 # Sharding must be disabled (either by passing in false to --sharding or 1 to
 # --sharding-instances) if running any tests in isolation (iit or ddescribe).
 #   --suite=suite_name Performs test for different suites.
@@ -40,13 +42,11 @@
 
 function cleanup {
   # Send a kill signal to the dev server.
-  #
-  # The [Pp] is to avoid the grep finding the 'grep protractor/selenium' process
-  # as well. The awk command gets just the process ID from the grepped line.
-  kill `ps aux | grep [Pp]rotractor/selenium | awk '{print $2}'`
-
-  # Send a kill signal to the dev server.
   kill `ps aux | grep "[Dd]ev_appserver.py --host=0.0.0.0 --port=9001" | awk '{print $2}'`
+
+  # The [Pp] is to avoid the grep finding the 'grep protractor/node_modules/webdriver-manager/selenium' process
+  # as well. The awk command gets just the process ID from the grepped line.
+  kill `ps aux | grep [Pp]rotractor/node_modules/webdriver-manager/selenium | awk '{print $2}'`
 
   # Wait for the servers to go down; suppress "connection refused" error output
   # from nc since that is exactly what we are expecting to happen.
@@ -97,6 +97,23 @@ fi
 # the top of the file is run.
 trap cleanup EXIT
 
+
+# Argument passed to gulpfile.js to help build with minification.
+MINIFICATION=false
+for arg in "$@"; do
+  # Used to emulate running Oppia in a production environment.
+  if [ "$arg" == "--prod_env" ]; then
+    MINIFICATION=true
+    echo "  Generating files for production mode..."
+    $PYTHON_CMD scripts/build.py
+  fi
+done
+
+yaml_env_variable="MINIFICATION: $MINIFICATION"
+sed -i.bak -e s/"MINIFICATION: .*"/"$yaml_env_variable"/ app.yaml
+# Delete the modified yaml file(-i.bak)
+rm app.yaml.bak
+
 # Start a selenium process. The program sends thousands of lines of useless
 # info logs to stderr so we discard them.
 # TODO(jacob): Find a webdriver or selenium argument that controls log level.
@@ -141,6 +158,10 @@ for j in "$@"; do
 
     --sharding-instances=*)
     SHARD_INSTANCES="${j#*=}"
+    shift
+    ;;
+
+    --prod_env*)
     shift
     ;;
 

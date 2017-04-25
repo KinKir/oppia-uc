@@ -60,7 +60,7 @@ class NotificationsDashboardPage(base.BaseHandler):
                 'nav_mode': feconf.NAV_MODE_DASHBOARD,
             })
             self.render_template(
-                'dashboard/notifications_dashboard.html',
+                'pages/notifications_dashboard/notifications_dashboard.html',
                 redirect_url_on_logout='/')
         else:
             self.redirect(utils.set_url_query_parameter(
@@ -70,7 +70,7 @@ class NotificationsDashboardPage(base.BaseHandler):
 class NotificationsDashboardHandler(base.BaseHandler):
     """Provides data for the user notifications dashboard."""
 
-    PAGE_NAME_FOR_CSRF = 'dashboard'
+    GET_HANDLER_ERROR_RETURN_TYPE = feconf.HANDLER_TYPE_JSON
 
     def get(self):
         """Handles GET requests."""
@@ -118,9 +118,6 @@ class NotificationsDashboardHandler(base.BaseHandler):
 class DashboardPage(base.BaseHandler):
     """Page showing the user's creator dashboard."""
 
-    PAGE_NAME_FOR_CSRF = 'dashboard'
-    PAGE_HAS_CREATE_EXP_REQUEST = True
-
     @base.require_user
     def get(self):
         if self.username in config_domain.BANNED_USERNAMES.value:
@@ -129,16 +126,12 @@ class DashboardPage(base.BaseHandler):
         elif user_services.has_fully_registered(self.user_id):
             self.values.update({
                 'nav_mode': feconf.NAV_MODE_DASHBOARD,
-                'can_create_collections': (
-                    self.username in
-                    config_domain.WHITELISTED_COLLECTION_EDITOR_USERNAMES.value
-                ),
                 'allow_yaml_file_upload': feconf.ALLOW_YAML_FILE_UPLOAD,
                 'DEFAULT_TWITTER_SHARE_MESSAGE_DASHBOARD': (
                     DEFAULT_TWITTER_SHARE_MESSAGE_DASHBOARD.value)
             })
             self.render_template(
-                'dashboard/dashboard.html', redirect_url_on_logout='/')
+                'pages/dashboard/dashboard.html', redirect_url_on_logout='/')
         else:
             self.redirect(utils.set_url_query_parameter(
                 feconf.SIGNUP_URL, 'return_url', feconf.DASHBOARD_URL))
@@ -146,6 +139,8 @@ class DashboardPage(base.BaseHandler):
 
 class DashboardHandler(base.BaseHandler):
     """Provides data for the user's creator dashboard page."""
+
+    GET_HANDLER_ERROR_RETURN_TYPE = feconf.HANDLER_TYPE_JSON
 
     def get(self):
         """Handles GET requests."""
@@ -157,6 +152,9 @@ class DashboardHandler(base.BaseHandler):
                 feconf.CATEGORIES_TO_COLORS[category] if
                 category in feconf.CATEGORIES_TO_COLORS else
                 feconf.DEFAULT_COLOR)
+
+        def _round_average_ratings(rating):
+            return round(rating, feconf.AVERAGE_RATINGS_DASHBOARD_PRECISION)
 
         exploration_ids_subscribed_to = (
             subscription_services.get_exploration_ids_subscribed_to(
@@ -179,17 +177,25 @@ class DashboardHandler(base.BaseHandler):
                 exploration_ids_subscribed_to))
 
         unresolved_answers_dict = (
-            stats_services.get_exps_unresolved_answers_count_for_default_rule(
+            stats_services.get_exps_unresolved_answers_for_default_rule(
                 exploration_ids_subscribed_to))
+
+        total_unresolved_answers = 0
 
         for ind, exploration in enumerate(exp_summary_list):
             exploration.update(feedback_thread_analytics[ind].to_dict())
             exploration.update({
                 'num_unresolved_answers': (
-                    unresolved_answers_dict[exploration['id']]
+                    unresolved_answers_dict[exploration['id']]['count']
                     if exploration['id'] in unresolved_answers_dict else 0
+                ),
+                'top_unresolved_answers': (
+                    unresolved_answers_dict[exploration['id']]
+                    ['unresolved_answers']
+                    [:feconf.TOP_UNRESOLVED_ANSWERS_COUNT_DASHBOARD]
                 )
             })
+            total_unresolved_answers += exploration['num_unresolved_answers']
 
         exp_summary_list = sorted(
             exp_summary_list,
@@ -212,6 +218,7 @@ class DashboardHandler(base.BaseHandler):
                     'created_on': utils.get_time_in_millisecs(
                         collection_summary.collection_model_created_on),
                     'status': collection_summary.status,
+                    'node_count': collection_summary.node_count,
                     'community_owned': collection_summary.community_owned,
                     'thumbnail_icon_url': (
                         utils.get_thumbnail_icon_url_for_category(
@@ -220,17 +227,53 @@ class DashboardHandler(base.BaseHandler):
                         collection_summary.category),
                 })
 
+        dashboard_stats = (
+            user_jobs_continuous.UserStatsAggregator.get_dashboard_stats(
+                self.user_id))
+        dashboard_stats.update({
+            'total_open_feedback': feedback_services.get_total_open_threads(
+                feedback_thread_analytics),
+            'total_unresolved_answers': total_unresolved_answers
+        })
+        if dashboard_stats and dashboard_stats.get('average_ratings'):
+            dashboard_stats['average_ratings'] = (
+                _round_average_ratings(dashboard_stats['average_ratings']))
+
+        last_week_stats = (
+            user_services.get_last_week_dashboard_stats(self.user_id))
+        if last_week_stats and last_week_stats.get('average_ratings'):
+            last_week_stats['average_ratings'] = (
+                _round_average_ratings(last_week_stats['average_ratings']))
+
+        subscriber_ids = subscription_services.get_all_subscribers_of_creator(
+            self.user_id)
+        subscribers_settings = user_services.get_users_settings(subscriber_ids)
+        subscribers_list = []
+        for index, subscriber_settings in enumerate(subscribers_settings):
+            subscriber_summary = {
+                'subscriber_picture_data_url': (
+                    subscriber_settings.profile_picture_data_url),
+                'subscriber_username': subscriber_settings.username,
+                'subscriber_impact': (
+                    user_services.get_user_impact_score(subscriber_ids[index]))
+            }
+
+            subscribers_list.append(subscriber_summary)
+
         self.values.update({
             'explorations_list': exp_summary_list,
             'collections_list': collection_summary_list,
-            'dashboard_stats': user_services.get_user_dashboard_stats(
-                self.user_id)
+            'dashboard_stats': dashboard_stats,
+            'last_week_stats': last_week_stats,
+            'subscribers_list': subscribers_list
         })
         self.render_json(self.values)
 
 
 class NotificationsHandler(base.BaseHandler):
     """Provides data about unseen notifications."""
+
+    GET_HANDLER_ERROR_RETURN_TYPE = feconf.HANDLER_TYPE_JSON
 
     def get(self):
         """Handles GET requests."""
@@ -252,10 +295,22 @@ class NotificationsHandler(base.BaseHandler):
         })
 
 
+class ExplorationDashboardStatsHandler(base.BaseHandler):
+    """Returns the most recent open feedback for an exploration."""
+
+    @base.require_fully_signed_up
+    def get(self, exploration_id):
+        """Handles GET requests."""
+        self.render_json({
+            'open_feedback': [
+                feedback_message.to_dict()
+                for feedback_message in
+                feedback_services.get_most_recent_messages(exploration_id)]
+        })
+
+
 class NewExploration(base.BaseHandler):
     """Creates a new exploration."""
-
-    PAGE_NAME_FOR_CSRF = feconf.CSRF_PAGE_NAME_CREATE_EXPLORATION
 
     @base.require_fully_signed_up
     def post(self):
@@ -275,8 +330,6 @@ class NewExploration(base.BaseHandler):
 class NewCollection(base.BaseHandler):
     """Creates a new collection."""
 
-    PAGE_NAME_FOR_CSRF = 'dashboard'
-
     @base.require_fully_signed_up
     def post(self):
         """Handles POST requests."""
@@ -292,8 +345,6 @@ class NewCollection(base.BaseHandler):
 
 class UploadExploration(base.BaseHandler):
     """Uploads a new exploration."""
-
-    PAGE_NAME_FOR_CSRF = 'dashboard'
 
     @base.require_fully_signed_up
     def post(self):

@@ -525,13 +525,13 @@ class CollectionCreateAndDeleteUnitTests(CollectionServicesUnitTests):
         self.assertIn(self.COLLECTION_ID, [
             collection.id
             for collection in collection_models.CollectionModel.get_all(
-                include_deleted_entities=True)])
+                include_deleted=True)])
 
         # The collection summary is deleted, however.
         self.assertNotIn(self.COLLECTION_ID, [
             collection.id
             for collection in collection_models.CollectionSummaryModel.get_all(
-                include_deleted_entities=True)])
+                include_deleted=True)])
 
     def test_hard_deletion_of_collections(self):
         """Test that hard deletion of collections works correctly."""
@@ -553,7 +553,7 @@ class CollectionCreateAndDeleteUnitTests(CollectionServicesUnitTests):
         self.assertNotIn(self.COLLECTION_ID, [
             collection.id
             for collection in collection_models.CollectionModel.get_all(
-                include_deleted_entities=True)])
+                include_deleted=True)])
 
     def test_summaries_of_hard_deleted_collections(self):
         """Test that summaries of hard deleted collections are
@@ -574,7 +574,7 @@ class CollectionCreateAndDeleteUnitTests(CollectionServicesUnitTests):
         self.assertNotIn(self.COLLECTION_ID, [
             collection.id
             for collection in collection_models.CollectionSummaryModel.get_all(
-                include_deleted_entities=True)])
+                include_deleted=True)])
 
     def test_collections_are_removed_from_index_when_deleted(self):
         """Tests that deleted collections are removed from the search index."""
@@ -642,6 +642,26 @@ class CollectionCreateAndDeleteUnitTests(CollectionServicesUnitTests):
         self.assertEqual(retrieved_collection_summary.title, 'A new title')
         self.assertEqual(
             retrieved_collection_summary.category, 'A new category')
+
+    def test_update_collection_by_migration_bot(self):
+        exp_id = 'exp_id'
+        self.save_new_valid_collection(
+            self.COLLECTION_ID, self.owner_id, exploration_id=exp_id)
+        rights_manager.publish_exploration(self.owner_id, exp_id)
+        rights_manager.publish_collection(self.owner_id, self.COLLECTION_ID)
+
+        # This should not give an error.
+        collection_services.update_collection(
+            feconf.MIGRATION_BOT_USER_ID, self.COLLECTION_ID, [{
+                'cmd': 'edit_collection_property',
+                'property_name': 'title',
+                'new_value': 'New title'
+            }], 'Did migration.')
+
+        # Check that the version of the collection is incremented
+        collection = collection_services.get_collection_by_id(
+            self.COLLECTION_ID)
+        self.assertEqual(collection.version, 2)
 
 
 class LoadingAndDeletionOfCollectionDemosTest(CollectionServicesUnitTests):
@@ -881,6 +901,17 @@ class UpdateCollectionNodeTests(CollectionServicesUnitTests):
         collection = collection_services.get_collection_by_id(
             self.COLLECTION_ID)
         self.assertEqual(collection.tags, ['test'])
+
+        # Verify that error will be thrown when duplicate tags are introduced.
+        with self.assertRaisesRegexp(
+            utils.ValidationError,
+            'Expected tags to be unique, but found duplicates'):
+            collection_services.update_collection(
+                self.owner_id, self.COLLECTION_ID, [{
+                    'cmd': collection_domain.CMD_EDIT_COLLECTION_PROPERTY,
+                    'property_name': 'tags',
+                    'new_value': ['duplicate', 'duplicate']
+                }], 'Add a new tag')
 
     def test_update_collection_node_prerequisite_skills(self):
         # Verify initial prerequisite skills are empty.
@@ -1678,18 +1709,18 @@ class CollectionSummaryTests(CollectionServicesUnitTests):
     COLLECTION_ID_1 = 'cid1'
     COLLECTION_ID_2 = 'cid2'
 
-    def test_is_collection_summary_editable(self):
+    def test_is_editable_by(self):
         self.save_new_default_collection(self.COLLECTION_ID, self.owner_id)
 
         # Check that only the owner may edit.
         collection_summary = collection_services.get_collection_summary_by_id(
             self.COLLECTION_ID)
-        self.assertTrue(collection_services.is_collection_summary_editable(
-            collection_summary, user_id=self.owner_id))
-        self.assertFalse(collection_services.is_collection_summary_editable(
-            collection_summary, user_id=self.editor_id))
-        self.assertFalse(collection_services.is_collection_summary_editable(
-            collection_summary, user_id=self.viewer_id))
+        self.assertTrue(collection_summary.is_editable_by(
+            user_id=self.owner_id))
+        self.assertFalse(collection_summary.is_editable_by(
+            user_id=self.editor_id))
+        self.assertFalse(collection_summary.is_editable_by(
+            user_id=self.viewer_id))
 
         # Owner makes viewer a viewer and editor an editor.
         rights_manager.assign_role_for_collection(
@@ -1702,12 +1733,12 @@ class CollectionSummaryTests(CollectionServicesUnitTests):
         # Check that owner and editor may edit, but not viewer.
         collection_summary = collection_services.get_collection_summary_by_id(
             self.COLLECTION_ID)
-        self.assertTrue(collection_services.is_collection_summary_editable(
-            collection_summary, user_id=self.owner_id))
-        self.assertTrue(collection_services.is_collection_summary_editable(
-            collection_summary, user_id=self.editor_id))
-        self.assertFalse(collection_services.is_collection_summary_editable(
-            collection_summary, user_id=self.viewer_id))
+        self.assertTrue(collection_summary.is_editable_by(
+            user_id=self.owner_id))
+        self.assertTrue(collection_summary.is_editable_by(
+            user_id=self.editor_id))
+        self.assertFalse(collection_summary.is_editable_by(
+            user_id=self.viewer_id))
 
     def test_contributor_ids(self):
         # Sign up two users.

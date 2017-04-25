@@ -16,9 +16,11 @@
 
 from core.controllers import dashboard
 from core.domain import event_services
+from core.domain import exp_services
 from core.domain import feedback_domain
 from core.domain import feedback_services
 from core.domain import rating_services
+from core.domain import subscription_services
 from core.domain import rights_manager
 from core.domain import stats_jobs_continuous_test
 from core.domain import user_jobs_continuous
@@ -41,8 +43,7 @@ class HomePageTest(test_utils.GenericTestBase):
         self.assertEqual(response.status_int, 302)
         self.assertIn('splash', response.headers['location'])
         response.follow().mustcontain(
-            'I18N_LIBRARY_PAGE_TITLE', 'I18N_SIDEBAR_ABOUT_LINK',
-            'I18N_TOPNAV_SIGN_IN', no=['I18N_TOPNAV_LOGOUT'])
+            'I18N_SIDEBAR_ABOUT_LINK', 'I18N_TOPNAV_SIGN_IN')
 
     def test_notifications_dashboard_redirects_for_logged_out_users(self):
         """Test the logged-out view of the notifications dashboard."""
@@ -111,8 +112,8 @@ class DashboardStatisticsTest(test_utils.GenericTestBase):
         """Create num_ratings ratings for exploration with exp_id,
         of values from ratings.
         """
-        # Each user id needs to be unique since each user can only give an
-        # exploration one rating.
+        # Generate unique user ids to rate an exploration. Each user id needs
+        # to be unique since each user can only give an exploration one rating.
         user_ids = ['user%d' % i for i in range(len(ratings))]
         self.process_and_flush_pending_tasks()
         for ind, user_id in enumerate(user_ids):
@@ -177,6 +178,7 @@ class DashboardStatisticsTest(test_utils.GenericTestBase):
         self.assertEquals(user_model.total_plays, 1)
         self.assertEquals(
             user_model.impact_score, self.USER_IMPACT_SCORE_DEFAULT)
+        self.assertEquals(user_model.num_ratings, 0)
         self.assertIsNone(user_model.average_ratings)
         self.logout()
 
@@ -196,6 +198,7 @@ class DashboardStatisticsTest(test_utils.GenericTestBase):
         self.assertEquals(user_model.total_plays, 0)
         self.assertEquals(
             user_model.impact_score, self.USER_IMPACT_SCORE_DEFAULT)
+        self.assertEquals(user_model.num_ratings, 1)
         self.assertEquals(user_model.average_ratings, 4)
         self.logout()
 
@@ -222,6 +225,7 @@ class DashboardStatisticsTest(test_utils.GenericTestBase):
         self.assertEquals(user_model.total_plays, 1)
         self.assertEquals(
             user_model.impact_score, self.USER_IMPACT_SCORE_DEFAULT)
+        self.assertEquals(user_model.num_ratings, 1)
         self.assertEquals(user_model.average_ratings, 3)
         self.logout()
 
@@ -250,6 +254,7 @@ class DashboardStatisticsTest(test_utils.GenericTestBase):
         self.assertEquals(user_model.total_plays, 4)
         self.assertEquals(
             user_model.impact_score, self.USER_IMPACT_SCORE_DEFAULT)
+        self.assertEquals(user_model.num_ratings, 3)
         self.assertEquals(user_model.average_ratings, 4)
         self.logout()
 
@@ -278,13 +283,13 @@ class DashboardStatisticsTest(test_utils.GenericTestBase):
         self.assertEquals(user_model.total_plays, 1)
         self.assertEquals(
             user_model.impact_score, self.USER_IMPACT_SCORE_DEFAULT)
+        self.assertEquals(user_model.num_ratings, 1)
         self.assertEquals(user_model.average_ratings, 4)
         self.logout()
 
     def test_multiple_plays_and_ratings_for_multiple_explorations(self):
         exploration_1 = self.save_new_default_exploration(
             self.EXP_ID_1, self.owner_id_1, title=self.EXP_TITLE_1)
-
         exploration_2 = self.save_new_default_exploration(
             self.EXP_ID_2, self.owner_id_1, title=self.EXP_TITLE_2)
 
@@ -302,17 +307,19 @@ class DashboardStatisticsTest(test_utils.GenericTestBase):
         self._record_start(exp_id_1, exp_version, state_1)
         self._record_start(exp_id_2, exp_version, state_2)
         self._record_start(exp_id_2, exp_version, state_2)
-        self._run_stats_aggregator_jobs()
 
         self._rate_exploration(exp_id_1, [4])
-        self._rate_exploration(exp_id_2, [3])
+        self._rate_exploration(exp_id_2, [3, 3])
 
+        self._run_stats_aggregator_jobs()
         self._run_user_stats_aggregator_job()
+
         user_model = user_models.UserStatsModel.get(self.owner_id_1)
         self.assertEquals(user_model.total_plays, 3)
         self.assertEquals(
             user_model.impact_score, self.USER_IMPACT_SCORE_DEFAULT)
-        self.assertEquals(user_model.average_ratings, 3.5)
+        self.assertEquals(user_model.num_ratings, 3)
+        self.assertEquals(user_model.average_ratings, 10/3.0)
         self.logout()
 
     def test_stats_for_single_exploration_with_multiple_owners(self):
@@ -351,6 +358,7 @@ class DashboardStatisticsTest(test_utils.GenericTestBase):
         self.assertEquals(user_model_1.total_plays, 2)
         self.assertEquals(
             user_model_1.impact_score, self.USER_IMPACT_SCORE_DEFAULT)
+        self.assertEquals(user_model_1.num_ratings, 3)
         self.assertEquals(user_model_1.average_ratings, 4)
 
         user_model_2 = user_models.UserStatsModel.get(
@@ -358,6 +366,7 @@ class DashboardStatisticsTest(test_utils.GenericTestBase):
         self.assertEquals(user_model_2.total_plays, 2)
         self.assertEquals(
             user_model_2.impact_score, self.USER_IMPACT_SCORE_DEFAULT)
+        self.assertEquals(user_model_2.num_ratings, 3)
         self.assertEquals(user_model_2.average_ratings, 4)
         self.logout()
 
@@ -389,17 +398,29 @@ class DashboardStatisticsTest(test_utils.GenericTestBase):
         self._record_start(exp_id_1, exp_version, state_1)
         self._record_start(exp_id_2, exp_version, state_2)
         self._record_start(exp_id_2, exp_version, state_2)
+        self._record_start(exp_id_2, exp_version, state_2)
         self._run_stats_aggregator_jobs()
 
-        self._rate_exploration(exp_id_1, [3])
-        self._rate_exploration(exp_id_2, [2])
+        self._rate_exploration(exp_id_1, [5, 3])
+        self._rate_exploration(exp_id_2, [5, 5])
 
         self._run_user_stats_aggregator_job()
+
+        expected_results = {
+            'total_plays': 5,
+            'num_ratings': 4,
+            'average_ratings': 18/4.0
+        }
+
         user_model_2 = user_models.UserStatsModel.get(self.owner_id_2)
-        self.assertEquals(user_model_2.total_plays, 4)
+        self.assertEquals(
+            user_model_2.total_plays, expected_results['total_plays'])
         self.assertEquals(
             user_model_2.impact_score, self.USER_IMPACT_SCORE_DEFAULT)
-        self.assertEquals(user_model_2.average_ratings, 2.5)
+        self.assertEquals(
+            user_model_2.num_ratings, expected_results['num_ratings'])
+        self.assertEquals(
+            user_model_2.average_ratings, expected_results['average_ratings'])
         self.logout()
 
         self.login(self.OWNER_EMAIL_1)
@@ -407,27 +428,47 @@ class DashboardStatisticsTest(test_utils.GenericTestBase):
         self.assertEqual(len(response['explorations_list']), 2)
 
         user_model_1 = user_models.UserStatsModel.get(self.owner_id_1)
-        self.assertEquals(user_model_1.total_plays, 4)
+        self.assertEquals(
+            user_model_1.total_plays, expected_results['total_plays'])
         self.assertEquals(
             user_model_1.impact_score, self.USER_IMPACT_SCORE_DEFAULT)
-        self.assertEquals(user_model_1.average_ratings, 2.5)
+        self.assertEquals(
+            user_model_1.num_ratings, expected_results['num_ratings'])
+        self.assertEquals(
+            user_model_1.average_ratings, expected_results['average_ratings'])
         self.logout()
+
 
 class DashboardHandlerTest(test_utils.GenericTestBase):
 
     COLLABORATOR_EMAIL = 'collaborator@example.com'
     COLLABORATOR_USERNAME = 'collaborator'
 
+    OWNER_EMAIL_1 = 'owner1@example.com'
+    OWNER_USERNAME_1 = 'owner1'
+    OWNER_EMAIL_2 = 'owner2@example.com'
+    OWNER_USERNAME_2 = 'owner2'
+
     EXP_ID = 'exp_id'
     EXP_TITLE = 'Exploration title'
+    EXP_ID_1 = 'exp_id_1'
+    EXP_TITLE_1 = 'Exploration title 1'
+    EXP_ID_2 = 'exp_id_2'
+    EXP_TITLE_2 = 'Exploration title 2'
+    EXP_ID_3 = 'exp_id_3'
+    EXP_TITLE_3 = 'Exploration title 3'
 
     def setUp(self):
         super(DashboardHandlerTest, self).setUp()
         self.signup(self.OWNER_EMAIL, self.OWNER_USERNAME)
+        self.signup(self.OWNER_EMAIL_1, self.OWNER_USERNAME_1)
+        self.signup(self.OWNER_EMAIL_2, self.OWNER_USERNAME_2)
         self.signup(self.COLLABORATOR_EMAIL, self.COLLABORATOR_USERNAME)
         self.signup(self.VIEWER_EMAIL, self.VIEWER_USERNAME)
 
         self.owner_id = self.get_user_id_from_email(self.OWNER_EMAIL)
+        self.owner_id_1 = self.get_user_id_from_email(self.OWNER_EMAIL_1)
+        self.owner_id_2 = self.get_user_id_from_email(self.OWNER_EMAIL_2)
         self.collaborator_id = self.get_user_id_from_email(
             self.COLLABORATOR_EMAIL)
         self.viewer_id = self.get_user_id_from_email(self.VIEWER_EMAIL)
@@ -436,6 +477,59 @@ class DashboardHandlerTest(test_utils.GenericTestBase):
         self.login(self.OWNER_EMAIL)
         response = self.get_json(feconf.DASHBOARD_DATA_URL)
         self.assertEqual(response['explorations_list'], [])
+        self.logout()
+
+    def test_no_explorations_and_visit_dashboard(self):
+        self.login(self.OWNER_EMAIL)
+        # Testing that creator only visit dashboard without any exploration
+        # created.
+        response = self.get_json(feconf.DASHBOARD_DATA_URL)
+        self.assertEqual(len(response['explorations_list']), 0)
+        self.logout()
+
+    def test_create_single_exploration_and_visit_dashboard(self):
+        self.login(self.OWNER_EMAIL)
+        self.save_new_default_exploration(
+            self.EXP_ID, self.owner_id, title=self.EXP_TITLE)
+        # Testing the quantity of exploration created and it should be 1.
+        response = self.get_json(feconf.DASHBOARD_DATA_URL)
+        self.assertEqual(len(response['explorations_list']), 1)
+        self.logout()
+
+    def test_create_two_explorations_delete_one_and_visit_dashboard(self):
+        self.login(self.OWNER_EMAIL_1)
+        self.save_new_default_exploration(
+            self.EXP_ID_1, self.owner_id_1, title=self.EXP_TITLE_1)
+        self.save_new_default_exploration(
+            self.EXP_ID_2, self.owner_id_1, title=self.EXP_TITLE_2)
+        # Testing the quantity of exploration and it should be 2.
+        response = self.get_json(feconf.DASHBOARD_DATA_URL)
+        self.assertEqual(len(response['explorations_list']), 2)
+        exp_services.delete_exploration(self.owner_id_1, self.EXP_ID_1)
+        # Testing whether 1 exploration left after deletion of previous one.
+        response = self.get_json(feconf.DASHBOARD_DATA_URL)
+        self.assertEqual(len(response['explorations_list']), 1)
+        self.logout()
+
+    def test_create_multiple_explorations_delete_all_and_visit_dashboard(self):
+        self.login(self.OWNER_EMAIL_2)
+        self.save_new_default_exploration(
+            self.EXP_ID_1, self.owner_id_2, title=self.EXP_TITLE_1)
+        self.save_new_default_exploration(
+            self.EXP_ID_2, self.owner_id_2, title=self.EXP_TITLE_2)
+        self.save_new_default_exploration(
+            self.EXP_ID_3, self.owner_id_2, title=self.EXP_TITLE_3)
+        # Testing for quantity of explorations to be 3.
+        response = self.get_json(feconf.DASHBOARD_DATA_URL)
+        self.assertEqual(len(response['explorations_list']), 3)
+        # Testing for deletion of all created previously.
+        exp_services.delete_exploration(self.owner_id_2, self.EXP_ID_1)
+        exp_services.delete_exploration(self.owner_id_2, self.EXP_ID_2)
+        exp_services.delete_exploration(self.owner_id_2, self.EXP_ID_3)
+        # All explorations have been deleted, so the dashboard query should not
+        # load any explorations.
+        response = self.get_json(feconf.DASHBOARD_DATA_URL)
+        self.assertEqual(len(response['explorations_list']), 0)
         self.logout()
 
     def test_managers_can_see_explorations(self):
@@ -546,6 +640,27 @@ class DashboardHandlerTest(test_utils.GenericTestBase):
 
         self.logout()
 
+    def test_can_see_subscribers(self):
+        self.login(self.OWNER_EMAIL)
+
+        response = self.get_json(feconf.DASHBOARD_DATA_URL)
+        self.assertEqual(len(response['subscribers_list']), 0)
+
+        # Subscribe to creator.
+        subscription_services.subscribe_to_creator(
+            self.viewer_id, self.owner_id)
+        response = self.get_json(feconf.DASHBOARD_DATA_URL)
+        self.assertEqual(len(response['subscribers_list']), 1)
+        self.assertEqual(
+            response['subscribers_list'][0]['subscriber_username'],
+            self.VIEWER_USERNAME)
+
+        # Unsubscribe from creator.
+        subscription_services.unsubscribe_from_creator(
+            self.viewer_id, self.owner_id)
+        response = self.get_json(feconf.DASHBOARD_DATA_URL)
+        self.assertEqual(len(response['subscribers_list']), 0)
+
 
 class NotificationsDashboardHandlerTest(test_utils.GenericTestBase):
 
@@ -620,8 +735,7 @@ class CreationButtonsTest(test_utils.GenericTestBase):
 
         response = self.testapp.get(feconf.DASHBOARD_URL)
         self.assertEqual(response.status_int, 200)
-        csrf_token = self.get_csrf_token_from_response(
-            response, token_type=feconf.CSRF_PAGE_NAME_CREATE_EXPLORATION)
+        csrf_token = self.get_csrf_token_from_response(response)
         exp_a_id = self.post_json(
             feconf.NEW_EXPLORATION_URL, {}, csrf_token
         )[dashboard.EXPLORATION_ID_KEY]

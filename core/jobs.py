@@ -130,6 +130,7 @@ class BaseJobManager(object):
 
         model.status_code = STATUS_CODE_QUEUED
         model.time_queued_msec = utils.get_current_time_in_millisecs()
+        model.additional_job_params = additional_job_params
         model.put()
 
         cls._post_enqueue_hook(job_id)
@@ -1081,7 +1082,7 @@ def get_data_for_recent_jobs(recency_msec=DEFAULT_RECENCY_MSEC):
     returned.
 
     Args:
-    - recency_secs: the threshold for a recent job, in seconds.
+        recency_msec: the threshold for a recent job, in milliseconds.
     """
     recent_job_models = job_models.JobModel.get_recent_jobs(
         NUM_JOBS_IN_DASHBOARD_LIMIT, recency_msec)

@@ -1,3 +1,6 @@
+<script src="{{cache_slug}}/extensions/interactions/NumericInput/NumericInput.js"></script>
+<script src="{{cache_slug}}/extensions/interactions/NumericInput/validator.js"></script>
+
 <script type="text/ng-template" id="interaction/NumericInput">
   <div class="row numeric-input-container">
     <form ng-submit="submitAnswer(answer)" role="form" class="form-horizontal">
@@ -6,6 +9,10 @@
           <schema-based-editor schema="NUMERIC_INPUT_FORM_SCHEMA" local-value="answer" label-for-focus-target="labelForFocusTarget">
           </schema-based-editor>
         </ng-form>
+
+        <button ng-click="submitAnswer(answer)" class="btn btn-default" style="margin-top: 15px;">
+          Submit
+        </button>
       </div>
     </form>
   </div>

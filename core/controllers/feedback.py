@@ -14,21 +14,20 @@
 
 """Controllers for the feedback thread page."""
 
-import json
-
 from core.controllers import base
 from core.controllers import editor
-from core.domain import email_manager
 from core.domain import exp_services
 from core.domain import feedback_services
 from core.platform import models
+import feconf
+
 
 transaction_services = models.Registry.import_transaction_services()
 
 class ThreadListHandler(base.BaseHandler):
     """Handles operations relating to feedback thread lists."""
 
-    PAGE_NAME_FOR_CSRF = 'editor'
+    GET_HANDLER_ERROR_RETURN_TYPE = feconf.HANDLER_TYPE_JSON
 
     def get(self, exploration_id):
         self.values.update({
@@ -60,7 +59,7 @@ class ThreadListHandler(base.BaseHandler):
 class ThreadHandler(base.BaseHandler):
     """Handles operations relating to feedback threads."""
 
-    PAGE_NAME_FOR_CSRF = 'editor'
+    GET_HANDLER_ERROR_RETURN_TYPE = feconf.HANDLER_TYPE_JSON
 
     def get(self, exploration_id, thread_id):  # pylint: disable=unused-argument
         suggestion = feedback_services.get_suggestion(exploration_id, thread_id)
@@ -100,6 +99,8 @@ class RecentFeedbackMessagesHandler(base.BaseHandler):
     explorations.
     """
 
+    GET_HANDLER_ERROR_RETURN_TYPE = feconf.HANDLER_TYPE_JSON
+
     @base.require_moderator
     def get(self):
         urlsafe_start_cursor = self.request.get('cursor')
@@ -121,6 +122,8 @@ class FeedbackStatsHandler(base.BaseHandler):
         - Number of total threads
     """
 
+    GET_HANDLER_ERROR_RETURN_TYPE = feconf.HANDLER_TYPE_JSON
+
     def get(self, exploration_id):
         feedback_thread_analytics = (
             feedback_services.get_thread_analytics(
@@ -137,8 +140,6 @@ class FeedbackStatsHandler(base.BaseHandler):
 class SuggestionHandler(base.BaseHandler):
     """"Handles operations relating to learner suggestions."""
 
-    PAGE_NAME_FOR_CSRF = 'player'
-
     @base.require_user
     def post(self, exploration_id):
         feedback_services.create_suggestion(
@@ -154,7 +155,6 @@ class SuggestionHandler(base.BaseHandler):
 class SuggestionActionHandler(base.BaseHandler):
     """"Handles actions performed on threads with suggestions."""
 
-    PAGE_NAME_FOR_CSRF = 'editor'
     _ACCEPT_ACTION = 'accept'
     _REJECT_ACTION = 'reject'
 
@@ -179,10 +179,11 @@ class SuggestionActionHandler(base.BaseHandler):
 class SuggestionListHandler(base.BaseHandler):
     """Handles operations relating to list of threads with suggestions."""
 
-    PAGE_NAME_FOR_CSRF = 'editor'
     _LIST_TYPE_OPEN = 'open'
     _LIST_TYPE_CLOSED = 'closed'
     _LIST_TYPE_ALL = 'all'
+
+    GET_HANDLER_ERROR_RETURN_TYPE = feconf.HANDLER_TYPE_JSON
 
     def _string_to_bool(self, has_suggestion):
         if has_suggestion == 'true':
@@ -217,38 +218,16 @@ class SuggestionListHandler(base.BaseHandler):
         self.render_json(self.values)
 
 
-class UnsentFeedbackEmailHandler(base.BaseHandler):
-    """Handler task of sending emails of feedback messages."""
+class FeedbackThreadViewEventHandler(base.BaseHandler):
+    """Records when the given user views a feedback thread, in order to clear
+    viewed feedback messages from emails that might be sent in future to this
+    user."""
 
+    @base.require_user
     def post(self):
-        payload = json.loads(self.request.body)
-        user_id = payload['user_id']
-        references = feedback_services.get_feedback_message_references(user_id)
+        exploration_id = self.payload.get('exploration_id')
+        thread_id = self.payload.get('thread_id')
         transaction_services.run_in_transaction(
-            feedback_services.update_feedback_email_retries, user_id)
-
-        messages = {}
-        for reference in references:
-            message = feedback_services.get_message(
-                reference.exploration_id, reference.thread_id,
-                reference.message_id)
-
-            exploration = exp_services.get_exploration_by_id(
-                reference.exploration_id)
-
-            message_text = message.text
-            if len(message_text) > 200:
-                message_text = message_text[:200] + '...'
-
-            if exploration.id in messages:
-                messages[exploration.id]['messages'].append(message_text)
-            else:
-                messages[exploration.id] = {
-                    'title': exploration.title,
-                    'messages': [message_text]
-                }
-
-        email_manager.send_feedback_message_email(user_id, messages)
-        transaction_services.run_in_transaction(
-            feedback_services.pop_feedback_message_references, user_id,
-            len(references))
+            feedback_services.clear_feedback_message_references, self.user_id,
+            exploration_id, thread_id)
+        self.render_json(self.values)

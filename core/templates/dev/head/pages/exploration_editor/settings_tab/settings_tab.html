@@ -1,0 +1,642 @@
+<div ng-controller="SettingsTab">
+  <md-card class="oppia-editor-card">
+    <h3>Basic Settings</h3>
+    <div class="row">
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <div ng-if="editabilityService.isEditable()">
+          <div role="form" class="form-horizontal">
+            <div class="form-group" ng-class="{'has-error': !explorationTitleService.displayed}">
+              <label for="explorationTitle" class="col-lg-2 col-md-2 col-sm-2">Title</label>
+              <div class="col-lg-10 col-md-10 col-sm-10">
+                <input id="explorationTitle" type="text" class="form-control protractor-test-exploration-title-input" ng-model="explorationTitleService.displayed" ng-blur="saveExplorationTitle()" placeholder="Choose a title for your exploration." focus-on="<[::EXPLORATION_TITLE_INPUT_FOCUS_LABEL]>" maxlength="40" ng-trim="false">
+                <span class="help-block" style="font-size: smaller">
+                  <em>Please use at most 40 characters, so that this fits in the summary card.</em>
+                  <span ng-if="explorationTitleService.displayed.length > 0">
+                    <em>Characters used: <[(explorationTitleService.displayed.length)]>/40</em>
+                  </span>
+                </span>
+              </div>
+            </div>
+            <div class="form-group" ng-class="{'has-error': !explorationObjectiveService.displayed || ((explorationObjectiveService.displayed.length < 15) || (explorationObjectiveService.displayed.length > 100))}">
+              <label for="explorationObjective" class="col-lg-2 col-md-2 col-sm-2">Goal</label>
+              <div class="col-lg-10 col-md-10 col-sm-10">
+                <input id="explorationObjective" type="text"
+                       class="form-control protractor-test-exploration-objective-input"
+                       ng-model="explorationObjectiveService.displayed"
+                       ng-blur="saveExplorationObjective()" placeholder="Learn how to..." ng-trim="false">
+                <span class="help-block" style="font-size: smaller">
+                  <em>In a complete sentence, tell people what they'll learn from this exploration.</em>
+                  <span ng-if="explorationObjectiveService.displayed.length > 0">
+                    <em>Characters used: <[(explorationObjectiveService.displayed.length)]>/100</em>
+                  </span>
+                </span>
+                            </div>
+                        </div>
+
+                        <div class="form-group" ng-class="{'has-error': !explorationCategoryService.displayed}">
+                            <label for="explorationCategory" class="col-lg-2 col-md-2 col-sm-2">分类</label>
+                            <div class="col-lg-10 col-md-10 col-sm-10">
+                                <div ng-if="hasPageLoaded">
+                                    <select2-dropdown id="explorationCategory"
+                                                      class="protractor-test-exploration-category-input"
+                                                      item="explorationCategoryService.displayed"
+                                                      choices="CATEGORY_LIST_FOR_SELECT2"
+                                                      placeholder="Choose or type new"
+                                                      new-choice-regex="^[A-Z a-z]+$"
+                                                      on-selection-change="saveExplorationCategory()"
+                                                      width="100%"
+                                                      invalid-search-term-message="分类无效">
+                                    </select2-dropdown>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="explorationLanguageCode" class="col-lg-2 col-md-2 col-sm-2">语言</label>
+                            <div class="col-lg-10 col-md-10 col-sm-10">
+                                <select id="explorationLanguageCode"
+                                        class="form-control protractor-test-exploration-language-select"
+                                        ng-model="explorationLanguageCodeService.displayed"
+                                        ng-change="saveExplorationLanguageCode()"
+                                        ng-options="lc.code as lc.description for lc in explorationLanguageCodeService.getAllLanguageCodes()">
+                                </select>
+                                <!--<span class="help-block" style="font-size: smaller">
+                                  <em>
+                                    没有看到相关语言 <a href="https://github.com/oppia/oppia/issues/new?title=Please%20add%20a%20new%20language%20choice%20to%20the%20exploration%20settings%20tab&body=Please%20add%20the%20language%20choice%20%7B%7BYOUR_LANGUAGE_HERE%7D%7D%20to%20the%20exploration%20settings%20tab.%0A%0AHere%20is%20a%20link%20to%20an%20exploration%20that%20uses%20it:%20%7B%7BINSERT_LINK_HERE%7D%7D" target="_blank">告诉我们.</a>
+                                  </em>
+                                </span>-->
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="explorationInitStateName" class="col-lg-2 col-md-2 col-sm-2">第一张卡片名称</label>
+                            <div class="col-lg-10 col-md-10 col-sm-10">
+                                <select id="explorationInitStateName"
+                                        class="form-control protractor-test-initial-state-select"
+                                        ng-model="explorationInitStateNameService.displayed"
+                                        ng-change="saveExplorationInitStateName()"
+                                        ng-options="name as name for name in stateNames track by name">
+                                </select>
+                                <span class="help-block" style="font-size: smaller">
+                  <em>这是课程的第一张卡片.</em>
+                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="explorationTags" class="col-lg-2 col-md-2 col-sm-2">标签</label>
+                            <div class="col-lg-10 col-md-10 col-sm-10">
+                                <div ng-if="hasPageLoaded">
+                                    <select2-dropdown
+                                            item="$parent.explorationTagsService.displayed"
+                                            tag-mode="true" allow-multiple-choices="true"
+                                            invalid-search-term-message="添加新的标签..."
+                                            new-choice-regex="<[::TAG_REGEX]>" width="100%"
+                                            placeholder="技能, 定义, 主题, ..."
+                                            on-selection-change="saveExplorationTags()">
+                                    </select2-dropdown>
+                                </div>
+                                <span class="help-block" style="font-size: smaller">
+                  <em>标签能够帮助学生在搜索课程的时候找到课程.</em>
+                </span>
+              </div>
+            </div>
+          <divclass="text-right">
+              <button type="button" class="btn btn-default protractor-test-open-preview-summary-modal"
+                      ng-click="previewSummaryTile()"
+                      title="Preview this exploration's summary card">
+                预览
+              </button>
+            </div>
+          </div>
+        </div>
+
+                <div ng-if="!editabilityService.isEditable()">
+                    <div class="row">
+                        <div class="col-lg-2 col-md-2 col-sm-2">
+                            <label for="explorationTitle">
+                                标题
+                            </label>
+                        </div>
+                        <div class="col-lg-10 col-md-10 col-sm-10">
+              <span id="explorationTitle" type="text">
+                <[explorationTitleService.displayed]>
+              </span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-2 col-md-2 col-sm-2">
+                            <label for="explorationObjective">
+                                目标
+                            </label>
+                        </div>
+                        <div class="col-lg-10 col-md-10 col-sm-10">
+              <span id="explorationObjective" type="text">
+                <[explorationObjectiveService.displayed]>
+              </span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-2 col-md-2 col-sm-2">
+                            <label for="explorationCategory">
+                                类别
+                            </label>
+                        </div>
+                        <div class="col-lg-10 col-md-10 col-sm-10">
+              <span id="explorationCategory" type="text">
+                <[explorationCategoryService.displayed]>
+              </span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-2 col-md-2 col-sm-2">
+                            <label for="explorationLanguageCode">语言</label>
+                        </div>
+                        <div class="col-lg-10 col-md-10 col-sm-10">
+                            <[explorationLanguageCodeService.getCurrentLanguageDescription()]>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-2 col-md-2 col-sm-2">
+                            <label for="explorationInitStateName">First State</label>
+                        </div>
+                        <div class="col-lg-10 col-md-10 col-sm-10">
+                            <[explorationInitStateNameService.displayed]>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </md-card>
+
+    <md-card class="oppia-editor-card" ng-if="editabilityService.isEditable()">
+        <h3>其他设置</h3>
+        <div class="row">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div role="form" class="form-horizontal">
+                        <label for="enableFallbacks" class="col-lg-2 col-md-2 col-sm-2">
+                            回退
+                        </label>
+                        <span class="col-lg-2 col-md-2 col-sm-2">
+              <button type="button" class="btn btn-default protractor-test-enable-fallbacks"
+                      ng-click="enableFallbacks()" ng-if="!areFallbacksEnabled()">
+                启用
+              </button>
+              <span ng-if="areFallbacksEnabled()">
+                启用
+              </span>
+            </span>
+                        <span class="col-lg-8 col-md-8 col-sm-8 help-block" style="font-size: smaller;">
+              如果一个学习者看起来卡住，您可以触发特殊情况，例如如果他们得到一个错误的问题很多次。
+            </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div role="form" class="form-horizontal">
+                        <label for="enableGadgets" class="col-lg-2 col-md-2 col-sm-2">
+                            部件
+                        </label>
+                        <span class="col-lg-2 col-md-2 col-sm-2">
+              <button type="button" class="btn btn-default protractor-test-enable-gadgets" ng-click="enableGadgets()"
+                      ng-if="!areGadgetsEnabled()">
+                启用
+              </button>
+              <span ng-if="areGadgetsEnabled()">
+                启用
+              </span>
+            </span>
+                        <span class="col-lg-8 col-md-8 col-sm-8 help-block" style="font-size: smaller;">
+              自定义组件
+            </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div role="form" class="form-horizontal">
+                        <label for="enableParameters" class="col-lg-2 col-md-2 col-sm-2">
+                            参数
+                        </label>
+                        <span class="col-lg-2 col-md-2 col-sm-2">
+              <button type="button" class="btn btn-default protractor-test-enable-parameters"
+                      ng-click="enableParameters()" ng-if="!areParametersEnabled()">
+                启用
+              </button>
+              <span ng-if="areParametersEnabled()">
+                启用
+              </span>
+            </span>
+                        <span class="col-lg-8 col-md-8 col-sm-8 help-block" style="font-size: smaller;">
+              值将在卡片之间该发生改变 (<a href="http://oppia.github.io/#/Parameters" target="_blank">more info</a>).
+            </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </md-card>
+
+    <md-card class="oppia-editor-card">
+        <div ng-if="explorationRightsService.ownerNames.length > 0 && !explorationRightsService.isCloned()">
+            <div class="row">
+                <div class="col-lg-5 col-md-5 col-sm-5">
+                    <h3>角色</h3>
+                    <div ng-show="explorationRightsService.ownerNames.length > 0">
+                        <strong>管理员</strong>
+                        <ul>
+                            <li ng-repeat="ownerName in explorationRightsService.ownerNames track by $index">
+                                <[ownerName]>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div ng-show="explorationRightsService.editorNames.length > 0">
+                        <strong>参与人</strong>
+                        <ul>
+                            <li ng-repeat="editorName in explorationRightsService.editorNames track by $index">
+                                <[editorName]>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div ng-show="explorationRightsService.viewerNames.length > 0">
+                        <strong>测试</strong>
+                        <ul>
+                            <li ng-repeat="viewerName in explorationRightsService.viewerNames track by $index">
+                                <[viewerName]>
+                            </li>
+                        </ul>
+                    </div>
+
+
+                    {% if can_modify_roles %}
+                    <div ng-hide="isRolesFormOpen">
+                        <button type="button" class="btn btn-default protractor-test-edit-roles"
+                                ng-click="openEditRolesForm()">
+                            编辑权限
+                        </button>
+                    </div>
+
+                    <div ng-show="isRolesFormOpen">
+                        <strong>添加或修改人员</strong>
+                        <div class="form-group">
+                            <form ng-submit="editRole(newMemberUsername, newMemberRole.value)">
+                                <label for="newMemberUsername">参与人</label>
+                                <div>
+                                    <input type="text" id="newMemberUsername"
+                                           class="form-control protractor-test-role-username"
+                                           ng-model="newMemberUsername" placeholder="{{username}}">
+                                </div>
+                                <br>
+                                <label for="newMemberRole">参与人角色</label>
+                                <div>
+                                    <select ng-model="newMemberRole" class="form-control protractor-test-role-select"
+                                            ng-options="r.name for r in ROLES" style="width: 250px;">
+                                    </select>
+                                    <span class="help-block">
+                      请注意，管理者也有参与人的权限, 参与人也有查看的权限.请注意，角色分配是不可逆 (虽然你可以随时有人分配到一个更高的角色).
+                    </span>
+                                </div>
+
+                                <input type="submit" class="btn btn-default protractor-test-save-role" value="保存">
+                                <button type="button" class="btn btn-default" ng-click="closeEditRolesForm()"
+                                        ng-show="isRolesFormOpen">
+                                    取消
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="col-lg-7 col-md-7 col-sm-7">
+                    <h3>权限</h3>
+                    <p ng-if="explorationRightsService.isPrivate() &&explorationRightsService.viewableIfPrivate()">
+                        课程 <strong>未发布</strong>. 任何人可以访问.
+                    </p>
+                    <p ng-if="explorationRightsService.isPrivate() &&!explorationRightsService.viewableIfPrivate()">
+                        课程 <strong>未发布</strong>. 只有被邀请人，版主和网站管理员可以访问。
+                    </p>
+                    <p ng-if="!explorationRightsService.isPrivate()">
+                        课程 <strong>已发布</strong>: 任何人可以访问.
+                    </p>
+
+                    <p ng-if="!explorationRightsService.isPrivate() || explorationRightsService.viewableIfPrivate()">
+                        <em>分享链接:</em>
+                        <input class="form-control" type="text" value="<[getExplorePageUrl(explorationId)]>"
+                               readonly="readonly" onClick="this.select();">
+                    </p>
+
+                    <br>
+
+                    <p ng-if="explorationRightsService.isPrivate()">
+                        课程 <strong>不显示</strong> 在课程列表.
+                    </p>
+                    <p ng-if="!explorationRightsService.isPrivate()">
+                        课程 <strong>显示</strong> 在课程列表.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div ng-if="explorationRightsService.ownerNames.length === 0 && !explorationRightsService.isCloned()">
+            <h3>权限</h3>
+            <div>
+                课程是 <strong>发布的</strong> 并且 <strong>可编辑</strong>.
+                <p ng-if="!explorationRightsService.isPrivate()">
+                    课程 <strong>显示</strong> 在课程列表.
+                </p>
+            </div>
+        </div>
+
+        <div ng-if="explorationRightsService.isCloned()">
+            <h3>状态</h3>
+            <div>
+                这个课程 <strong>复制</strong> 自另外一个课程.
+            </div>
+        </div>
+    </md-card>
+
+    <md-card class="oppia-editor-card">
+    <h3>Feedback/Suggestion Email Preferences</h3>
+    <div class="row">
+      <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <div role="form" class="form-horizontal">
+            <label for="FeedbackNotifications" class="col-lg-3 col-md-3 col-sm-3">
+              Feedback emails
+            </label>
+            <span class="col-lg-2 col-md-2 col-sm-2">
+              <button type="button" class="btn btn-default protractor-test-enable-fallbacks"
+                      ng-click="muteFeedbackNotifications()" ng-if="!UserEmailPreferencesService.areFeedbackNotificationsMuted()">
+                 Mute
+              </button>
+              <button type="button" class="btn btn-default protractor-test-enable-fallbacks"
+                      ng-click="unmuteFeedbackNotifications()" ng-if="UserEmailPreferencesService.areFeedbackNotificationsMuted()">
+                 Unmute
+              </button>
+            </span>
+            <span class="col-lg-7 col-md-7 col-sm-7 help-block" style="font-size: smaller;"
+                  ng-if="!UserEmailPreferencesService.areFeedbackNotificationsMuted()">
+              You are currently receiving notifications of new feedback for this exploration.
+            </span>
+            <span class="col-lg-7 col-md-7 col-sm-7 help-block" style="font-size: smaller;"
+                  ng-if="UserEmailPreferencesService.areFeedbackNotificationsMuted()">
+              You have muted feedback notifications for this exploration. You will not receive an email when new feedback is submitted.
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <div role="form" class="form-horizontal">
+            <label for="SuggestionNotifications" class="col-lg-3 col-md-3 col-sm-3">
+              Suggestion emails
+            </label>
+            <span class="col-lg-2 col-md-2 col-sm-2">
+              <button type="button" class="btn btn-default protractor-test-enable-fallbacks"
+                      ng-click="muteSuggestionNotifications()" ng-if="!UserEmailPreferencesService.areSuggestionNotificationsMuted()">
+                 Mute
+              </button>
+              <button type="button" class="btn btn-default protractor-test-enable-fallbacks"
+                      ng-click="unmuteSuggestionNotifications()" ng-if="UserEmailPreferencesService.areSuggestionNotificationsMuted()">
+                 Unmute
+              </button>
+            </span>
+            <span class="col-lg-7 col-md-7 col-sm-7 help-block" style="font-size: smaller;"
+                  ng-if="!UserEmailPreferencesService.areSuggestionNotificationsMuted()">
+              You are currently receiving notifications of new suggestions for this exploration.
+            </span>
+            <span class="col-lg-7 col-md-7 col-sm-7 help-block" style="font-size: smaller;"
+                  ng-if="UserEmailPreferencesService.areSuggestionNotificationsMuted()">
+              You have muted suggestion notifications for this exploration. You will not receive an email when new suggestion is submitted.
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </md-card>
+
+  <md-card class="oppia-editor-card" ng-if="editabilityService.isEditable()">
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <h3>控制</h3>
+
+                {% if can_release_ownership %}
+                <p class="oppia-exploration-ctrl" ng-hide="explorationRightsService.isCommunityOwned()">
+                    <button type="button" class="btn btn-default" ng-click="showTransferExplorationOwnershipModal()"
+                            ng-disabled="isExplorationLockedForEditing()">
+                        公开编辑
+                    </button>
+                    <span ng-if="isExplorationLockedForEditing()">
+              <br>
+              请先保存更改内容.
+            </span>
+                </p>
+                {% endif %}
+
+                {% if can_delete %}
+                <p class="oppia-exploration-ctrl">
+                    <button type="button" ng-if="explorationRightsService.isPrivate()"
+                            class="btn btn-danger" ng-click="deleteExploration()"
+                            title="Delete this exploration">
+                        删除课程
+                    </button>
+                </p>
+                {% endif %}
+            </div>
+
+            <div class="col-lg-6 col-md-6 col-sm-6" ng-if="currentUserIsAdmin || currentUserIsModerator">
+                <h3>管理控制</h3>
+
+                {% if can_publicize %}
+                <p class="oppia-exploration-ctrl oppia-exploration-ctrl-admin"
+                   ng-show="explorationRightsService.isPublic()">
+                    <button type="button" class="btn btn-default protractor-test-mark-exploration-featured"
+                            ng-click="publicizeExplorationAsModerator()" ng-disabled="isExplorationLockedForEditing()">
+                        提高搜索排名
+                        <span ng-if="currentUserIsAdmin">(系统管理员)</span>
+                        <span ng-if="!currentUserIsAdmin && currentUserIsModerator">(课程管理员)</span>
+                    </button>
+                </p>
+                {% endif %}
+
+                {% if can_unpublicize %}
+                <p class="oppia-exploration-ctrl oppia-exploration-ctrl-admin"
+                   ng-show="explorationRightsService.isPublicized()">
+                    <button type="button" class="btn btn-default" ng-click="unpublicizeExplorationAsModerator()"
+                            ng-disabled="isExplorationLockedForEditing()">
+                        删除搜索排名提升
+                        <span ng-if="currentUserIsAdmin">(系统管理员)</span>
+                        <span ng-if="!currentUserIsAdmin && currentUserIsModerator">(课程管理员)</span>
+                    </button>
+                </p>
+                {% endif %}
+
+                {% if can_unpublish %}
+                <p class="oppia-exploration-ctrl oppia-exploration-ctrl-admin"
+                   ng-show="explorationRightsService.isPublic()">
+                    <button type="button" class="btn btn-default" ng-click="unpublishExplorationAsModerator()"
+                            ng-disabled="isExplorationLockedForEditing()">
+                        取消发布
+                        <span ng-if="currentUserIsAdmin">(系统管理员)</span>
+                        <span ng-if="!currentUserIsAdmin && currentUserIsModerator">(课程管理员)</span>
+                    </button>
+                </p>
+                {% endif %}
+
+                <p class="oppia-exploration-ctrl oppia-exploration-ctrl-admin"
+                   ng-if="explorationRightsService.isPublic() && (currentUserIsAdmin || currentUserIsModerator)">
+                    <button type="button" class="btn btn-danger"
+                            ng-click="deleteExploration()">
+                        删除课程
+                        <span ng-if="currentUserIsAdmin">(系统管理员)</span>
+                        <span ng-if="!currentUserIsAdmin && currentUserIsModerator">(课程管理员)</span>
+                    </button>
+                </p>
+            </div>
+        </div>
+    </md-card>
+
+    <md-card class="oppia-editor-card" ng-if="areParametersEnabled()">
+        <h3>课程参数</h3>
+
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div ng-show="isEmpty(explorationParamSpecsService.savedMemento)">
+                    <em>没有参数设置.</em>
+                </div>
+                <ol>
+                    <li ng-repeat="(paramName, paramSpecValue) in explorationParamSpecsService.savedMemento">
+                        <b><[paramName]></b> (<[paramSpecValue.obj_type]>)
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+        <h3>
+            初始参数的变化
+            <i class="material-icons md-18"
+               tooltip="These changes are applied before the learner begins the exploration."
+               tooltip-placement="right" style="padding-left: 4px; vertical-align: text-top;">&#xE88E;</i>
+        </h3>
+
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 protractor-test-exploration-edit-param-changes">
+                <param-changes-editor param-changes-service="explorationParamChangesService"
+                                      post-save-hook="postSaveParamChangesHook">
+                </param-changes-editor>
+            </div>
+        </div>
+    </md-card>
+</div>
+
+
+<script type="text/ng-template" id="modals/transferExplorationOwnership">
+    <div class="modal-header">
+        <h3>公开编辑</h3>
+    </div>
+
+    <div class="modal-body">
+        <p>
+            您正在公开编辑权限，这意味着课程可以自由被所有人编辑，您之前发布的内容可以在历史中查看。
+        </p>
+
+        <p>
+            请注意权限公开后不再有明确的所有人，所有操作
+            <strong>不可撤回</strong>.
+        </p>
+
+        <p>
+            您要继续操作吗?
+        </p>
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-success" ng-click="transfer()">确定</button>
+        <button class="btn btn-default" ng-click="cancel()">取消</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="modals/takeModeratorAction">
+    <div class="modal-header">
+        <h3 ng-if="action === 'unpublish_exploration'">取消发布 (管理员)</h3>
+        <h3 ng-if="action === 'publicize_exploration'">提升课程排名 (课程管理员)</h3>
+    </div>
+
+    <div class="modal-body">
+        <p ng-if="action === 'unpublish_exploration'">
+            您即将取消发布课程.
+        </p>
+        <p ng-if="action === 'publicize_exploration'">
+            在检索结果中给这个课程提升排名。
+        </p>
+
+        <div ng-if="willEmailBeSent">
+            <br>
+            <p>
+                给所有课程所有人发送邮件
+                <!--Doing so will send the following email to all exploration owners;
+                please edit it as needed. (NB: do not include a salutation or a
+                signoff -- the text "Hi [username]" and "Thanks! [your username] (Oppia moderator)" will
+                be auto-added.)-->
+            </p>
+
+            <schema-based-editor schema="EMAIL_BODY_SCHEMA" local-value="$parent.emailBody">
+            </schema-based-editor>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-default" ng-click="cancel()">取消</button>
+        <button class="btn btn-success" ng-click="reallyTakeAction()">
+            <span ng-if="action === 'unpublish_exploration'">取消发布</span>
+            <span ng-if="action === 'publicize_exploration'"
+                  class="protractor-test-feature-exploration-button">提升排名</span>
+        </button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="modals/deleteExploration">
+    <div class="modal-header">
+        <h3>删除课程</h3>
+    </div>
+
+    <div class="modal-body">
+        <p>确定要删除课程吗? <strong>操作不可恢复.</strong></p>
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-default" ng-click="cancel()">取消</button>
+        <button class="btn btn-danger" ng-click="reallyDelete()">删除</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="modals/previewSummaryTile">
+  <div class="modal-header">
+    <h3>Preview Summary Card</h3>
+  </div>
+
+  <div class="modal-body text-center">
+    This is how your activity will appear to learners in search results
+    or the library.
+    <exploration-summary-tile exploration-title="getExplorationTitle()"
+                              objective="getExplorationObjective()"
+                              category="getExplorationCategory()"
+                              thumbnail-icon-url="getThumbnailIconUrl()"
+                              thumbnail-bg-color="getThumbnailBgColor()"
+                              class="protractor-test-exploration-summary-tile">
+    </exploration-summary-tile>
+  </div>
+
+  <div class="modal-footer">
+    <button class="btn btn-default protractor-test-close-preview-summary-modal" ng-click="close()">Return to editor</button>
+  </div>
+</script>

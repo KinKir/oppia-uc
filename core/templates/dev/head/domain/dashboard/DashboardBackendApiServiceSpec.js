@@ -18,50 +18,73 @@
 
 describe('Dashboard backend API service', function() {
   var DashboardBackendApiService = null;
-  var sampleDataResults = null;
   var $httpBackend = null;
+  var SAMPLE_EXP_ID = 'hyuy4GUlvTqJ';
+
+  var sampleDataResults = {
+    explorations_list: [{
+      id: SAMPLE_EXP_ID,
+      title: 'Sample Title',
+      activity_type: 'exploration',
+      category: 'Computing',
+      objective: 'Sample objective',
+      language_code: 'en',
+      created_on_msec: 1466178691847.67,
+      last_updated_msec: 1466178759209.839,
+      status: 'public',
+      rating: {
+        5: 0,
+        4: 1,
+        3: 0,
+        2: 0,
+        1: 0
+      },
+      community_owned: false,
+      tags: '',
+      thumbnail_icon_url: '/subjects/Computing.svg',
+      thumbnail_bg_color: '#bb8b2f',
+      num_views: 2,
+      num_open_threads: 0,
+      num_total_threads: 0,
+      num_unresolved_answers: 2,
+      top_unresolved_answers: [
+        {
+          state: 'Introduction',
+          value: '40',
+          count: 2
+        },
+        {
+          state: 'Introduction',
+          value: '20',
+          count: 1
+        }
+      ]
+    }],
+    collections_list: [],
+    dashboard_stats: {
+      total_plays: 10,
+      num_ratings: 1,
+      average_ratings: 4.0,
+      total_open_feedback: 5
+    },
+    last_week_stats: {
+      total_plays: 2,
+      average_ratings: 3.5,
+      num_ratings: 3,
+      total_open_feedback: 1
+    }
+  };
+
+  var DASHBOARD_DATA_URL = '/dashboardhandler/data';
+  var ERROR_STATUS_CODE = 500;
 
   beforeEach(module('oppia'));
   beforeEach(module('oppia', GLOBALS.TRANSLATOR_PROVIDER_FOR_TESTS));
 
   beforeEach(inject(function($injector) {
     DashboardBackendApiService = $injector.get('DashboardBackendApiService');
+    UrlInterpolationService = $injector.get('UrlInterpolationService');
     $httpBackend = $injector.get('$httpBackend');
-
-    // Sample dashboard data returnable from the backend
-    sampleDataResults = {
-      explorations_list: [{
-        id: 'hyuy4GUlvTqJ',
-        title: 'Sample Title',
-        activity_type: 'exploration',
-        category: 'Computing',
-        objective: 'Sample objective',
-        language_code: 'en',
-        created_on_msec: 1466178691847.67,
-        last_updated_msec: 1466178759209.839,
-        status: 'public',
-        ratings: {
-          5: 0,
-          4: 1,
-          3: 0,
-          2: 0,
-          1: 0
-        },
-        community_owned: false,
-        tags: '',
-        thumbnail_icon_url: '/images/subjects/Computing.svg',
-        thumbnail_bg_color: '#bb8b2f',
-        num_views: 2,
-        num_open_threads: 0,
-        num_total_threads: 0,
-        num_unresolved_answers: 2
-      }],
-      collections_list: [],
-      dashboard_stats: {
-        total_plays: 10,
-        average_ratings: 4.0
-      }
-    };
   }));
 
   afterEach(function() {
@@ -70,33 +93,34 @@ describe('Dashboard backend API service', function() {
   });
 
   it('should successfully fetch an creator dashboard data from the backend',
-      function() {
-    var successHandler = jasmine.createSpy('success');
-    var failHandler = jasmine.createSpy('fail');
+    function() {
+      var successHandler = jasmine.createSpy('success');
+      var failHandler = jasmine.createSpy('fail');
 
-    $httpBackend.expect('GET', '/dashboardhandler/data').respond(
-      sampleDataResults);
-    DashboardBackendApiService.fetchDashboardData().then(
-      successHandler, failHandler);
-    $httpBackend.flush();
+      $httpBackend.expect('GET', DASHBOARD_DATA_URL).respond(
+        sampleDataResults);
+      DashboardBackendApiService.fetchDashboardData().then(
+        successHandler, failHandler);
+      $httpBackend.flush();
 
-    expect(successHandler).toHaveBeenCalledWith(sampleDataResults);
-    expect(failHandler).not.toHaveBeenCalled();
-  });
+      expect(successHandler).toHaveBeenCalled();
+      expect(failHandler).not.toHaveBeenCalled();
+    }
+  );
 
-  it('should use the rejection handler if the backend request failed',
-      function() {
-    var successHandler = jasmine.createSpy('success');
-    var failHandler = jasmine.createSpy('fail');
+  it('should use rejection handler if dashboard data backend request failed',
+    function() {
+      var successHandler = jasmine.createSpy('success');
+      var failHandler = jasmine.createSpy('fail');
 
-    var ERROR_STATUS_CODE = 500;
-    $httpBackend.expect('GET', '/dashboardhandler/data').respond(
-      ERROR_STATUS_CODE, 'Error loading dashboard data.');
-    DashboardBackendApiService.fetchDashboardData().then(
-      successHandler, failHandler);
-    $httpBackend.flush();
+      $httpBackend.expect('GET', DASHBOARD_DATA_URL).respond(
+        ERROR_STATUS_CODE, 'Error loading dashboard data.');
+      DashboardBackendApiService.fetchDashboardData().then(
+        successHandler, failHandler);
+      $httpBackend.flush();
 
-    expect(successHandler).not.toHaveBeenCalled();
-    expect(failHandler).toHaveBeenCalledWith(ERROR_STATUS_CODE);
-  });
+      expect(successHandler).not.toHaveBeenCalled();
+      expect(failHandler).toHaveBeenCalled();
+    }
+  );
 });

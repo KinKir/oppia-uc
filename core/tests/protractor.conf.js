@@ -68,7 +68,8 @@ exports.config = {
     editorFeatures: [
       'protractor/gadgetEditor.js',
       'protractor/fallbacks.js',
-      'protractor/historyTab.js'
+      'protractor/historyTab.js',
+      'protractor/parameters.js'
     ],
 
     extensions: [
@@ -85,7 +86,15 @@ exports.config = {
     misc: [
       'protractor/userManagement.js',
       'protractor/embedding.js',
-      'protractor/preferences.js'
+      'protractor/preferences.js',
+      'protractor/cacheSlugs.js',
+      'protractor/staticPagesTour.js',
+      'protractor/loginFlow.js',
+      'protractor/libraryPagesTour.js',
+      'protractor/collections.js',
+      'protractor/explorationFeedback.js',
+      'protractor/subscriptions.js',
+      'protractor/suggestions.js'
     ],
 
     i18n: [
@@ -108,6 +117,10 @@ exports.config = {
           accept_languages: 'en-EN'
         }
       }
+    },
+    loggingPrefs: {
+      driver: 'INFO',
+      browser: 'INFO'
     }
   },
 
@@ -157,7 +170,7 @@ exports.config = {
       }));
     }
 
-    var SpecReporter = require('jasmine-spec-reporter');
+    var SpecReporter = require('jasmine-spec-reporter').SpecReporter;
     jasmine.getEnv().addReporter(new SpecReporter({
       displayStacktrace: 'all',
       displaySpecDuration: true
@@ -165,7 +178,7 @@ exports.config = {
 
     // Set a wide enough window size for the navbar in the library pages to
     // display fully.
-    browser.driver.manage().window().setSize(1240, 1000);
+    browser.driver.manage().window().setSize(1285, 1000);
   },
 
   // The params object will be passed directly to the protractor instance,

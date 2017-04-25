@@ -19,19 +19,13 @@
 
 // HTML bind directive that trusts the value it is given and also evaluates
 // custom directive tags in the provided value.
-oppia.directive('angularHtmlBind', ['$compile', '$timeout',
-  'EVENT_HTML_CHANGED', function($compile, $timeout, EVENT_HTML_CHANGED) {
+oppia.directive('angularHtmlBind', ['$compile', function($compile) {
   return {
     restrict: 'A',
     link: function(scope, elm, attrs) {
       scope.$watch(attrs.angularHtmlBind, function(newValue) {
-        // Inform child components that the value of the HTML string has
-        // changed, so that they can perform any necessary cleanup.
-        scope.$broadcast(EVENT_HTML_CHANGED);
-        $timeout(function() {
-          elm.html(newValue);
-          $compile(elm.contents())(scope);
-        }, 10);
+        elm.html(newValue);
+        $compile(elm.contents())(scope);
       });
     }
   };
@@ -125,49 +119,6 @@ oppia.directive('focusOn', [
   }
 ]);
 
-oppia.directive('imageUploader', [function() {
-  return {
-    restrict: 'E',
-    scope: {
-      height: '@',
-      onFileChanged: '=',
-      width: '@'
-    },
-    templateUrl: 'components/imageUploader',
-    link: function(scope, elt) {
-      var onDragEnd = function(e) {
-        e.preventDefault();
-        $(elt).removeClass('image-uploader-is-active');
-      };
-
-      $(elt).bind('drop', function(e) {
-        onDragEnd(e);
-        scope.onFileChanged(
-          e.originalEvent.dataTransfer.files[0],
-          e.originalEvent.dataTransfer.files[0].name);
-      });
-
-      $(elt).bind('dragover', function(e) {
-        e.preventDefault();
-        $(elt).addClass('image-uploader-is-active');
-      });
-
-      $(elt).bind('dragleave', onDragEnd);
-
-      // We generate a random class name to distinguish this input from
-      // others in the DOM.
-      scope.fileInputClassName = (
-        'image-uploader-file-input' + Math.random().toString(36).substring(5));
-      angular.element(document).on(
-          'change', '.' + scope.fileInputClassName, function(evt) {
-        scope.onFileChanged(
-          evt.currentTarget.files[0],
-          evt.target.value.split(/(\\|\/)/g).pop());
-      });
-    }
-  };
-}]);
-
 oppia.directive('mobileFriendlyTooltip', ['$timeout', function($timeout) {
   return {
     restrict: 'A',
@@ -201,7 +152,7 @@ oppia.directive('mobileFriendlyTooltip', ['$timeout', function($timeout) {
           scope.opened = false;
           scope.$apply();
         });
-      };
+      }
     }
   };
 }]);

@@ -20,41 +20,44 @@
  * followed by the name of the arg.
  */
 oppia.directive('oppiaNoninteractiveVideoMp4', [
-  '$sce', 'oppiaHtmlEscaper', 'EVENT_HTML_CHANGED',
-  function($sce, oppiaHtmlEscaper, EVENT_HTML_CHANGED) {
+  '$sce', 'oppiaHtmlEscaper',
+  function($sce, oppiaHtmlEscaper) {
     return {
       restrict: 'E',
       scope: {},
       templateUrl: 'richTextComponent/VideoMp4',
-      link:function(scope, element, attrs){
+        link:function(scope, element, attrs){
 
       },
-      controller: ['$scope', '$attrs', function($scope, $attrs) {
+      controller: [
+        '$scope', '$attrs', 'EVENT_ACTIVE_CARD_CHANGED',
+        function($scope, $attrs, EVENT_ACTIVE_CARD_CHANGED) {
+          $scope.videoUrl = $sce.trustAsResourceUrl(
+            oppiaHtmlEscaper.escapedJsonToObj($attrs.videoUrlWithValue));
 
-        $scope.videoUrl = $sce.trustAsResourceUrl(
-          oppiaHtmlEscaper.escapedJsonToObj($attrs.videoUrlWithValue));
-        var uri = oppiaHtmlEscaper.escapedJsonToObj($attrs.videoUrlWithValue)
-          ||  oppiaHtmlEscaper.escapedJsonToObj($attrs.filepathWithValue);
-        var flashvars = {
-          f: uri,
-          c: 0,
-          p: 1
+          var uri = oppiaHtmlEscaper.escapedJsonToObj($attrs.videoUrlWithValue)
+            ||  oppiaHtmlEscaper.escapedJsonToObj($attrs.filepathWithValue);
+          var flashvars = {
+            f: uri,
+            c: 0,
+            p: 1
 
-        };
+          };
         var params = {bgcolor: '#FFF', allowFullScreen: true, allowScriptAccess: 'always', wmode: 'transparent'};
         var video = [uri + '->video/mp4'];
         CKobject.embed('/third_party/static/ckplayer-6.8/ckplayer/ckplayer.swf', 'a1', 'ckplayer_a1', '100%', '100%', false, flashvars, video, params);
-        // Clearing the video URL src after a card leaves the user's view
-        // helps browsers clear memory and release resources. Without this,
-        // a bug was observed where resources would freeze for learning
-        // experiences that rely heavily on video.
-        //
-        // See W3C spec 4.7.10.18
-        // Ref: https://www.w3.org/TR/html5/embedded-content-0.html
-        $scope.$on(EVENT_HTML_CHANGED, function() {
-          $scope.videoUrl = '';
-        });
-      }]
+
+          // Clearing the video URL src after a card leaves the user's view
+          // helps browsers clear memory and release resources. Without this,
+          // a bug was observed where resources would freeze for learning
+          // experiences that rely heavily on video.
+          //
+          // See W3C spec 4.7.10.18
+          // Ref: https://www.w3.org/TR/html5/embedded-content-0.html
+          $scope.$on(EVENT_ACTIVE_CARD_CHANGED, function() {
+            $scope.videoUrl = '';
+          });
+        }]
     };
   }
 ]);

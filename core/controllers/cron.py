@@ -20,11 +20,13 @@ from pipeline import pipeline
 
 from core import jobs
 from core.controllers import base
+from core.domain import email_manager
+from core.domain import exp_jobs_one_off
+from core.domain import recommendations_jobs_one_off
 from core.domain import user_jobs_one_off
 from core.platform import models
 import utils
 
-email_services = models.Registry.import_email_services()
 (job_models,) = models.Registry.import_models([models.NAMES.job])
 
 # The default retention time is 2 days.
@@ -33,9 +35,19 @@ TWENTY_FIVE_HOURS_IN_MSECS = 25 * 60 * 60 * 1000
 MAX_JOBS_TO_REPORT_ON = 50
 
 
-def require_cron_or_superadmin(handler):
+def require_cron_or_superadmin(func):
     """Decorator to ensure that the handler is being called by cron or by a
     superadmin of the application.
+
+    Args:
+        func: function. The cron function to be decorated.
+
+    Returns:
+        function: The decorated cron function.
+
+    Raises:
+        UnauthorizedUserException: An unauthorized user accesses the
+        handler URL.
     """
     def _require_cron_or_superadmin(self, *args, **kwargs):
         if (self.request.headers.get('X-AppEngine-Cron') is None
@@ -43,7 +55,7 @@ def require_cron_or_superadmin(handler):
             raise self.UnauthorizedUserException(
                 'You do not have the credentials to access this page.')
         else:
-            return handler(self, *args, **kwargs)
+            return func(self, *args, **kwargs)
 
     return _require_cron_or_superadmin
 
@@ -84,7 +96,38 @@ class JobStatusMailerHandler(base.BaseHandler):
             email_subject = 'MapReduce status report'
             email_message = 'All MapReduce jobs are running fine.'
 
-        email_services.send_mail_to_admin(email_subject, email_message)
+        email_manager.send_mail_to_admin(email_subject, email_message)
+
+
+class CronDashboardStatsHandler(base.BaseHandler):
+    """Handler for appending dashboard stats to a list."""
+
+    @require_cron_or_superadmin
+    def get(self):
+        """Handles GET requests."""
+        user_jobs_one_off.DashboardStatsOneOffJob.enqueue(
+            user_jobs_one_off.DashboardStatsOneOffJob.create_new())
+
+
+class CronExplorationRecommendationsHandler(base.BaseHandler):
+    """Handler for computing exploration recommendations."""
+
+    @require_cron_or_superadmin
+    def get(self):
+        """Handles GET requests."""
+        job_class = (
+            recommendations_jobs_one_off.ExplorationRecommendationsOneOffJob)
+        job_class.enqueue(job_class.create_new())
+
+
+class CronExplorationSearchRankHandler(base.BaseHandler):
+    """Handler for computing exploration search ranks."""
+
+    @require_cron_or_superadmin
+    def get(self):
+        """Handles GET requests."""
+        exp_jobs_one_off.IndexAllExplorationsJobManager.enqueue(
+            exp_jobs_one_off.IndexAllExplorationsJobManager.create_new())
 
 
 class CronDashboardStatsHandler(base.BaseHandler):

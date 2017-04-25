@@ -376,14 +376,14 @@ class ExplorationCreateAndDeleteUnitTests(ExplorationServicesUnitTests):
         self.assertIn(
             self.EXP_ID,
             [exp.id for exp in exp_models.ExplorationModel.get_all(
-                include_deleted_entities=True)]
+                include_deleted=True)]
         )
 
         # The exploration summary is deleted however
         self.assertNotIn(
             self.EXP_ID,
             [exp.id for exp in exp_models.ExpSummaryModel.get_all(
-                include_deleted_entities=True)]
+                include_deleted=True)]
         )
 
     def test_hard_deletion_of_explorations(self):
@@ -406,7 +406,7 @@ class ExplorationCreateAndDeleteUnitTests(ExplorationServicesUnitTests):
         self.assertNotIn(
             self.EXP_ID,
             [exp.id for exp in exp_models.ExplorationModel.get_all(
-                include_deleted_entities=True)]
+                include_deleted=True)]
         )
 
     def test_summaries_of_hard_deleted_explorations(self):
@@ -427,7 +427,7 @@ class ExplorationCreateAndDeleteUnitTests(ExplorationServicesUnitTests):
         self.assertNotIn(
             self.EXP_ID,
             [exp.id for exp in exp_models.ExpSummaryModel.get_all(
-                include_deleted_entities=True)]
+                include_deleted=True)]
         )
 
     def test_explorations_are_removed_from_index_when_deleted(self):
@@ -514,6 +514,18 @@ class ExplorationCreateAndDeleteUnitTests(ExplorationServicesUnitTests):
         self.assertEqual(retrieved_exp_summary.category, 'A new category')
         self.assertEqual(retrieved_exp_summary.contributor_ids, [self.owner_id])
 
+    def test_update_exploration_by_migration_bot(self):
+        self.save_new_valid_exploration(
+            self.EXP_ID, self.owner_id, end_state_name='end')
+        rights_manager.publish_exploration(self.owner_id, self.EXP_ID)
+
+        exp_services.update_exploration(
+            feconf.MIGRATION_BOT_USER_ID, self.EXP_ID, [{
+                'cmd': 'edit_exploration_property',
+                'property_name': 'title',
+                'new_value': 'New title'
+            }], 'Did migration.')
+
 
 class LoadingAndDeletionOfExplorationDemosTest(ExplorationServicesUnitTests):
 
@@ -570,6 +582,7 @@ skin_customizations:
     bottom: []
 states:
   %s:
+    classifier_model_id: null
     content:
     - type: text
       value: ''
@@ -589,6 +602,7 @@ states:
       id: TextInput
     param_changes: []
   New state:
+    classifier_model_id: null
     content:
     - type: text
       value: ''
@@ -631,6 +645,7 @@ skin_customizations:
     bottom: []
 states:
   %s:
+    classifier_model_id: null
     content:
     - type: text
       value: ''
@@ -650,6 +665,7 @@ states:
       id: TextInput
     param_changes: []
   Renamed state:
+    classifier_model_id: null
     content:
     - type: text
       value: ''
@@ -762,7 +778,8 @@ class YAMLExportUnitTests(ExplorationServicesUnitTests):
     are state names and whose values are YAML strings representing the state's
     contents."""
 
-    _SAMPLE_INIT_STATE_CONTENT = ("""content:
+    _SAMPLE_INIT_STATE_CONTENT = ("""classifier_model_id: null
+content:
 - type: text
   value: ''
 interaction:
@@ -784,7 +801,8 @@ param_changes: []
 
     SAMPLE_EXPORTED_DICT = {
         feconf.DEFAULT_INIT_STATE_NAME: _SAMPLE_INIT_STATE_CONTENT,
-        'New state': ("""content:
+        'New state': ("""classifier_model_id: null
+content:
 - type: text
   value: ''
 interaction:
@@ -807,7 +825,8 @@ param_changes: []
 
     UPDATED_SAMPLE_DICT = {
         feconf.DEFAULT_INIT_STATE_NAME: _SAMPLE_INIT_STATE_CONTENT,
-        'Renamed state': ("""content:
+        'Renamed state': ("""classifier_model_id: null
+content:
 - type: text
   value: ''
 interaction:
@@ -916,6 +935,7 @@ class UpdateStateTests(ExplorationServicesUnitTests):
                 'feedback': ['Try again'],
                 'param_changes': []
             },
+            'correct': False,
         }]
         # Default outcome specification for an interaction.
         self.interaction_default_outcome = {
@@ -1809,6 +1829,7 @@ class ExplorationSearchTests(ExplorationServicesUnitTests):
     """Test exploration search."""
 
     USER_ID_1 = 'user_1'
+    USER_ID_2 = 'user_2'
 
     def test_demo_explorations_are_added_to_search_index(self):
         results, _ = exp_services.search_explorations('Welcome', 2)
@@ -1974,6 +1995,31 @@ class ExplorationSearchTests(ExplorationServicesUnitTests):
 
         self.assertEqual(cursor, expected_result_cursor)
         self.assertEqual(result, doc_ids)
+
+    def test_get_number_of_ratings(self):
+        self.save_new_valid_exploration(self.EXP_ID, self.owner_id)
+        exp = exp_services.get_exploration_summary_by_id(self.EXP_ID)
+
+        self.assertEqual(exp_services.get_number_of_ratings(exp.ratings), 0)
+
+        rating_services.assign_rating_to_exploration(
+            self.owner_id, self.EXP_ID, 5)
+        self.assertEqual(
+            exp_services.get_number_of_ratings(exp.ratings), 1)
+
+        rating_services.assign_rating_to_exploration(
+            self.USER_ID_1, self.EXP_ID, 3)
+        self.process_and_flush_pending_tasks()
+        exp = exp_services.get_exploration_summary_by_id(self.EXP_ID)
+        self.assertEqual(
+            exp_services.get_number_of_ratings(exp.ratings), 2)
+
+        rating_services.assign_rating_to_exploration(
+            self.USER_ID_2, self.EXP_ID, 5)
+        self.process_and_flush_pending_tasks()
+        exp = exp_services.get_exploration_summary_by_id(self.EXP_ID)
+        self.assertEqual(
+            exp_services.get_number_of_ratings(exp.ratings), 3)
 
     def test_get_average_rating(self):
         self.save_new_valid_exploration(self.EXP_ID, self.owner_id)
@@ -2351,6 +2397,7 @@ skin_customizations:
     bottom: []
 states:
   END:
+    classifier_model_id: null
     content:
     - type: text
       value: Congratulations, you have finished!
@@ -2365,6 +2412,7 @@ states:
       id: EndExploration
     param_changes: []
   %s:
+    classifier_model_id: null
     content:
     - type: text
       value: ''
@@ -2592,7 +2640,6 @@ title: Old Title
         # converted.
         self.assertEqual(exploration.to_yaml(), self.UPGRADED_EXP_YAML)
 
-
 class SuggestionActionUnitTests(test_utils.GenericTestBase):
     """Test learner suggestion action functions in exp_services."""
 
@@ -2635,10 +2682,10 @@ class SuggestionActionUnitTests(test_utils.GenericTestBase):
                        'generate_new_thread_id', self._generate_thread_id):
             feedback_services.create_suggestion(
                 self.EXP_ID1, self.user_id, 3, 'state_name', 'description',
-                {'old_content': {}})
+                {'type': 'text', 'value': ''})
             feedback_services.create_suggestion(
                 self.EXP_ID2, self.user_id, 3, 'state_name', 'description',
-                {'old_content': {}})
+                {'type': 'text', 'value': ''})
 
     def test_accept_suggestion_valid_suggestion(self):
         with self.swap(exp_services, '_is_suggestion_valid',

@@ -35,6 +35,14 @@ SET_OF_STRINGS_SCHEMA = {
     }],
 }
 
+BOOL_SCHEMA = {
+    'type': schema_utils.SCHEMA_TYPE_BOOL
+}
+
+UNICODE_SCHEMA = {
+    'type': schema_utils.SCHEMA_TYPE_UNICODE
+}
+
 
 class ConfigProperty(object):
     """A property with a name and a default value.
@@ -235,8 +243,7 @@ BANNED_USERNAMES = ConfigProperty(
     [])
 
 WHITELISTED_COLLECTION_EDITOR_USERNAMES = ConfigProperty(
-    'collection_editor_whitelist',
-    SET_OF_STRINGS_SCHEMA,
+    'collection_editor_whitelist', SET_OF_STRINGS_SCHEMA,
     '允许创建系列课程的用户列表',
     [])
 
@@ -246,3 +253,14 @@ WHITELISTED_EXPLORER_EDITOR_USERNAMES = ConfigProperty(
     '允许创建课程的用户列表',
     []
 )
+
+WHITELISTED_EMAIL_SENDERS = ConfigProperty(
+    'whitelisted_email_senders', SET_OF_STRINGS_SCHEMA,
+    'Names of users allowed to send emails via the query interface.', [])
+
+PROMO_BAR_ENABLED = ConfigProperty(
+    'promo_bar_enabled', BOOL_SCHEMA,
+    'Whether the promo bar should be enabled for all users', False)
+PROMO_BAR_MESSAGE = ConfigProperty(
+    'promo_bar_message', UNICODE_SCHEMA,
+    'The message to show to all users if the promo bar is enabled', '')

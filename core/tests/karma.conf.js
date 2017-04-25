@@ -1,9 +1,9 @@
 var argv = require('yargs').argv;
 var isMinificationNeeded = (argv.minify === 'True');
-var generatedJs = 'third_party/generated/dev/js/third_party.js';
+var generatedJs = 'third_party/generated/js/third_party.js';
 if (isMinificationNeeded) {
-  generatedJs = 'third_party/generated/prod/js/third_party.min.js';
-};
+  generatedJs = 'third_party/generated/js/third_party.min.js';
+}
 
 module.exports = function(config) {
   config.set({
@@ -11,13 +11,15 @@ module.exports = function(config) {
     frameworks: ['jasmine'],
     files: [
       'core/tests/karma-globals.js',
+      // Constants must be loaded before everything else.
+      'assets/constants.js',
       // Since jquery,jquery-ui,angular,angular-mocks and math-expressions
       // are not bundled, they will be treated separately.
-      'third_party/static/jquery-2.1.1/jquery.min.js',
+      'third_party/static/jquery-3.0.0/jquery.min.js',
       'third_party/static/jqueryui-1.10.3/jquery-ui.min.js',
-      'third_party/static/angularjs-1.4.7/angular.js',
-      'third_party/static/angularjs-1.4.7/angular-mocks.js',
-      'third_party/static/math-expressions-762ffd/build/math-expressions.js',
+      'third_party/static/angularjs-1.5.8/angular.js',
+      'third_party/static/angularjs-1.5.8/angular-mocks.js',
+      'third_party/static/math-expressions-370a77/build/math-expressions.js',
       generatedJs,
       'core/templates/dev/head/*.js',
       // Note that unexpected errors occur ("Cannot read property 'num' of
@@ -27,9 +29,9 @@ module.exports = function(config) {
       'core/templates/dev/head/components/rating_display.html',
       'extensions/**/*.js',
       'extensions/interactions/**/*.html',
-      'extensions/interactions/rules.json',
+      'extensions/interactions/rule_templates.json',
       {
-        pattern: 'i18n/**/*.json',
+        pattern: 'assets/i18n/**/*.json',
         watched: true,
         served: true,
         included: false
@@ -39,6 +41,12 @@ module.exports = function(config) {
       'core/templates/dev/head/**/*-e2e.js',
       'extensions/**/protractor.js'
     ],
+    proxies: {
+      // Karma serves files under the /base directory.
+      // We need to access files in assets folder, without modifying the code,
+      // so we need to proxy the requests from /assets/ to /base/assets/.
+      '/assets/': '/base/assets/'
+    },
     preprocessors: {
       'core/templates/dev/head/*.js': ['coverage'],
       // When all controllers were converted from global functions into the
@@ -51,33 +59,19 @@ module.exports = function(config) {
       // statistics generated for them, and that if a directory is omitted by
       // accident, that directory will not have coverage statistics generated
       // for it, which is easily fixed.
-      'core/templates/dev/head/admin/!(*Spec).js': ['coverage'],
-      'core/templates/dev/head/collection_player/!(*Spec).js': ['coverage'],
-      'core/templates/dev/head/collection_editor/!(*Spec).js': ['coverage'],
       'core/templates/dev/head/components/!(*Spec).js': ['coverage'],
-      'core/templates/dev/head/css/!(*Spec).js': ['coverage'],
-      'core/templates/dev/head/dashboard/!(*Spec).js': ['coverage'],
-      'core/templates/dev/head/domain/editor/!(*Spec).js': ['coverage'],
-      'core/templates/dev/head/domain/collection/!(*Spec).js': ['coverage'],
-      'core/templates/dev/head/domain/utilities/!(*Spec).js': ['coverage'],
-      'core/templates/dev/head/exploration_editor/!(*Spec).js': ['coverage'],
-      'core/templates/dev/head/error/!(*Spec).js': ['coverage'],
+      'core/templates/dev/head/domain/**/!(*Spec).js': ['coverage'],
       'core/templates/dev/head/expressions/!(*Spec).js': ['coverage'],
       'core/templates/dev/head/forms/!(*Spec).js': ['coverage'],
-      'core/templates/dev/head/library/!(*Spec).js': ['coverage'],
-      'core/templates/dev/head/moderator/!(*Spec).js': ['coverage'],
-      'core/templates/dev/head/pages/!(*Spec).js': ['coverage'],
-      'core/templates/dev/head/player/!(*Spec).js': ['coverage'],
-      'core/templates/dev/head/profile/!(*Spec).js': ['coverage'],
+      'core/templates/dev/head/pages/**/!(*Spec).js': ['coverage'],
       'core/templates/dev/head/services/!(*Spec).js': ['coverage'],
-      'core/templates/dev/head/tests/!(*Spec).js': ['coverage'],
       'extensions/**/!(*Spec).js': ['coverage'],
       // Note that these files should contain only directive templates, and no
       // Jinja expressions. They should also be specified within the 'files'
       // list above.
       'core/templates/dev/head/components/rating_display.html': ['ng-html2js'],
       'extensions/interactions/**/*.html': ['ng-html2js'],
-      'extensions/interactions/rules.json': ['json_fixtures']
+      'extensions/interactions/rule_templates.json': ['json_fixtures']
     },
     reporters: ['progress', 'coverage'],
     coverageReporter: {

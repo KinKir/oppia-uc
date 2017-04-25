@@ -18,7 +18,6 @@ import logging
 
 import jinja2
 
-from core import counters
 from core import jobs
 from core import jobs_registry
 from core.controllers import base
@@ -55,38 +54,9 @@ def require_super_admin(handler):
 
 class AdminPage(base.BaseHandler):
     """Admin page shown in the App Engine admin console."""
-
-    PAGE_NAME_FOR_CSRF = 'admin'
-
     @require_super_admin
     def get(self):
         """Handles GET requests."""
-        self.values['counters'] = [{
-            'name': counter.name,
-            'description': counter.description,
-            'value': counter.value
-        } for counter in counters.Registry.get_all_counters()]
-
-        if counters.HTML_RESPONSE_COUNT.value:
-            average_time = (
-                counters.HTML_RESPONSE_TIME_SECS.value /
-                counters.HTML_RESPONSE_COUNT.value)
-            self.values['counters'].append({
-                'name': 'average-html-response-time-secs',
-                'description': 'Average HTML response time in seconds',
-                'value': average_time
-            })
-
-        if counters.JSON_RESPONSE_COUNT.value:
-            average_time = (
-                counters.JSON_RESPONSE_TIME_SECS.value /
-                counters.JSON_RESPONSE_COUNT.value)
-            self.values['counters'].append({
-                'name': 'average-json-response-time-secs',
-                'description': 'Average JSON response time in seconds',
-                'value': average_time
-            })
-
         demo_exploration_ids = feconf.DEMO_EXPLORATIONS.keys()
 
         recent_job_data = jobs.get_data_for_recent_jobs()
@@ -137,13 +107,13 @@ class AdminPage(base.BaseHandler):
                 editor.get_value_generators_js()),
         })
 
-        self.render_template('admin/admin.html')
+        self.render_template('pages/admin/admin.html')
 
 
 class AdminHandler(base.BaseHandler):
     """Handler for the admin page."""
 
-    PAGE_NAME_FOR_CSRF = 'admin'
+    GET_HANDLER_ERROR_RETURN_TYPE = feconf.HANDLER_TYPE_JSON
 
     @require_super_admin
     def get(self):
@@ -160,20 +130,10 @@ class AdminHandler(base.BaseHandler):
         try:
             if self.payload.get('action') == 'reload_exploration':
                 exploration_id = self.payload.get('exploration_id')
-                logging.info(
-                    '[ADMIN] %s reloaded exploration %s' %
-                    (self.user_id, exploration_id))
-                exp_services.load_demo(unicode(exploration_id))
-                rights_manager.release_ownership_of_exploration(
-                    feconf.SYSTEM_COMMITTER_ID, unicode(exploration_id))
+                self._reload_exploration(exploration_id)
             elif self.payload.get('action') == 'reload_collection':
                 collection_id = self.payload.get('collection_id')
-                logging.info(
-                    '[ADMIN] %s reloaded collection %s' %
-                    (self.user_id, collection_id))
-                collection_services.load_demo(unicode(collection_id))
-                rights_manager.release_ownership_of_collection(
-                    feconf.SYSTEM_COMMITTER_ID, unicode(collection_id))
+                self._reload_collection(collection_id)
             elif self.payload.get('action') == 'clear_search_index':
                 exp_services.clear_search_index()
             elif self.payload.get('action') == 'save_config_properties':
@@ -222,11 +182,33 @@ class AdminHandler(base.BaseHandler):
             self.render_json({'error': unicode(e)})
             raise
 
+    def _reload_exploration(self, exploration_id):
+        if feconf.DEV_MODE:
+            logging.info(
+                '[ADMIN] %s reloaded exploration %s' %
+                (self.user_id, exploration_id))
+            exp_services.load_demo(unicode(exploration_id))
+            rights_manager.release_ownership_of_exploration(
+                feconf.SYSTEM_COMMITTER_ID, unicode(exploration_id))
+        else:
+            raise Exception('Cannot reload an exploration in production.')
+
+    def _reload_collection(self, collection_id):
+        if feconf.DEV_MODE:
+            logging.info(
+                '[ADMIN] %s reloaded collection %s' %
+                (self.user_id, collection_id))
+            collection_services.load_demo(unicode(collection_id))
+            rights_manager.release_ownership_of_collection(
+                feconf.SYSTEM_COMMITTER_ID, unicode(collection_id))
+        else:
+            raise Exception('Cannot reload a collection in production.')
+
 
 class AdminJobOutput(base.BaseHandler):
     """Retrieves job output to show on the admin page."""
 
-    PAGE_NAME_FOR_CSRF = 'admin'
+    GET_HANDLER_ERROR_RETURN_TYPE = feconf.HANDLER_TYPE_JSON
 
     @require_super_admin
     def get(self):

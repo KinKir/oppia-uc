@@ -35,20 +35,19 @@ from core.domain import rights_manager
 from core.platform import models
 import feconf
 import main
+import main_mail
+import main_taskqueue
 import utils
 
 from google.appengine.api import apiproxy_stub
 from google.appengine.api import apiproxy_stub_map
+from google.appengine.api import mail
 
 (exp_models,) = models.Registry.import_models([models.NAMES.exploration])
 current_user_services = models.Registry.import_current_user_services()
 
 CSRF_REGEX = (
     r'csrf_token: JSON\.parse\(\'\\\"([A-Za-z0-9/=_-]+)\\\"\'\)')
-CSRF_I18N_REGEX = (
-    r'csrf_token_i18n: JSON\.parse\(\'\\\"([A-Za-z0-9/=_-]+)\\\"\'\)')
-CSRF_CREATE_EXPLORATION_REGEX = (
-    r'csrf_token_create_exploration: JSON\.parse\(\'\\\"([A-Za-z0-9/=_-]+)\\\"\'\)') # pylint: disable=line-too-long
 # Prefix to append to all lines printed by tests to the console.
 LOG_LINE_PREFIX = 'LOG_INFO_TEST: '
 
@@ -138,7 +137,8 @@ class TestBase(unittest.TestCase):
                         'definition': {'rule_type': 'default'}
                     }]
                 }]
-            }
+            },
+            'classifier_model_id': None,
         }
     }
 
@@ -230,13 +230,12 @@ class TestBase(unittest.TestCase):
 
         return json.loads(json_response.body[len(feconf.XSSI_PREFIX):])
 
-    def get_json(self, url, params=None):
-        """Get a JSON response, transformed to a Python object. This method
-        does not support calling testapp.get() with errors expected in response
-        because testapp.get() in that case does not return a JSON object."""
-        json_response = self.testapp.get(url, params)
-        self.assertEqual(json_response.status_int, 200)
-        return self._parse_json_response(json_response, expect_errors=False)
+    def get_json(self, url, params=None, expect_errors=False):
+        """Get a JSON response, transformed to a Python object."""
+        json_response = self.testapp.get(
+            url, params, expect_errors=expect_errors)
+        return self._parse_json_response(
+            json_response, expect_errors=expect_errors)
 
     def post_json(self, url, payload, csrf_token=None, expect_errors=False,
                   expected_status_int=200, upload_files=None):
@@ -245,13 +244,41 @@ class TestBase(unittest.TestCase):
         if csrf_token:
             data['csrf_token'] = csrf_token
 
-        json_response = self.testapp.post(
-            str(url), data, expect_errors=expect_errors,
-            upload_files=upload_files)
+        json_response = self._send_post_request(
+            self.testapp, url, data, expect_errors, expected_status_int,
+            upload_files)
 
-        self.assertEqual(json_response.status_int, expected_status_int)
         return self._parse_json_response(
             json_response, expect_errors=expect_errors)
+
+    def _send_post_request(
+            self, app, url, data, expect_errors=False, expected_status_int=200,
+            upload_files=None, headers=None):
+        json_response = app.post(
+            str(url), data, expect_errors=expect_errors,
+            upload_files=upload_files, headers=headers)
+        self.assertEqual(json_response.status_int, expected_status_int)
+        return json_response
+
+    def post_email(
+            self, recipient_email, sender_email, subject, body, html_body=None,
+            expect_errors=False, expected_status_int=200):
+        email = mail.EmailMessage(
+            sender=sender_email, to=recipient_email, subject=subject,
+            body=body)
+        if html_body is not None:
+            email.html = html_body
+
+        mime_email = email.to_mime_message()
+        headers = {'content-type': mime_email.get_content_type()}
+        data = mime_email.as_string()
+        app = webtest.TestApp(main_mail.app)
+        incoming_email_url = '/_ah/mail/%s' % recipient_email
+
+        return self._send_post_request(
+            app, incoming_email_url, data, headers=headers,
+            expect_errors=expect_errors,
+            expected_status_int=expected_status_int)
 
     def put_json(self, url, payload, csrf_token=None, expect_errors=False,
                  expected_status_int=200):
@@ -267,18 +294,9 @@ class TestBase(unittest.TestCase):
         return self._parse_json_response(
             json_response, expect_errors=expect_errors)
 
-    def get_csrf_token_from_response(self, response, token_type=None):
+    def get_csrf_token_from_response(self, response):
         """Retrieve the CSRF token from a GET response."""
-        if token_type is None:
-            regex = CSRF_REGEX
-        elif token_type == feconf.CSRF_PAGE_NAME_CREATE_EXPLORATION:
-            regex = CSRF_CREATE_EXPLORATION_REGEX
-        elif token_type == feconf.CSRF_PAGE_NAME_I18N:
-            regex = CSRF_I18N_REGEX
-        else:
-            raise Exception('Invalid CSRF token type: %s' % token_type)
-
-        return re.search(regex, response.body).group(1)
+        return re.search(CSRF_REGEX, response.body).group(1)
 
     def signup(self, email, username):
         """Complete the signup process for the user with the given username."""
@@ -466,6 +484,27 @@ class TestBase(unittest.TestCase):
                 obj_type, new_param_dict)
         return new_param_dict
 
+    def get_static_asset_filepath(self):
+        """Returns filepath for referencing static files on disk.
+        examples: '' or 'build/1234'
+        """
+        cache_slug_filepath = ''
+        if feconf.IS_MINIFIED or not feconf.DEV_MODE:
+            yaml_file_content = utils.dict_from_yaml(
+                utils.get_file_contents('cache_slug.yaml'))
+            cache_slug = yaml_file_content['cache_slug']
+            cache_slug_filepath = os.path.join('build', cache_slug)
+
+        return cache_slug_filepath
+
+    def get_static_asset_url(self, asset_suffix):
+        """Returns the relative path for the asset, appending it to the
+        corresponding cache slug. asset_suffix should have a leading
+        slash.
+        """
+        return '/assets%s%s' % (utils.get_asset_dir_prefix(), asset_suffix)
+
+
     @contextlib.contextmanager
     def swap(self, obj, attr, newvalue):
         """Swap an object's attribute value within the context of a
@@ -623,12 +662,18 @@ class AppEngineTestBase(TestBase):
                     from google.appengine.ext import deferred
                     deferred.run(task.payload)
                 else:
-                    # All other tasks are expected to be mapreduce ones.
+                    # All other tasks are expected to be mapreduce ones, or
+                    # Oppia-taskqueue-related ones.
                     headers = {
                         key: str(val) for key, val in task.headers.iteritems()
                     }
                     headers['Content-Length'] = str(len(task.payload or ''))
-                    response = self.testapp.post(
+
+                    app = (
+                        webtest.TestApp(main_taskqueue.app)
+                        if task.url.startswith('/task')
+                        else self.testapp)
+                    response = app.post(
                         url=str(task.url), params=(task.payload or ''),
                         headers=headers)
                     if response.status_code != 200:

@@ -277,6 +277,16 @@ class InteractionUnitTests(test_utils.GenericTestBase):
             self.assertIn(
                 '%s id="response/%s"' % (directive_prefix, interaction_id),
                 html_file_content)
+            # Check that the html template includes js script for the
+            # interaction.
+            self.assertIn(
+                '<script src="{{cache_slug}}/extensions/interactions/%s/%s.js">'
+                '</script>' % (interaction_id, interaction_id),
+                html_file_content)
+            self.assertIn(
+                '<script src="{{cache_slug}}/extensions/interactions/%s/'
+                'validator.js"></script>' % interaction_id,
+                html_file_content)
             self.assertNotIn('<script>', js_file_content)
             self.assertNotIn('</script>', js_file_content)
             self.assertIn(
@@ -371,7 +381,7 @@ class InteractionUnitTests(test_utils.GenericTestBase):
                 interaction_id)
             if interaction.is_trainable:
                 self.assertIn(
-                    exp_domain.CLASSIFIER_RULESPEC_STR, interaction.rules_dict,
+                    exp_domain.RULE_TYPE_CLASSIFIER, interaction.rules_dict,
                     'Expected to find a classifier in trainable '
                     'interaction: %s' % interaction_id)
 
@@ -384,7 +394,7 @@ class InteractionUnitTests(test_utils.GenericTestBase):
                 interaction_id)
             if not interaction.is_trainable:
                 self.assertNotIn(
-                    exp_domain.CLASSIFIER_RULESPEC_STR, interaction.rules_dict,
+                    exp_domain.RULE_TYPE_CLASSIFIER, interaction.rules_dict,
                     'Did not expect to find a classifier in untrainable '
                     'interaction: %s' % interaction_id)
 
