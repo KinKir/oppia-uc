@@ -79,7 +79,7 @@ oppia.config([
       availableLanguageKeys.push(language.id);
       availableLanguageKeysMap[language.id + '*'] = language.id;
     });
-    availableLanguageKeysMap['*'] = 'zh';
+    availableLanguageKeysMap['*'] = 'zh-hans';
 
     $translateProvider
       .registerAvailableLanguageKeys(

@@ -433,43 +433,38 @@ URLS = MAPREDUCE_HANDLERS + [
     get_redirect_route(r'/logout', base.LogoutPage),
 
     get_redirect_route(
-        r'/api/uc', uc.UcApiHandler, 'uc_api_handler'),
+        r'/api/uc', uc.UcApiHandler),
     get_redirect_route(
-        r'/private_log', private_log.PrivateLogPage, 'private_log'),
+        r'/private_log', private_log.PrivateLogPage),
     get_redirect_route(
-        r'/privatelog/data', private_log.PrivateLogListHandler,
-        'private_log_data'),
+        r'/privatelog/data', private_log.PrivateLogListHandler),
     get_redirect_route(
-        r'/privatelog/handler/<log_id>', private_log.CreatePrivateLogHandler,
-        'private_log_handler'),
+        r'/privatelog/handler/<log_id>', private_log.CreatePrivateLogHandler),
     get_redirect_route(
-        r'/video/list/<category_id>', video_list.VideoListPage, r'video_list'
+        r'/video/list/<category_id>', video_list.VideoListPage
     ),
     get_redirect_route(
-        r'/video/category', video_list.VideoCategoryList, r'video_category'
+        r'/video/category', video_list.VideoCategoryList
     ),
     get_redirect_route(
         r'/video_category/data/<category_id>',
-        video_list.VideoCategoryData, r'video_categorydata'
+        video_list.VideoCategoryData
     ),
     get_redirect_route(
-        r'/video/<video_id>', video_list.VideoView, r'video_view'
+        r'/video/<video_id>', video_list.VideoView
     ),
     get_redirect_route(
         r'/video/data/<category_id>/<video_id>',
-        video_list.VideoListData, r'video_data'
+        video_list.VideoListData
     ),
     get_redirect_route(
         r'/classroom/',
-        classroom.ClassroomPage, r'classroom'
-    ),
+        classroom.ClassroomPage),
     get_redirect_route(
         r'/classroom/data/<classroom_id>',
-        classroom.ClassroomHandler, r'classroom_data'
-    ),
+        classroom.ClassroomHandler),
     get_redirect_route(
-        r'/login', login.LoginHandler, r'login_page'
-    ),
+        r'/login', login.LoginHandler),
     # 404 error handler.
     get_redirect_route(r'/<:.*>', base.Error404Handler),
 ]
