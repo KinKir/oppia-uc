@@ -117,13 +117,13 @@ oppia.factory('itemSelectionInputRulesService', ['$filter', function($filter) {
       var normalizedAnswer = $filter('removeDuplicatesInArray')(answer);
       var normalizedInput = $filter('removeDuplicatesInArray')(inputs.x);
       return normalizedAnswer.length === normalizedInput.length &&
-        normalizedAnswer.every(function(val) {
-          if (normalizedInput.indexOf('filepath-with-value') !== -1 && val.indexOf('filepath-with-value') !== -1) {
-            var iStart = normalizedInput.indexOf('file-with-value="');
-            var input = normalizedInput.substring(iStart, normalizedInput.indexOf('"', iStart + 21));
+        normalizedAnswer.every(function(val,index) {
+          if (normalizedInput[index].indexOf('filepath-with-value') !== -1 && val.indexOf('filepath-with-value') !== -1) {
+            var iStart = normalizedInput[index].indexOf('file-with-value="');
+            var inp = normalizedInput[index].substring(iStart, normalizedInput[index].indexOf('"', iStart + 21));
             var aStart = val.indexOf('filepath-with-value="');
             var answer = val.substring(aStart, val.indexOf('"', aStart + 21));
-            return answer.indexOf(input) !== -1;
+            return answer.indexOf(inp) !== -1;
           }
           return normalizedInput.indexOf(val) !== -1;
         });
