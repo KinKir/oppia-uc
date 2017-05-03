@@ -119,7 +119,7 @@ oppia.factory('itemSelectionInputRulesService', ['$filter', function($filter) {
       return normalizedAnswer.length === normalizedInput.length &&
         normalizedAnswer.every(function(val,index) {
           if (normalizedInput[index].indexOf('filepath-with-value') !== -1 && val.indexOf('filepath-with-value') !== -1) {
-            var iStart = normalizedInput[index].indexOf('file-with-value="');
+            var iStart = normalizedInput[index].indexOf('filepath-with-value="');
             var inp = normalizedInput[index].substring(iStart, normalizedInput[index].indexOf('"', iStart + 21));
             var aStart = val.indexOf('filepath-with-value="');
             var answer = val.substring(aStart, val.indexOf('"', aStart + 21));
