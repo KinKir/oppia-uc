@@ -39,7 +39,7 @@ oppia.directive('collectionDetailsEditor', [function() {
           function(category) {
             return {
               id: category,
-              text: ALL_CATEGORIES_ZH_MAP[category]
+              text: GLOBALS.ALL_CATEGORIES_ZH_MAP[category]
             };
           }
         );
