@@ -21,8 +21,7 @@
  */
 
 oppia.directive('oppiaInteractiveItemSelectionInput', [
-  'oppiaHtmlEscaper', 'itemSelectionInputRulesService', function(
-      oppiaHtmlEscaper, itemSelectionInputRulesService) {
+  'oppiaHtmlEscaper', 'itemSelectionInputRulesService', function(oppiaHtmlEscaper, itemSelectionInputRulesService) {
     return {
       restrict: 'E',
       scope: {},
@@ -62,9 +61,9 @@ oppia.directive('oppiaInteractiveItemSelectionInput', [
             }
           ).length;
           $scope.preventAdditionalSelections = (
-            $scope.selectionCount >= $scope.maxAllowableSelectionCount);
+          $scope.selectionCount >= $scope.maxAllowableSelectionCount);
           $scope.notEnoughSelections = (
-            $scope.selectionCount < $scope.minAllowableSelectionCount);
+          $scope.selectionCount < $scope.minAllowableSelectionCount);
         };
 
         $scope.submitMultipleChoiceAnswer = function(index) {
@@ -118,9 +117,16 @@ oppia.factory('itemSelectionInputRulesService', ['$filter', function($filter) {
       var normalizedAnswer = $filter('removeDuplicatesInArray')(answer);
       var normalizedInput = $filter('removeDuplicatesInArray')(inputs.x);
       return normalizedAnswer.length === normalizedInput.length &&
-          normalizedAnswer.every(function(val) {
-        return normalizedInput.indexOf(val) !== -1;
-      });
+        normalizedAnswer.every(function(val,index) {
+          if (normalizedInput[index].indexOf('filepath-with-value') !== -1 && val.indexOf('filepath-with-value') !== -1) {
+            var iStart = normalizedInput[index].indexOf('filepath-with-value="');
+            var inp = normalizedInput[index].substring(iStart, normalizedInput[index].indexOf('"', iStart + 21));
+            var aStart = val.indexOf('filepath-with-value="');
+            var answer = val.substring(aStart, val.indexOf('"', aStart + 21));
+            return answer.indexOf(inp) !== -1;
+          }
+          return normalizedInput.indexOf(val) !== -1;
+        });
     },
     ContainsAtLeastOneOf: function(answer, inputs) {
       var normalizedAnswer = $filter('removeDuplicatesInArray')(answer);

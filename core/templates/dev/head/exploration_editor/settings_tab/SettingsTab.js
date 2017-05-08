@@ -44,7 +44,7 @@ oppia.controller('SettingsTab', [
     for (var i = 0; i < CATEGORY_LIST.length; i++) {
       $scope.CATEGORY_LIST_FOR_SELECT2.push({
         id: CATEGORY_LIST[i],
-        text: ALL_CATEGORIES_ZH_MAP[CATEGORY_LIST[i]]
+        text: GLOBALS.ALL_CATEGORIES_ZH_MAP[CATEGORY_LIST[i]]
       });
     }
 
